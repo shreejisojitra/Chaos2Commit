@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — AI Solution Builder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa',
+              500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a',
+            }
+          },
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          boxShadow: { soft: '0 4px 20px -2px rgba(0,0,0,0.06)', card: '0 10px 40px -10px rgba(37,99,235,0.12)' }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>body{font-family:Inter,system-ui,sans-serif}.sidebar-link.active{background:linear-gradient(135deg,rgba(37,99,235,.1),rgba(124,58,237,.08));color:#2563eb;font-weight:600}</style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+<div class="flex h-screen overflow-hidden">
+  <aside class="hidden lg:flex lg:flex-col w-64 bg-white border-r border-slate-200">
+    <div class="h-16 flex items-center gap-2.5 px-5 border-b border-slate-100">
+      <a href="index.html" class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-600 to-violet-600 flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <span class="text-sm font-bold">AI Solution Builder</span>
+      </a>
+    </div>
+    <nav class="flex-1 py-4 px-3 space-y-0.5">
+      <a href="dashboard.html" class="sidebar-link active flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm">Dashboard</a>
+      <a href="admin.html" class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600">Admin</a>
+      <a href="index.html" class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600">Landing</a>
+    </nav>
+  </aside>
+  <div class="flex-1 flex flex-col min-w-0">
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6">
+      <h1 class="text-lg font-semibold">Dashboard</h1>
+      <button id="btn-new-project" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700">+ New Project</button>
+    </header>
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+      <div class="grid sm:grid-cols-3 gap-4">
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5">
+          <p class="text-xs font-medium text-slate-500">Credits remaining</p>
+          <p class="text-3xl font-bold text-slate-900 mt-1" id="credits-remaining">—</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5">
+          <p class="text-xs font-medium text-slate-500">Credits used</p>
+          <p class="text-3xl font-bold text-slate-900 mt-1" id="credits-used">—</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5 flex flex-col justify-between">
+          <p class="text-xs font-medium text-slate-500">Plan</p>
+          <div class="flex items-center justify-between mt-1">
+            <p class="text-lg font-bold" id="plan-name">Free</p>
+            <button id="btn-plans" class="text-sm font-medium text-brand-600 hover:text-brand-700">Change plan</button>
+          </div>
+        </div>
+      </div>
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
+        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+          <h2 class="text-sm font-semibold">Your projects</h2>
+        </div>
+        <div id="projects-list" class="divide-y divide-slate-100"></div>
+      </section>
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
+        <div class="px-5 py-4 border-b border-slate-100"><h2 class="text-sm font-semibold">Credit history</h2></div>
+        <ul id="history-list" class="divide-y divide-slate-100 max-h-48 overflow-y-auto"></ul>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- Create project modal -->
+<div id="modal-create" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/40 p-4">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+    <h3 class="text-lg font-semibold mb-4">Create new project</h3>
+    <form id="form-create" class="space-y-3">
+      <label class="block text-sm font-medium">Project name<input name="name" required class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" /></label>
+      <label class="block text-sm font-medium">Business name<input name="businessName" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" /></label>
+      <label class="block text-sm font-medium">Business idea<textarea name="idea" rows="3" required class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"></textarea></label>
+      <label class="block text-sm font-medium">Preferred language
+        <select name="language" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm">
+          <option value="en">English</option>
+          <option value="hi">Hindi</option>
+          <option value="gu">Gujarati</option>
+        </select>
+      </label>
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" id="btn-cancel-create" class="px-4 py-2 text-sm font-medium text-slate-600 border border-slate-200 rounded-lg">Cancel</button>
+        <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg">Create Project</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Plans modal -->
+<div id="modal-plans" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/40 p-4">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6">
+    <h3 class="text-lg font-semibold mb-4">Choose a plan</h3>
+    <div id="plans-grid" class="grid sm:grid-cols-2 gap-3"></div>
+    <p class="text-xs text-slate-400 mt-4">Prices are configurable. No real payment processing yet.</p>
+    <div class="flex justify-end mt-4">
+      <button type="button" id="btn-close-plans" class="px-4 py-2 text-sm font-medium border border-slate-200 rounded-lg">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PROJECTS_KEY = 'asb_projects';
+const BILLING_KEY = 'asb_billing';
+const CREDIT_PLANS = {
+  free: { id: 'free', name: 'Free', credits: 50, priceMonthly: 0 },
+  starter: { id: 'starter', name: 'Starter', credits: 500, priceMonthly: 19 },
+  professional: { id: 'professional', name: 'Professional', credits: 2000, priceMonthly: 49 },
+  business: { id: 'business', name: 'Business', credits: 10000, priceMonthly: 149 },
+};
+function loadJSON(key, fallback) {
+  try { const r = localStorage.getItem(key); return r ? JSON.parse(r) : fallback; } catch { return fallback; }
+}
+function saveJSON(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function uid() { return 'p_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function seedIfEmpty() {
+  let billing = loadJSON(BILLING_KEY, null);
+  if (!billing) {
+    billing = { planId: 'free', creditsRemaining: 50, creditsUsed: 0, history: [] };
+    saveJSON(BILLING_KEY, billing);
+  }
+  if (!loadJSON(PROJECTS_KEY, null)) saveJSON(PROJECTS_KEY, []);
+}
+function renderCredits() {
+  const b = loadJSON(BILLING_KEY, { planId: 'free', creditsRemaining: 50, creditsUsed: 0, history: [] });
+  const plan = CREDIT_PLANS[b.planId] || CREDIT_PLANS.free;
+  document.getElementById('credits-remaining').textContent = b.creditsRemaining ?? 0;
+  document.getElementById('credits-used').textContent = b.creditsUsed ?? 0;
+  document.getElementById('plan-name').textContent = plan.name;
+  const hist = Array.isArray(b.history) ? b.history : [];
+  document.getElementById('history-list').innerHTML = hist.slice(0, 20).map(h =>
+    `<li class="px-5 py-2.5 flex justify-between text-sm"><span>${escapeHtml(h.action || 'action')}</span><span class="text-slate-400">-${h.credits || 0} · ${h.at ? new Date(h.at).toLocaleString() : ''}</span></li>`
+  ).join('') || '<li class="px-5 py-6 text-center text-slate-400 text-sm">No credit usage yet</li>';
+}
+function renderProjects() {
+  const projects = loadJSON(PROJECTS_KEY, []);
+  const el = document.getElementById('projects-list');
+  if (!projects.length) {
+    el.innerHTML = '<div class="px-5 py-10 text-center text-slate-400 text-sm">No projects yet. Create your first one.</div>';
+    return;
+  }
+  el.innerHTML = projects.slice().reverse().map(p => `
+    <a href="project.html?id=${encodeURIComponent(p.id)}" class="block px-5 py-4 hover:bg-slate-50 transition-colors">
+      <div class="flex items-center justify-between gap-3">
+        <div>
+          <p class="font-medium text-slate-900">${escapeHtml(p.name || 'Untitled')}</p>
+          <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(p.businessName || '')} · ${escapeHtml(p.status || 'draft')}</p>
+        </div>
+        <span class="text-xs text-slate-400">${p.updatedAt ? new Date(p.updatedAt).toLocaleDateString() : ''}</span>
+      </div>
+    </a>`).join('');
+}
+function openModal(id) {
+  const m = document.getElementById(id);
+  m.classList.remove('hidden');
+  m.classList.add('flex');
+}
+function closeModal(id) {
+  const m = document.getElementById(id);
+  m.classList.add('hidden');
+  m.classList.remove('flex');
+}
+document.getElementById('btn-new-project').addEventListener('click', () => openModal('modal-create'));
+document.getElementById('btn-cancel-create').addEventListener('click', () => closeModal('modal-create'));
+document.getElementById('form-create').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const project = {
+    id: uid(),
+    name: String(fd.get('name') || '').trim(),
+    businessName: String(fd.get('businessName') || '').trim(),
+    idea: String(fd.get('idea') || '').trim(),
+    language: String(fd.get('language') || 'en'),
+    status: 'draft',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    progress: { idea: true },
+  };
+  const projects = loadJSON(PROJECTS_KEY, []);
+  projects.push(project);
+  saveJSON(PROJECTS_KEY, projects);
+  closeModal('modal-create');
+  window.location.href = 'project.html?id=' + encodeURIComponent(project.id);
+});
+document.getElementById('btn-plans').addEventListener('click', () => {
+  const b = loadJSON(BILLING_KEY, { planId: 'free' });
+  document.getElementById('plans-grid').innerHTML = Object.values(CREDIT_PLANS).map(pl => {
+    const active = b.planId === pl.id;
+    return `<button type="button" data-plan="${pl.id}" class="text-left rounded-xl border p-4 ${active ? 'border-brand-400 ring-2 ring-brand-100' : 'border-slate-200 hover:border-brand-200'}">
+      <div class="flex justify-between"><span class="font-semibold">${escapeHtml(pl.name)}</span>${active ? '<span class="text-xs text-brand-600 font-semibold">Current</span>' : ''}</div>
+      <p class="text-2xl font-bold mt-1">${pl.priceMonthly ? '$' + pl.priceMonthly : 'Free'}<span class="text-xs font-medium text-slate-400">${pl.priceMonthly ? '/mo' : ''}</span></p>
+      <p class="text-xs text-slate-500 mt-2">${pl.credits.toLocaleString()} credits / period</p>
+    </button>`;
+  }).join('');
+  openModal('modal-plans');
+});
+document.getElementById('btn-close-plans').addEventListener('click', () => closeModal('modal-plans'));
+document.getElementById('plans-grid').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-plan]');
+  if (!btn) return;
+  const planId = btn.getAttribute('data-plan');
+  const plan = CREDIT_PLANS[planId];
+  if (!plan) return;
+  const b = loadJSON(BILLING_KEY, { planId: 'free', creditsRemaining: 50, creditsUsed: 0, history: [] });
+  b.planId = planId;
+  b.creditsRemaining = plan.credits;
+  saveJSON(BILLING_KEY, b);
+  closeModal('modal-plans');
+  renderCredits();
+});
+seedIfEmpty();
+renderProjects();
+renderCredits();
+</script>
+</body>
+</html>
