@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Workspace — AI Solution Builder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa',
+              500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a',
+            }
+          },
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+        }
+      }
+    };
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; }
+    .sidebar-link.active { background: linear-gradient(135deg, rgba(37,99,235,.1), rgba(124,58,237,.08)); color: #2563eb; font-weight: 600; }
+    .section-panel { display: none; }
+    .section-panel.active { display: block; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+<div class="flex h-screen overflow-hidden">
+  <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200 transform -translate-x-full lg:translate-x-0 transition-transform">
+    <div class="h-16 flex items-center gap-2 px-4 border-b border-slate-100">
+      <a href="dashboard.html" class="text-sm font-bold text-slate-900">← Dashboard</a>
+    </div>
+    <nav class="p-3 space-y-0.5 text-sm" id="nav-sections">
+      <button data-section="overview" class="sidebar-link active w-full text-left px-3 py-2 rounded-lg">Overview</button>
+      <button data-section="input" class="sidebar-link w-full text-left px-3 py-2 rounded-lg text-slate-600">Input</button>
+      <button data-section="consultant" class="sidebar-link w-full text-left px-3 py-2 rounded-lg text-slate-600">AI Consultant</button>
+      <button data-section="requirements" class="sidebar-link w-full text-left px-3 py-2 rounded-lg text-slate-600">Requirements</button>
+      <button data-section="blueprint" class="sidebar-link w-full text-left px-3 py-2 rounded-lg text-slate-600">Blueprint</button>
+      <button data-section="architecture" class="sidebar-link w-full text-left px-3 py-2 rounded-lg text-slate-600">Architecture</button>
+      <button data-section="uiux" class="sidebar-link w-full text-left px-3 py-2 rounded-lg text-slate-600">UI/UX</button>
+      <button data-section="application" class="sidebar-link w-full text-left px-3 py-2 rounded-lg text-slate-600">Application</button>
+      <button data-section="modify" class="sidebar-link w-full text-left px-3 py-2 rounded-lg text-slate-600">Modify</button>
+      <button data-section="versions" class="sidebar-link w-full text-left px-3 py-2 rounded-lg text-slate-600">Versions</button>
+    </nav>
+  </aside>
+  <div class="flex-1 flex flex-col min-w-0">
+    <header class="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4">
+      <div class="flex items-center gap-3">
+        <button id="open-sidebar" class="lg:hidden p-2 rounded-lg border border-slate-200">Menu</button>
+        <h1 id="project-title" class="text-base font-semibold truncate">Project</h1>
+      </div>
+      <div class="flex items-center gap-3 text-sm">
+        <span id="credits-badge" class="text-slate-500">Credits: —</span>
+        <a href="dashboard.html" class="text-brand-600 font-medium">Dashboard</a>
+      </div>
+    </header>
+    <div class="px-4 py-2 bg-white border-b border-slate-100 overflow-x-auto">
+      <div id="progress-bar" class="flex gap-2 text-xs font-medium text-slate-500 whitespace-nowrap"></div>
+    </div>
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+      <section id="sec-overview" class="section-panel active space-y-4">
+        <h2 class="text-lg font-semibold">Overview</h2>
+        <div id="overview-content" class="bg-white rounded-xl border border-slate-200 p-5 text-sm text-slate-600">Loading…</div>
+      </section>
+      <section id="sec-input" class="section-panel space-y-4">
+        <h2 class="text-lg font-semibold">Input</h2>
+        <textarea id="input-idea" rows="4" class="w-full border border-slate-200 rounded-xl p-3 text-sm" placeholder="Business idea (EN / HI / GU mixed ok)"></textarea>
+        <textarea id="input-requirements" rows="3" class="w-full border border-slate-200 rounded-xl p-3 text-sm" placeholder="Business requirements"></textarea>
+        <textarea id="input-process" rows="3" class="w-full border border-slate-200 rounded-xl p-3 text-sm" placeholder="Existing process"></textarea>
+        <div class="flex flex-wrap gap-2">
+          <label class="inline-flex items-center gap-2 px-3 py-2 border border-slate-200 rounded-lg text-sm cursor-pointer">
+            <input type="file" id="doc-upload" accept=".pdf,.docx,.txt,.md" class="hidden" /> Upload document
+          </label>
+          <input type="url" id="input-url" placeholder="URL (optional)" class="border border-slate-200 rounded-lg px-3 py-2 text-sm flex-1 min-w-[160px]" />
+        </div>
+        <div id="doc-status" class="text-xs text-slate-500"></div>
+        <button id="btn-save-input" class="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg">Save input</button>
+      </section>
+      <section id="sec-consultant" class="section-panel space-y-4">
+        <h2 class="text-lg font-semibold">AI Consultant</h2>
+        <p class="text-sm text-slate-500">Runs heuristic analysis (multilingual). Costs credits.</p>
+        <button id="btn-run-consultant" class="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg">Run AI Consultant</button>
+        <div id="consultant-output" class="space-y-4"></div>
+      </section>
+      <section id="sec-requirements" class="section-panel space-y-4">
+        <h2 class="text-lg font-semibold">Requirements approval</h2>
+        <div id="requirements-editor" class="bg-white rounded-xl border border-slate-200 p-5 text-sm">Approve after consultant run.</div>
+        <button id="btn-approve-reqs" class="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg">Approve Requirements</button>
+      </section>
+      <section id="sec-blueprint" class="section-panel space-y-4">
+        <h2 class="text-lg font-semibold">Blueprint</h2>
+        <div id="blueprint-content" class="bg-white rounded-xl border border-slate-200 p-5 text-sm space-y-3"></div>
+      </section>
+      <section id="sec-architecture" class="section-panel space-y-4">
+        <h2 class="text-lg font-semibold">Architecture</h2>
+        <div id="arch-diagrams" class="bg-white rounded-xl border border-slate-200 p-5 space-y-6"></div>
+      </section>
+      <section id="sec-uiux" class="section-panel space-y-4">
+        <h2 class="text-lg font-semibold">UI / UX</h2>
+        <div id="uiux-content" class="bg-white rounded-xl border border-slate-200 p-5 text-sm"></div>
+      </section>
+      <section id="sec-application" class="section-panel space-y-4">
+        <h2 class="text-lg font-semibold">Application</h2>
+        <p class="text-sm text-slate-500">Generates a runnable Node app under <code>generated-app/</code>. Costs credits.</p>
+        <button id="btn-generate-app" class="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg">Generate Application</button>
+        <div id="app-status" class="text-sm text-slate-600"></div>
+      </section>
+      <section id="sec-modify" class="section-panel space-y-4">
+        <h2 class="text-lg font-semibold">Modify my application</h2>
+        <textarea id="modify-request" rows="3" class="w-full border border-slate-200 rounded-xl p-3 text-sm" placeholder="e.g. Add employee attendance"></textarea>
+        <button id="btn-analyze-modify" class="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg">Analyze change</button>
+        <div id="modify-plan" class="space-y-3"></div>
+        <button id="btn-apply-modify" class="hidden px-4 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg">Approve & apply</button>
+      </section>
+      <section id="sec-versions" class="section-panel space-y-4">
+        <h2 class="text-lg font-semibold">Versions</h2>
+        <div id="versions-list" class="bg-white rounded-xl border border-slate-200 divide-y divide-slate-100"></div>
+      </section>
+    </main>
+  </div>
+</div>
+<div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/40 z-30 hidden lg:hidden"></div>
+<script>
+const PROJECTS_KEY = 'asb_projects';
+const BILLING_KEY = 'asb_billing';
+const CREDIT_COSTS = { consultant: 5, document: 3, generate: 25, modify: 15 };
+const PROGRESS_STEPS = ['Idea', 'Requirements', 'Blueprint', 'Build', 'Test', 'Deploy', 'Live'];
+
+function qs(name) {
+  return new URLSearchParams(location.search).get(name);
+}
+function loadJSON(key, fallback) {
+  try { const r = localStorage.getItem(key); return r ? JSON.parse(r) : fallback; } catch { return fallback; }
+}
+function saveJSON(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+function escapeHtml(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&','<':'<','>':'>','"':'"',"'":'&#39;'}[c]));
+}
+function getProject() {
+  const id = qs('id');
+  const list = loadJSON(PROJECTS_KEY, []);
+  return list.find(p => p.id === id) || null;
+}
+function saveProject(project) {
+  const list = loadJSON(PROJECTS_KEY, []);
+  const i = list.findIndex(p => p.id === project.id);
+  project.updatedAt = new Date().toISOString();
+  if (i >= 0) list[i] = project; else list.push(project);
+  saveJSON(PROJECTS_KEY, list);
+}
+function spendCredits(action, projectName) {
+  const cost = CREDIT_COSTS[action] || 1;
+  const b = loadJSON(BILLING_KEY, { planId: 'free', creditsRemaining: 50, creditsUsed: 0, history: [] });
+  if ((b.creditsRemaining || 0) < cost) {
+    alert('Not enough credits (' + cost + ' needed). Change plan on the dashboard.');
+    return false;
+  }
+  b.creditsRemaining -= cost;
+  b.creditsUsed = (b.creditsUsed || 0) + cost;
+  b.history = b.history || [];
+  b.history.unshift({ action, projectName, credits: cost, at: new Date().toISOString() });
+  saveJSON(BILLING_KEY, b);
+  updateCreditsBadge();
+  return true;
+}
+function updateCreditsBadge() {
+  const b = loadJSON(BILLING_KEY, { creditsRemaining: 50 });
+  document.getElementById('credits-badge').textContent = 'Credits: ' + (b.creditsRemaining ?? 0);
+}
+function normalizeMultilingual(text) {
+  // Simple HI/GU romanized + script hints → English intent tokens
+  let t = String(text || '').toLowerCase();
+  const map = {
+    'mare': 'i need', 'joiye': 'want', 'mate': 'for', 'system': 'system',
+    'candidate': 'candidate', 'management': 'management', 'hr': 'hr',
+    'consultancy': 'consultancy', 'attendance': 'attendance', 'employee': 'employee',
+  };
+  Object.keys(map).forEach(k => { t = t.replace(new RegExp('\\b' + k + '\\b', 'gi'), map[k]); });
+  return t;
+}
+function runConsultant(project) {
+  const raw = [project.idea, project.requirements, project.process, project.docText].filter(Boolean).join('\n');
+  const text = normalizeMultilingual(raw);
+  const understanding = 'Business appears related to: ' + (text.includes('hr') || text.includes('candidate') ? 'HR / talent' : text.includes('attendance') ? 'workforce attendance' : 'general operations') + '.';
+  const explicit = [];
+  if (text.includes('candidate') || text.includes('management')) explicit.push({ text: 'Candidate / record management', source: 'user' });
+  if (text.includes('attendance')) explicit.push({ text: 'Employee attendance tracking', source: 'user' });
+  if (text.includes('auth') || text.includes('login')) explicit.push({ text: 'User authentication', source: 'user' });
+  if (!explicit.length) explicit.push({ text: 'Core CRUD for primary business records', source: 'inferred' });
+  const missing = [
+    { text: 'User roles (admin vs staff)', why: 'Access control not specified' },
+    { text: 'Reporting / export', why: 'Common need for ops tools' },
+  ];
+  const recommendations = [
+    { text: 'Add simple status workflow (open → done)', why: 'Improves tracking', confidence: 0.8 },
+    { text: 'Ownership rules so users only edit own records', why: 'Security baseline', confidence: 0.85 },
+  ];
+  const questions = ['Who are the primary users?', 'Is multi-tenant needed?', 'Any compliance requirements?'];
+  return { understanding, explicit, missing, recommendations, questions, languageHints: /[\u0900-\u097F]/.test(raw) ? ['Hindi/Devanagari detected'] : [] };
+}
+function showSection(name) {
+  document.querySelectorAll('.section-panel').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+  const sec = document.getElementById('sec-' + name);
+  if (sec) sec.classList.add('active');
+  const btn = document.querySelector('[data-section="' + name + '"]');
+  if (btn) btn.classList.add('active');
+}
+function renderProgress(project) {
+  const p = project.progress || {};
+  document.getElementById('progress-bar').innerHTML = PROGRESS_STEPS.map((s, i) => {
+    const done = (s === 'Idea' && p.idea) || (s === 'Requirements' && p.requirements) || (s === 'Blueprint' && p.blueprint) || (s === 'Build' && p.build);
+    return '<span class="px-2 py-1 rounded ' + (done ? 'bg-brand-50 text-brand-700' : 'bg-slate-100') + '">' + s + '</span>' + (i < PROGRESS_STEPS.length - 1 ? '<span class="text-slate-300">→</span>' : '');
+  }).join('');
+}
+function renderOverview(project) {
+  document.getElementById('overview-content').innerHTML = `
+    <p><strong>Name:</strong> ${escapeHtml(project.name)}</p>
+    <p class="mt-2"><strong>Business:</strong> ${escapeHtml(project.businessName || '—')}</p>
+    <p class="mt-2"><strong>Idea:</strong> ${escapeHtml(project.idea || '—')}</p>
+    <p class="mt-2"><strong>Status:</strong> ${escapeHtml(project.status || 'draft')}</p>
+    <p class="mt-2 text-xs text-slate-400">Language: ${escapeHtml(project.language || 'en')}</p>`;
+}
+function renderVersions(project) {
+  const versions = project.versions || [];
+  document.getElementById('versions-list').innerHTML = versions.length ? versions.map((v, i) => `
+    <div class="px-4 py-3 flex items-center justify-between gap-3 text-sm">
+      <div><span class="font-semibold">v${escapeHtml(v.version || (1 + '.' + i))}</span>
+      <span class="text-slate-500 ml-2">${escapeHtml(v.changes || '')}</span>
+      <p class="text-xs text-slate-400 mt-0.5">${v.at ? new Date(v.at).toLocaleString() : ''} · ${escapeHtml(v.status || 'ok')}</p></div>
+      <div class="flex gap-2">
+        <button data-view="${i}" class="text-brand-600 text-xs font-medium">View</button>
+        <button data-restore="${i}" class="text-slate-600 text-xs font-medium">Restore</button>
+      </div>
+    </div>`).join('') : '<div class="px-4 py-8 text-center text-slate-400 text-sm">No versions yet. Generate or modify the app to create one.</div>';
+}
+
+let project = getProject();
+if (!project) {
+  document.body.innerHTML = '<div class="p-10 text-center"><p>Project not found.</p><a class="text-brand-600" href="dashboard.html">Back to dashboard</a></div>';
+} else {
+  document.getElementById('project-title').textContent = project.name || 'Project';
+  document.getElementById('input-idea').value = project.idea || '';
+  document.getElementById('input-requirements').value = project.requirements || '';
+  document.getElementById('input-process').value = project.process || '';
+  updateCreditsBadge();
+  renderProgress(project);
+  renderOverview(project);
+  renderVersions(project);
+
+  document.getElementById('nav-sections').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-section]');
+    if (btn) showSection(btn.getAttribute('data-section'));
+  });
+
+  document.getElementById('btn-save-input').addEventListener('click', () => {
+    project.idea = document.getElementById('input-idea').value.trim();
+    project.requirements = document.getElementById('input-requirements').value.trim();
+    project.process = document.getElementById('input-process').value.trim();
+    project.progress = project.progress || {};
+    project.progress.idea = true;
+    saveProject(project);
+    renderOverview(project);
+    renderProgress(project);
+    alert('Input saved');
+  });
+
+  document.getElementById('doc-upload').addEventListener('change', async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!spendCredits('document', project.name)) return;
+    const status = document.getElementById('doc-status');
+    status.textContent = 'Extracting ' + file.name + '…';
+    try {
+      let text = '';
+      if (file.name.endsWith('.txt') || file.name.endsWith('.md')) {
+        text = await file.text();
+      } else if (file.name.endsWith('.pdf') && window.pdfjsLib) {
+        const buf = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+        for (let i = 1; i <= Math.min(pdf.numPages, 20); i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          text += content.items.map(it => it.str).join(' ') + '\n';
+        }
+      } else if (file.name.endsWith('.docx') && window.mammoth) {
+        const result = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+        text = result.value || '';
+      } else {
+        text = await file.text();
+      }
+      project.docText = text.slice(0, 50000);
+      project.docName = file.name;
+      saveProject(project);
+      status.textContent = 'Extracted ' + text.length + ' chars from ' + file.name;
+    } catch (err) {
+      status.textContent = 'Extract failed: ' + err.message;
+    }
+  });
+
+  document.getElementById('btn-run-consultant').addEventListener('click', () => {
+    if (!spendCredits('consultant', project.name)) return;
+    const result = runConsultant(project);
+    project.consultant = result;
+    saveProject(project);
+    const out = document.getElementById('consultant-output');
+    out.innerHTML = `
+      <div class="bg-white rounded-xl border p-4"><h3 class="font-semibold text-sm">Business understanding</h3><p class="text-sm mt-1">${escapeHtml(result.understanding)}</p></div>
+      <div class="bg-white rounded-xl border p-4"><h3 class="font-semibold text-sm">Explicit requirements</h3><ul class="list-disc pl-5 text-sm mt-1">${result.explicit.map(r => '<li>' + escapeHtml(r.text) + ' <span class="text-xs text-slate-400">(' + escapeHtml(r.source) + ')</span></li>').join('')}</ul></div>
+      <div class="bg-white rounded-xl border p-4"><h3 class="font-semibold text-sm">Missing / suggested</h3><ul class="list-disc pl-5 text-sm mt-1">${result.missing.map(r => '<li>' + escapeHtml(r.text) + ' — ' + escapeHtml(r.why) + '</li>').join('')}</ul></div>
+      <div class="bg-white rounded-xl border p-4"><h3 class="font-semibold text-sm">Recommendations</h3>${result.recommendations.map(r => '<div class="mt-2 text-sm"><strong>' + escapeHtml(r.text) + '</strong> <span class="text-xs text-slate-400">conf ' + r.confidence + '</span><p class="text-slate-500">' + escapeHtml(r.why) + '</p></div>').join('')}</div>
+      <div class="bg-white rounded-xl border p-4"><h3 class="font-semibold text-sm">Questions</h3><ul class="list-disc pl-5 text-sm mt-1">${result.questions.map(q => '<li>' + escapeHtml(q) + '</li>').join('')}</ul></div>`;
+    document.getElementById('requirements-editor').innerHTML = result.explicit.map(r => '<label class="flex gap-2 items-start mb-2"><input type="checkbox" checked /> <span>' + escapeHtml(r.text) + '</span></label>').join('') +
+      result.missing.map(r => '<label class="flex gap-2 items-start mb-2"><input type="checkbox" /> <span>' + escapeHtml(r.text) + ' <em class="text-slate-400">(suggested)</em></span></label>').join('');
+  });
+
+  document.getElementById('btn-approve-reqs').addEventListener('click', () => {
+    project.status = 'Requirements Approved';
+    project.progress = project.progress || {};
+    project.progress.requirements = true;
+    project.blueprint = {
+      overview: project.idea || 'Product based on approved requirements',
+      users: ['Admin', 'Staff'],
+      features: (project.consultant && project.consultant.explicit || []).map(r => r.text),
+      modules: ['Auth', 'Records'],
+    };
+    project.progress.blueprint = true;
+    saveProject(project);
+    renderProgress(project);
+    document.getElementById('blueprint-content').innerHTML = `
+      <p><strong>Overview:</strong> ${escapeHtml(project.blueprint.overview)}</p>
+      <p class="mt-2"><strong>Users:</strong> ${project.blueprint.users.map(escapeHtml).join(', ')}</p>
+      <p class="mt-2"><strong>Features:</strong></p><ul class="list-disc pl-5">${project.blueprint.features.map(f => '<li>' + escapeHtml(f) + '</li>').join('')}</ul>
+      <p class="mt-2"><strong>Modules:</strong> ${project.blueprint.modules.map(escapeHtml).join(', ')}</p>`;
+    if (window.mermaid) {
+      document.getElementById('arch-diagrams').innerHTML = `
+        <div><h3 class="font-semibold text-sm mb-2">System architecture</h3><pre class="mermaid">flowchart LR\n  Client[Browser] --> API[Node API]\n  API --> Auth[Auth]\n  API --> DB[(JSON Store)]\n  API --> Mod[Modules]</pre></div>
+        <div><h3 class="font-semibold text-sm mb-2">User flow</h3><pre class="mermaid">sequenceDiagram\n  User->>App: Login\n  App->>DB: Verify\n  User->>App: CRUD records</pre></div>`;
+      mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
+      mermaid.run({ nodes: document.querySelectorAll('#arch-diagrams .mermaid') });
+    }
+    document.getElementById('uiux-content').innerHTML = '<p>Sitemap: Login → Dashboard → Records → (Attendance if enabled)</p><p class="mt-2">Wireframe-style: list + modal create/edit, consistent sidebar.</p>';
+    alert('Requirements approved. Blueprint ready.');
+  });
+
+  document.getElementById('btn-generate-app').addEventListener('click', () => {
+    if (!spendCredits('generate', project.name)) return;
+    project.progress = project.progress || {};
+    project.progress.build = true;
+    project.status = 'App generated';
+    project.versions = project.versions || [];
+    project.versions.unshift({ version: '1.0', changes: 'Initial application generate', at: new Date().toISOString(), status: 'ok' });
+    saveProject(project);
+    renderProgress(project);
+    renderVersions(project);
+    document.getElementById('app-status').innerHTML = 'Application package is under <code>generated-app/</code>. Run <code>node server.js</code> (port 3847). Demo: admin@example.com / admin123';
+  });
+
+  let pendingModify = null;
+  document.getElementById('btn-analyze-modify').addEventListener('click', () => {
+    const req = document.getElementById('modify-request').value.trim();
+    if (!req) return alert('Describe the change');
+    const plan = {
+      request: req,
+      affected: req.toLowerCase().includes('attendance') ? ['modules/attendance.js', 'public/attendance.html', 'enabled.json'] : ['routes/records.js'],
+      impact: 'Incremental module enable; no full regenerate',
+      tests: 'Smoke tests via scripts/run-tests.js',
+    };
+    pendingModify = plan;
+    document.getElementById('modify-plan').innerHTML = `
+      <div class="bg-white border rounded-xl p-4 text-sm space-y-2">
+        <p><strong>Request:</strong> ${escapeHtml(plan.request)}</p>
+        <p><strong>Affected:</strong> ${plan.affected.map(escapeHtml).join(', ')}</p>
+        <p><strong>Impact:</strong> ${escapeHtml(plan.impact)}</p>
+        <p><strong>Tests:</strong> ${escapeHtml(plan.tests)}</p>
+      </div>`;
+    document.getElementById('btn-apply-modify').classList.remove('hidden');
+  });
+  document.getElementById('btn-apply-modify').addEventListener('click', () => {
+    if (!pendingModify) return;
+    if (!spendCredits('modify', project.name)) return;
+    const ver = project.versions && project.versions[0] ? project.versions[0].version : '1.0';
+    const parts = String(ver).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
+    while (parts.length < 2) parts.push(0);
+    parts[1] += 1;
+    const next = parts[0] + '.' + parts[1];
+    project.versions = project.versions || [];
+    project.versions.unshift({ version: next, changes: pendingModify.request, at: new Date().toISOString(), status: 'ok' });
+    saveProject(project);
+    renderVersions(project);
+    document.getElementById('modify-plan').innerHTML += '<p class="text-sm text-emerald-600 mt-2">Applied as v' + next + '. Run <code>node scripts/apply-change.js attendance</code> in generated-app if enabling attendance.</p>';
+    document.getElementById('btn-apply-modify').classList.add('hidden');
+    pendingModify = null;
+  });
+
+  document.getElementById('versions-list').addEventListener('click', (e) => {
+    const view = e.target.getAttribute('data-view');
+    const restore = e.target.getAttribute('data-restore');
+    if (view != null) {
+      const v = (project.versions || [])[Number(view)];
+      if (v) alert('Version v' + v.version + '\n' + (v.changes || '') + '\n' + (v.at || ''));
+    }
+    if (restore != null) {
+      if (!confirm('Mark this version as current restore point?')) return;
+      const v = (project.versions || [])[Number(restore)];
+      if (v) {
+        project.versions.unshift({ version: v.version + '-restored', changes: 'Restored from v' + v.version, at: new Date().toISOString(), status: 'restored' });
+        saveProject(project);
+        renderVersions(project);
+      }
+    }
+  });
+
+  const openBtn = document.getElementById('open-sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  const sidebar = document.getElementById('sidebar');
+  if (openBtn) openBtn.addEventListener('click', () => { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); });
+  if (overlay) overlay.addEventListener('click', () => { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); });
+}
+</script>
+</body>
+</html>
