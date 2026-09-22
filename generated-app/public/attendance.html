@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendance — Generated App</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">Generated App</div>
+      <a href="/">Records</a>
+      <a href="/attendance.html" class="active">Attendance</a>
+      <a href="#" id="logout-link">Logout</a>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <h2>Employee Attendance</h2>
+        <div class="toolbar">
+          <span class="muted small" id="user-label"></span>
+          <button class="btn btn-primary" id="btn-new">Mark Attendance</button>
+        </div>
+      </header>
+      <div class="content">
+        <div class="panel">
+          <div class="panel-header">
+            <strong>Attendance log</strong>
+            <div class="toolbar">
+              <input type="search" id="filter" placeholder="Filter by employee…" />
+              <input type="date" id="date-filter" />
+            </div>
+          </div>
+          <div class="panel-body">
+            <table>
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Date</th>
+                  <th>Check-in</th>
+                  <th>Check-out</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modal" hidden>
+    <div class="modal">
+      <h3 id="modal-title">Mark attendance</h3>
+      <div id="modal-error" class="error" hidden></div>
+      <form id="form">
+        <input type="hidden" id="record-id" />
+        <label>Employee name
+          <input type="text" id="employee_name" required />
+        </label>
+        <label>Date
+          <input type="date" id="date" required />
+        </label>
+        <label>Check-in
+          <input type="time" id="check_in" />
+        </label>
+        <label>Check-out
+          <input type="time" id="check_out" />
+        </label>
+        <label>Status
+          <select id="status">
+            <option value="present">Present</option>
+            <option value="absent">Absent</option>
+            <option value="late">Late</option>
+            <option value="half-day">Half-day</option>
+          </select>
+        </label>
+        <label>Notes
+          <textarea id="notes" rows="2"></textarea>
+        </label>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="btn-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    async function api(method, path, body) {
+      const opts = { method, headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin' };
+      if (body) opts.body = JSON.stringify(body);
+      const res = await fetch(path, opts);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || res.statusText);
+      return data;
+    }
+
+    let rows = [];
+
+    function esc(s) {
+      return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function render() {
+      const q = (document.getElementById('filter').value || '').toLowerCase();
+      const d = document.getElementById('date-filter').value;
+      let list = rows.slice();
+      if (q) list = list.filter(r => (r.employee_name || '').toLowerCase().includes(q));
+      if (d) list = list.filter(r => r.date === d);
+      document.getElementById('rows').innerHTML = list.map(r => `
+        <tr>
+          <td><strong>${esc(r.employee_name)}</strong></td>
+          <td>${esc(r.date)}</td>
+          <td>${esc(r.check_in)}</td>
+          <td>${esc(r.check_out)}</td>
+          <td><span class="badge badge-open">${esc(r.status)}</span></td>
+          <td>
+            <button class="btn btn-ghost" data-edit="${r.id}">Edit</button>
+            <button class="btn btn-danger" data-del="${r.id}">Delete</button>
+          </td>
+        </tr>`).join('') || '<tr><td colspan="6" class="muted center">No attendance records</td></tr>';
+    }
+
+    async function load() {
+      try {
+        const me = await api('GET', '/api/auth/me');
+        document.getElementById('user-label').textContent = me.name + ' (' + me.role + ')';
+        rows = await api('GET', '/api/attendance');
+        render();
+      } catch (e) {
+        window.location.href = '/login.html';
+      }
+    }
+
+    document.getElementById('filter').addEventListener('input', render);
+    document.getElementById('date-filter').addEventListener('change', render);
+
+    document.getElementById('btn-new').addEventListener('click', () => {
+      document.getElementById('modal-title').textContent = 'Mark attendance';
+      document.getElementById('record-id').value = '';
+      document.getElementById('employee_name').value = '';
+      document.getElementById('date').value = new Date().toISOString().slice(0, 10);
+      document.getElementById('check_in').value = '';
+      document.getElementById('check_out').value = '';
+      document.getElementById('status').value = 'present';
+      document.getElementById('notes').value = '';
+      document.getElementById('modal-error').hidden = true;
+      document.getElementById('modal').hidden = false;
+    });
+
+    document.getElementById('btn-cancel').addEventListener('click', () => {
+      document.getElementById('modal').hidden = true;
+    });
+
+    document.getElementById('form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('record-id').value;
+      const body = {
+        employee_name: document.getElementById('employee_name').value,
+        date: document.getElementById('date').value,
+        check_in: document.getElementById('check_in').value,
+        check_out: document.getElementById('check_out').value,
+        status: document.getElementById('status').value,
+        notes: document.getElementById('notes').value,
+      };
+      try {
+        if (id) await api('PUT', '/api/attendance/' + id, body);
+        else await api('POST', '/api/attendance', body);
+        document.getElementById('modal').hidden = true;
+        await load();
+      } catch (err) {
+        const el = document.getElementById('modal-error');
+        el.textContent = err.message;
+        el.hidden = false;
+      }
+    });
+
+    document.getElementById('rows').addEventListener('click', async (e) => {
+      const edit = e.target.getAttribute('data-edit');
+      const del = e.target.getAttribute('data-del');
+      if (edit) {
+        const r = rows.find(x => String(x.id) === edit);
+        if (!r) return;
+        document.getElementById('modal-title').textContent = 'Edit attendance';
+        document.getElementById('record-id').value = r.id;
+        document.getElementById('employee_name').value = r.employee_name || '';
+        document.getElementById('date').value = r.date || '';
+        document.getElementById('check_in').value = r.check_in || '';
+        document.getElementById('check_out').value = r.check_out || '';
+        document.getElementById('status').value = r.status || 'present';
+        document.getElementById('notes').value = r.notes || '';
+        document.getElementById('modal-error').hidden = true;
+        document.getElementById('modal').hidden = false;
+      }
+      if (del && confirm('Delete this attendance record?')) {
+        try {
+          await api('DELETE', '/api/attendance/' + del);
+          await load();
+        } catch (err) { alert(err.message); }
+      }
+    });
+
+    document.getElementById('logout-link').addEventListener('click', async (e) => {
+      e.preventDefault();
+      await api('POST', '/api/auth/logout');
+      window.location.href = '/login.html';
+    });
+
+    load();
+  </script>
+</body>
+</html>
