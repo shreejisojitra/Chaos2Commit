@@ -1,0 +1,27 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@example.com",
+      "password_hash": "026e054307d618995c5ee520dddfe12e:180a56e2b99a9c196d358d3a3fb9056c5be79c026b08b1876cc447e5ef0848f7e80c7d9ec3323a7c288285431063ca103663697687f0731e7d0f22f1bf6820a7",
+      "name": "Admin User",
+      "role": "admin",
+      "created_at": "2026-09-22T20:31:12.312Z"
+    },
+    {
+      "id": 2,
+      "email": "user@example.com",
+      "password_hash": "d6cedcdd7c9016d53dec39288ce518e0:8b21adf2362fe2711600a85bdb6d0d075e9d4c56066430b4ad2ff13548a8806ccc0746d1d4e0fe39b8d554c436c82e023b3ede6f49e9f8328944f37c9fb9bb4c",
+      "name": "Standard User",
+      "role": "user",
+      "created_at": "2026-09-22T20:31:12.359Z"
+    }
+  ],
+  "records": [],
+  "seq": {
+    "users": 3,
+    "records": 1,
+    "attendance": 1
+  },
+  "attendance": []
+}
