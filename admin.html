@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — AI Solution Builder</title>
+  <meta name="description" content="Admin dashboard for AI Solution Builder — users, projects, credits, deployments." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50:  '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.06)',
+            'card': '0 10px 40px -10px rgba(37, 99, 235, 0.12)',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .sidebar-link.active {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(124, 58, 237, 0.08));
+      color: #2563eb;
+      font-weight: 600;
+    }
+    .sidebar-link:hover:not(.active) { background-color: #f8fafc; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+  <div class="flex h-screen overflow-hidden">
+    <aside class="hidden lg:flex lg:flex-col w-64 bg-white border-r border-slate-200 flex-shrink-0">
+      <div class="h-16 flex items-center gap-2.5 px-5 border-b border-slate-100">
+        <a href="index.html" class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-600 to-violet-600 flex items-center justify-center shadow-sm">
+            <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          </div>
+          <span class="text-sm font-bold text-slate-900">AI Solution Builder</span>
+        </a>
+      </div>
+      <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
+        <a href="admin.html" class="sidebar-link active flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm">Admin</a>
+        <a href="dashboard.html" class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600">Dashboard</a>
+        <a href="index.html" class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600">Landing</a>
+      </nav>
+    </aside>
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 flex-shrink-0">
+        <h1 class="text-lg font-semibold text-slate-900">Admin Dashboard</h1>
+        <a href="dashboard.html" class="text-sm font-medium text-brand-600 hover:text-brand-700">Back to app</a>
+      </header>
+      <main class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="kpi-cards"></div>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <section class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
+            <div class="px-5 py-4 border-b border-slate-100"><h2 class="text-sm font-semibold text-slate-900">Users</h2></div>
+            <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-xs text-slate-500 uppercase"><tr><th class="px-4 py-2 text-left">Name</th><th class="px-4 py-2 text-left">Email</th><th class="px-4 py-2 text-left">Role</th></tr></thead><tbody id="users-body"></tbody></table></div>
+          </section>
+          <section class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
+            <div class="px-5 py-4 border-b border-slate-100"><h2 class="text-sm font-semibold text-slate-900">Projects</h2></div>
+            <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-xs text-slate-500 uppercase"><tr><th class="px-4 py-2 text-left">Name</th><th class="px-4 py-2 text-left">Status</th><th class="px-4 py-2 text-left">Updated</th></tr></thead><tbody id="projects-body"></tbody></table></div>
+          </section>
+        </div>
+        <section class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
+          <div class="px-5 py-4 border-b border-slate-100"><h2 class="text-sm font-semibold text-slate-900">AI Generations & Credits history</h2></div>
+          <ul id="history-list" class="divide-y divide-slate-100 max-h-64 overflow-y-auto"></ul>
+        </section>
+        <div class="grid lg:grid-cols-2 gap-6">
+          <section class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5">
+            <h2 class="text-sm font-semibold text-slate-900 mb-4">Deployments</h2>
+            <ul id="deployments-list" class="space-y-2 text-sm"></ul>
+          </section>
+          <section class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5">
+            <h2 class="text-sm font-semibold text-slate-900 mb-4">Errors</h2>
+            <ul id="errors-list" class="space-y-2"></ul>
+          </section>
+        </div>
+        <section class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5">
+          <h2 class="text-sm font-semibold text-slate-900 mb-4">Usage by action</h2>
+          <div id="usage-cards" class="grid grid-cols-2 sm:grid-cols-4 gap-3"></div>
+        </section>
+        <section class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5">
+          <h2 class="text-sm font-semibold text-slate-900 mb-4">Plans</h2>
+          <div id="plans-cards" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script>
+    const CREDIT_PLANS = {
+      free: { id: 'free', name: 'Free', credits: 50, priceMonthly: 0 },
+      starter: { id: 'starter', name: 'Starter', credits: 500, priceMonthly: 19 },
+      professional: { id: 'professional', name: 'Professional', credits: 2000, priceMonthly: 49 },
+      business: { id: 'business', name: 'Business', credits: 10000, priceMonthly: 149 },
+    };
+    function loadJSON(key, fallback) {
+      try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; } catch { return fallback; }
+    }
+    function escapeHtml(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&','<':'<','>':'>','"':'"',"'":'&#39;'}[c]));
+    }
+    function relTime(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      const sec = Math.floor((Date.now() - d.getTime()) / 1000);
+      if (sec < 60) return 'just now';
+      if (sec < 3600) return Math.floor(sec / 60) + 'm ago';
+      if (sec < 86400) return Math.floor(sec / 3600) + 'h ago';
+      return d.toLocaleDateString();
+    }
+    function render() {
+      const projects = loadJSON('asb_projects', []);
+      const billing = loadJSON('asb_billing', { planId: 'free', creditsRemaining: 50, creditsUsed: 0, history: [] });
+      const history = Array.isArray(billing.history) ? billing.history : [];
+      const demoUsers = [
+        { name: 'Demo Admin', email: 'admin@example.com', role: 'admin' },
+        { name: 'Local User', email: 'user@local', role: 'user' },
+      ];
+      const demoDeployments = [
+        { name: 'Generated app', status: 'running', url: 'http://127.0.0.1:3847', at: new Date().toISOString() },
+      ];
+      const demoErrors = [
+        { severity: 'info', message: 'No production errors in local mode', at: new Date().toISOString() },
+      ];
+      document.getElementById('kpi-cards').innerHTML = [
+        { label: 'Users', value: demoUsers.length },
+        { label: 'Projects', value: projects.length },
+        { label: 'Credits left', value: billing.creditsRemaining ?? 0 },
+        { label: 'Credits used', value: billing.creditsUsed ?? 0 },
+      ].map(k => `<div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-4"><p class="text-xs font-medium text-slate-500">${k.label}</p><p class="text-2xl font-bold text-slate-900 mt-1">${k.value}</p></div>`).join('');
+      document.getElementById('users-body').innerHTML = demoUsers.map(u => `<tr class="border-t border-slate-100"><td class="px-4 py-2.5 font-medium">${escapeHtml(u.name)}</td><td class="px-4 py-2.5 text-slate-600">${escapeHtml(u.email)}</td><td class="px-4 py-2.5"><span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-50 text-brand-700">${escapeHtml(u.role)}</span></td></tr>`).join('') || '<tr><td colspan="3" class="px-4 py-6 text-center text-slate-400">No users</td></tr>';
+      document.getElementById('projects-body').innerHTML = projects.map(p => `<tr class="border-t border-slate-100"><td class="px-4 py-2.5 font-medium">${escapeHtml(p.name || p.projectName || 'Untitled')}</td><td class="px-4 py-2.5 text-slate-600">${escapeHtml(p.status || 'draft')}</td><td class="px-4 py-2.5 text-slate-400 text-xs">${relTime(p.updatedAt || p.createdAt)}</td></tr>`).join('') || '<tr><td colspan="3" class="px-4 py-6 text-center text-slate-400">No projects</td></tr>';
+      document.getElementById('history-list').innerHTML = history.slice(0, 30).map(h => `<li class="px-5 py-3 flex justify-between gap-3 text-sm"><span>${escapeHtml(h.action || 'action')} · ${escapeHtml(h.projectName || '')}</span><span class="text-slate-400">-${h.credits || 0} · ${relTime(h.at)}</span></li>`).join('') || '<li class="px-5 py-6 text-center text-slate-400 text-sm">No generation history</li>';
+      document.getElementById('deployments-list').innerHTML = demoDeployments.map(d => `<li class="flex justify-between"><span>${escapeHtml(d.name)} <span class="text-xs text-emerald-600">${escapeHtml(d.status)}</span></span><a class="text-brand-600 text-xs" href="${escapeHtml(d.url)}" target="_blank">Open</a></li>`).join('');
+      document.getElementById('errors-list').innerHTML = demoErrors.map(e => `<li class="text-sm text-slate-600">${escapeHtml(e.message)}</li>`).join('');
+      const usageByAction = {};
+      history.forEach(h => { const key = (h.action || 'other').toLowerCase(); usageByAction[key] = (usageByAction[key] || 0) + (h.credits || 0); });
+      document.getElementById('usage-cards').innerHTML = [
+        { label: 'Consultant', value: usageByAction['consultant'] || 0 },
+        { label: 'Documents', value: usageByAction['document'] || 0 },
+        { label: 'Generate', value: usageByAction['generate app'] || usageByAction['generate_app'] || 0 },
+        { label: 'Modify', value: usageByAction['modify app'] || usageByAction['modify_app'] || 0 },
+      ].map(u => `<div class="rounded-xl border border-slate-100 bg-slate-50/80 p-4 text-center"><p class="text-xs text-slate-500">${u.label}</p><p class="text-xl font-bold mt-1">${u.value}</p></div>`).join('');
+      document.getElementById('plans-cards').innerHTML = Object.values(CREDIT_PLANS).map(pl => {
+        const active = billing.planId === pl.id;
+        return `<div class="rounded-xl border ${active ? 'border-brand-300 ring-2 ring-brand-100' : 'border-slate-200'} p-4"><h3 class="text-sm font-semibold">${escapeHtml(pl.name)}</h3><p class="text-xl font-bold mt-1">${pl.priceMonthly ? '$' + pl.priceMonthly : 'Free'}<span class="text-xs text-slate-400">${pl.priceMonthly ? '/mo' : ''}</span></p><p class="text-xs text-slate-500 mt-2">${pl.credits.toLocaleString()} credits</p></div>`;
+      }).join('');
+    }
+    render();
+  </script>
+</body>
+</html>
