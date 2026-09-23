@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports — Restaurant Order Manager</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">🧾</div>
+      <div>
+        <div class="brand-name">Restaurant Order Manager</div>
+        <div class="brand-biz">SpiceHub Foods Pvt Ltd</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Main</div>
+      <a href="/" class="nav-link">
+      <span class="nav-icon">🏠</span>
+      Dashboard
+    </a>
+      <a href="/orders.html" class="nav-link">
+      <span class="nav-icon">🧾</span>
+      Orders
+    </a>
+      <a href="/menu.html" class="nav-link">
+      <span class="nav-icon">📋</span>
+      Menu
+    </a>
+      <a href="/reports.html" class="nav-link active">
+      <span class="nav-icon">📊</span>
+      Reports
+    </a>
+      <a href="/settings.html" class="nav-link">
+      <span class="nav-icon">⚙️</span>
+      Settings
+    </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="user-name">Loading…</div>
+          <div class="user-role" id="user-role"></div>
+        </div>
+        <button class="logout-btn" id="logout-btn" title="Sign out">⎋</button>
+      </div>
+    </div>
+  </aside>
+  <div class="mob-overlay" id="mob-overlay"></div>
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" id="hamburger">☰</button>
+        <div>
+          <h1>📊 Reports &amp; Analytics</h1>
+          <div class="breadcrumb muted">Restaurant Order Manager › Reports</div>
+        </div>
+      </div>
+    </header>
+    <div class="page-content">
+      <div class="stats-grid" id="rep-stats"></div>
+      <div class="report-grid" style="margin-top:1.5rem">
+        <div class="report-card">
+          <h3>Order Status Breakdown</h3>
+          <div id="status-breakdown">
+            
+            <div class="report-row" style="margin-bottom:.25rem">
+              <span style="display:flex;align-items:center;gap:.5rem">
+                <span class="badge badge-pending">Pending</span>
+              </span>
+              <span style="display:flex;align-items:center;gap:.75rem">
+                <div class="progress-bar" style="width:100px">
+                  <div class="progress-fill" id="prog-pending" style="width:0%;background:#fbbf24"></div>
+                </div>
+                <strong id="rep-pending">0</strong>
+              </span>
+            </div>
+            <div class="report-row" style="margin-bottom:.25rem">
+              <span style="display:flex;align-items:center;gap:.5rem">
+                <span class="badge badge-preparing">Preparing</span>
+              </span>
+              <span style="display:flex;align-items:center;gap:.75rem">
+                <div class="progress-bar" style="width:100px">
+                  <div class="progress-fill" id="prog-preparing" style="width:0%;background:#f59e0b"></div>
+                </div>
+                <strong id="rep-preparing">0</strong>
+              </span>
+            </div>
+            <div class="report-row" style="margin-bottom:.25rem">
+              <span style="display:flex;align-items:center;gap:.5rem">
+                <span class="badge badge-ready">Ready</span>
+              </span>
+              <span style="display:flex;align-items:center;gap:.75rem">
+                <div class="progress-bar" style="width:100px">
+                  <div class="progress-fill" id="prog-ready" style="width:0%;background:#10b981"></div>
+                </div>
+                <strong id="rep-ready">0</strong>
+              </span>
+            </div>
+            <div class="report-row" style="margin-bottom:.25rem">
+              <span style="display:flex;align-items:center;gap:.5rem">
+                <span class="badge badge-served">Served</span>
+              </span>
+              <span style="display:flex;align-items:center;gap:.75rem">
+                <div class="progress-bar" style="width:100px">
+                  <div class="progress-fill" id="prog-served" style="width:0%;background:#2563eb"></div>
+                </div>
+                <strong id="rep-served">0</strong>
+              </span>
+            </div>
+            <div class="report-row" style="margin-bottom:.25rem">
+              <span style="display:flex;align-items:center;gap:.5rem">
+                <span class="badge badge-cancelled">Cancelled</span>
+              </span>
+              <span style="display:flex;align-items:center;gap:.75rem">
+                <div class="progress-bar" style="width:100px">
+                  <div class="progress-fill" id="prog-cancelled" style="width:0%;background:#ef4444"></div>
+                </div>
+                <strong id="rep-cancelled">0</strong>
+              </span>
+            </div>
+            <div class="report-row" style="margin-bottom:.25rem">
+              <span style="display:flex;align-items:center;gap:.5rem">
+                <span class="badge badge-completed">Completed</span>
+              </span>
+              <span style="display:flex;align-items:center;gap:.75rem">
+                <div class="progress-bar" style="width:100px">
+                  <div class="progress-fill" id="prog-completed" style="width:0%;background:#6b7280"></div>
+                </div>
+                <strong id="rep-completed">0</strong>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="report-card">
+          <h3>Recent Activity</h3>
+          <div id="recent-list"><p class="muted small">Loading…</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+async function api(method,url,body){
+  const o={method,headers:{'Content-Type':'application/json'},credentials:'same-origin'};
+  if(body)o.body=JSON.stringify(body);
+  const r=await fetch(url,o);
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(d.error||r.statusText||'Request failed');
+  return d;
+}
+function toast(msg,type='success'){
+  const t=document.createElement('div');
+  t.className='toast';
+  t.style.background=type==='error'?'#ef4444':type==='warning'?'#f59e0b':'#0f172a';
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3000);
+}
+async function loadUser(){
+  try{
+    const me=await api('GET','/api/auth/me');
+    const av=document.getElementById('user-avatar');
+    const nm=document.getElementById('user-name');
+    const rl=document.getElementById('user-role');
+    if(av)av.textContent=(me.name||'?').charAt(0).toUpperCase();
+    if(nm)nm.textContent=me.name||me.email;
+    if(rl)rl.textContent=me.role||'user';
+    return me;
+  }catch(e){window.location.href='/login.html';return null;}
+}
+document.getElementById('logout-btn')?.addEventListener('click',async()=>{
+  await api('POST','/api/auth/logout').catch(()=>{});
+  window.location.href='/login.html';
+});
+// Mobile sidebar
+const sidebar=document.getElementById('sidebar');
+const overlay=document.getElementById('mob-overlay');
+const ham=document.getElementById('hamburger');
+if(ham)ham.addEventListener('click',()=>{sidebar?.classList.toggle('open');overlay?.classList.toggle('show');});
+if(overlay)overlay.addEventListener('click',()=>{sidebar?.classList.remove('open');overlay.classList.remove('show');});
+
+function badgeFor(status) {
+  const id = status ? status.replace(/[^a-zA-Z0-9_-]/g,'_') : 'unknown';
+  return '<span class="badge badge-' + id + '">' + esc(status ? status.replace(/_/g,' ') : '') + '</span>';
+}
+
+async function load() {
+  await loadUser();
+  const records = await api('GET', '/api/records').catch(() => []);
+
+  // Stats grid
+  const statsEl = document.getElementById('rep-stats');
+  statsEl.innerHTML += '<div class="stat-card" style="border-top:3px solid #f97316"><div class="stat-icon" style="background:#f9731618">📋</div><div class="stat-body"><div class="stat-value">' + records.filter(r=>r.status==='today').length + '</div><div class="stat-label">Orders Today</div></div></div>';
+  statsEl.innerHTML += '<div class="stat-card" style="border-top:3px solid #10b981"><div class="stat-icon" style="background:#10b98118">💵</div><div class="stat-body"><div class="stat-value">' + records.filter(r=>r.status==='today').length + '</div><div class="stat-label">Revenue Today (₹)</div></div></div>';
+  statsEl.innerHTML += '<div class="stat-card" style="border-top:3px solid #f59e0b"><div class="stat-icon" style="background:#f59e0b18">⏳</div><div class="stat-body"><div class="stat-value">' + records.filter(r=>r.status==='pending').length + '</div><div class="stat-label">Pending Orders</div></div></div>';
+  statsEl.innerHTML += '<div class="stat-card" style="border-top:3px solid #2563eb"><div class="stat-icon" style="background:#2563eb18">📈</div><div class="stat-body"><div class="stat-value">' + records.length + '</div><div class="stat-label">Avg. Order Value (₹)</div></div></div>';
+
+  // Status breakdown
+  const total = records.length || 1;
+  
+  const cnt_pending = records.filter(r=>r.status==='pending').length;
+  const el_pending = document.getElementById('rep-pending');
+  const prog_pending = document.getElementById('prog-pending');
+  if(el_pending) el_pending.textContent = cnt_pending;
+  if(prog_pending) prog_pending.style.width = Math.round(cnt_pending/total*100) + '%';
+  const cnt_preparing = records.filter(r=>r.status==='preparing').length;
+  const el_preparing = document.getElementById('rep-preparing');
+  const prog_preparing = document.getElementById('prog-preparing');
+  if(el_preparing) el_preparing.textContent = cnt_preparing;
+  if(prog_preparing) prog_preparing.style.width = Math.round(cnt_preparing/total*100) + '%';
+  const cnt_ready = records.filter(r=>r.status==='ready').length;
+  const el_ready = document.getElementById('rep-ready');
+  const prog_ready = document.getElementById('prog-ready');
+  if(el_ready) el_ready.textContent = cnt_ready;
+  if(prog_ready) prog_ready.style.width = Math.round(cnt_ready/total*100) + '%';
+  const cnt_served = records.filter(r=>r.status==='served').length;
+  const el_served = document.getElementById('rep-served');
+  const prog_served = document.getElementById('prog-served');
+  if(el_served) el_served.textContent = cnt_served;
+  if(prog_served) prog_served.style.width = Math.round(cnt_served/total*100) + '%';
+  const cnt_cancelled = records.filter(r=>r.status==='cancelled').length;
+  const el_cancelled = document.getElementById('rep-cancelled');
+  const prog_cancelled = document.getElementById('prog-cancelled');
+  if(el_cancelled) el_cancelled.textContent = cnt_cancelled;
+  if(prog_cancelled) prog_cancelled.style.width = Math.round(cnt_cancelled/total*100) + '%';
+  const cnt_completed = records.filter(r=>r.status==='completed').length;
+  const el_completed = document.getElementById('rep-completed');
+  const prog_completed = document.getElementById('prog-completed');
+  if(el_completed) el_completed.textContent = cnt_completed;
+  if(prog_completed) prog_completed.style.width = Math.round(cnt_completed/total*100) + '%';
+
+  // Recent records
+  const recentEl = document.getElementById('recent-list');
+  const recent = records.slice(0,8);
+  recentEl.innerHTML = recent.length
+    ? recent.map(r => '<div class="report-row"><span>' + esc(r.title||'—') + '</span><span>' + badgeFor(r.status) + '</span></div>').join('')
+    : '<p class="muted small">No orders yet.</p>';
+}
+load();
+</script>
+</body>
+</html>

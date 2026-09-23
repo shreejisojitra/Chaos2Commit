@@ -109,10 +109,8 @@ const db = {
     if (status) rows = rows.filter((r) => r.status === status);
     if (q) {
       const needle = q.toLowerCase();
-      rows = rows.filter(
-        (r) =>
-          (r.title || '').toLowerCase().includes(needle) ||
-          (r.description || '').toLowerCase().includes(needle)
+      rows = rows.filter((r) =>
+        Object.values(r).some(v => typeof v === 'string' && v.toLowerCase().includes(needle))
       );
     }
     rows.sort((a, b) => String(b.updated_at).localeCompare(String(a.updated_at)));
@@ -129,17 +127,18 @@ const db = {
       owner_email: owner ? owner.email : null,
     };
   },
-  createRecord({ title, description, status, owner_id }) {
+  createRecord({ title, description, status, owner_id, ...extraFields }) {
     const data = load();
     const now = new Date().toISOString();
     const record = {
       id: data.seq.records++,
       title,
       description: description || '',
-      status: status || 'open',
+      status: status || 'new',
       owner_id,
       created_at: now,
       updated_at: now,
+      ...extraFields,
     };
     data.records.push(record);
     save(data);
@@ -149,9 +148,13 @@ const db = {
     const data = load();
     const idx = data.records.findIndex((r) => r.id === Number(id));
     if (idx === -1) return null;
+    // Spread all incoming fields — supports dynamic domain fields
     data.records[idx] = {
       ...data.records[idx],
       ...fields,
+      id: data.records[idx].id,           // never overwrite id
+      owner_id: data.records[idx].owner_id, // never overwrite owner
+      created_at: data.records[idx].created_at, // never overwrite created_at
       updated_at: new Date().toISOString(),
     };
     save(data);

@@ -661,10 +661,17 @@ const server = http.createServer(async (req, res) => {
           const body = await getBody();
           const title = body.title !== undefined ? String(body.title).trim() : existing.title;
           const description = body.description !== undefined ? String(body.description).trim() : existing.description;
-          let status = body.status !== undefined ? String(body.status).trim() : existing.status;
-          if (!new Set(['open', 'in_progress', 'done', 'archived']).has(status)) status = existing.status;
+          // Accept any status — domain apps use custom status values
+          const status = body.status !== undefined ? String(body.status).trim() : existing.status;
           if (!title) return sendJson(res, 400, { error: 'Title is required' });
-          return sendJson(res, 200, db.updateRecord(existing.id, { title, description, status }));
+          // Passthrough extra domain fields
+          const extraFields = {};
+          Object.keys(body).forEach(k => {
+            if (!['title', 'description', 'status', 'id', 'owner_id', 'created_at', 'updated_at'].includes(k)) {
+              extraFields[k] = String(body[k] ?? '').slice(0, 2000);
+            }
+          });
+          return sendJson(res, 200, db.updateRecord(existing.id, { title, description, status, ...extraFields }));
         }
         if (method === 'DELETE') {
           const existing = db.getRecord(id);
@@ -680,14 +687,14 @@ const server = http.createServer(async (req, res) => {
         const title = String(body.title || '').trim();
         if (!title) return sendJson(res, 400, { error: 'Title is required' });
         const description = String(body.description || '').trim();
-        let status = String(body.status || 'open').trim();
-        if (!new Set(['open', 'in_progress', 'done', 'archived']).has(status)) status = 'open';
-        // Merge any extra fields from the spec
+        // Accept any status value — generated apps use domain-specific statuses
+        const status = String(body.status || 'new').trim() || 'new';
+        // Passthrough all extra domain fields from the spec
         const extraFields = {};
-        const cfg = readCurrentConfig();
-        // (generic passthrough of extra body fields)
         Object.keys(body).forEach((k) => {
-          if (!['title', 'description', 'status'].includes(k)) extraFields[k] = body[k];
+          if (!['title', 'description', 'status', 'owner_id', 'id', 'created_at', 'updated_at'].includes(k)) {
+            extraFields[k] = String(body[k] ?? '').slice(0, 2000);
+          }
         });
         const row = db.createRecord({ title, description, status, owner_id: sess.data.userId, ...extraFields });
         return sendJson(res, 201, row);
