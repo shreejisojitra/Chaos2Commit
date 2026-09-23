@@ -1,0 +1,15 @@
+[
+  {
+    "version": "1.1.0",
+    "module": "attendance",
+    "title": "Employee Attendance",
+    "filesTouched": [
+      "modules/attendance.js",
+      "modules/enabled.json",
+      "public/attendance.html",
+      "config.json (version bump)",
+      "data/changelog.json"
+    ],
+    "at": "2026-09-22T20:43:18.170Z"
+  }
+]

@@ -1,0 +1,339 @@
+[
+  {
+    "id": "p_mudndweluscaym",
+    "name": "SOJITRA SHREEJI GOPALBHAI",
+    "businessName": "AESRDTFGH",
+    "idea": "EWRTYFUTCDGFHG",
+    "language": "en",
+    "status": "draft",
+    "progress": {
+      "idea": true,
+      "consultant": true
+    },
+    "createdAt": "2026-09-23T05:13:40.173Z",
+    "updatedAt": "2026-09-23T05:55:40.818Z",
+    "consultantConversation": [
+      {
+        "role": "user",
+        "content": "I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where:\n- Companies can create job openings.\n- HR staff can add and manage candidates.\n- Candidates can apply for jobs.\n- HR can schedule interviews.\n- HR can track candidate status.\n- Companies can manage their hiring requirements.\n- Employees should have attendance management.\n- Admin should manage users and permissions."
+      },
+      {
+        "role": "assistant",
+        "content": "AI unavailable: The AI provider could not complete this request. Please try again.\n\nLocal analysis: This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
+        "analysis": {
+          "businessUnderstanding": "This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
+          "targetUsers": [
+            "Admin",
+            "Staff"
+          ],
+          "explicitRequirements": [
+            {
+              "text": "User authentication (login/register)",
+              "evidence": "Standard requirement",
+              "confidence": 0.95
+            },
+            {
+              "text": "Core HR & recruitment record management",
+              "evidence": "Inferred from business type",
+              "confidence": 0.75
+            }
+          ],
+          "missingRequirements": [
+            "User roles not defined",
+            "Reporting requirements not mentioned",
+            "Notification requirements unclear"
+          ],
+          "questions": [
+            "Who are the primary users of this system?",
+            "Do you need multi-user/multi-tenant support?",
+            "Are there compliance or data privacy requirements?",
+            "Do you need mobile app support?"
+          ],
+          "recommendations": [
+            {
+              "text": "Add role-based access control (admin vs staff)",
+              "explanation": "Security baseline for any multi-user system",
+              "confidence": 0.9
+            },
+            {
+              "text": "Include audit trail / activity log",
+              "explanation": "Useful for compliance and debugging",
+              "confidence": 0.7
+            }
+          ],
+          "assumptions": [
+            "Rule-based fallback — AI not available. This analysis is approximate.",
+            "OpenAI API key not configured on server."
+          ]
+        },
+        "source": "fallback"
+      },
+      {
+        "role": "user",
+        "content": "I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where:\n- Companies can create job openings.\n- HR staff can add and manage candidates.\n- Candidates can apply for jobs.\n- HR can schedule interviews.\n- HR can track candidate status.\n- Companies can manage their hiring requirements.\n- Employees should have attendance management.\n- Admin should manage users and permissions."
+      },
+      {
+        "role": "assistant",
+        "content": "AI unavailable: The AI provider could not complete this request. Please try again.\n\nLocal analysis: This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
+        "analysis": {
+          "businessUnderstanding": "This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
+          "targetUsers": [
+            "Admin",
+            "Staff"
+          ],
+          "explicitRequirements": [
+            {
+              "text": "User authentication (login/register)",
+              "evidence": "Standard requirement",
+              "confidence": 0.95
+            },
+            {
+              "text": "Core HR & recruitment record management",
+              "evidence": "Inferred from business type",
+              "confidence": 0.75
+            }
+          ],
+          "missingRequirements": [
+            "User roles not defined",
+            "Reporting requirements not mentioned",
+            "Notification requirements unclear"
+          ],
+          "questions": [
+            "Who are the primary users of this system?",
+            "Do you need multi-user/multi-tenant support?",
+            "Are there compliance or data privacy requirements?",
+            "Do you need mobile app support?"
+          ],
+          "recommendations": [
+            {
+              "text": "Add role-based access control (admin vs staff)",
+              "explanation": "Security baseline for any multi-user system",
+              "confidence": 0.9
+            },
+            {
+              "text": "Include audit trail / activity log",
+              "explanation": "Useful for compliance and debugging",
+              "confidence": 0.7
+            }
+          ],
+          "assumptions": [
+            "Rule-based fallback — AI not available. This analysis is approximate.",
+            "OpenAI API key not configured on server."
+          ]
+        },
+        "source": "fallback"
+      },
+      {
+        "role": "user",
+        "content": "You\nI am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where:\n- Companies can create job openings.\n- HR staff can add and manage candidates.\n- Candidates can apply for jobs.\n- HR can schedule interviews.\n- HR can track candidate status.\n- Companies can manage their hiring requirements.\n- Employees should have attendance management.\n- Admin should manage users and permissions."
+      },
+      {
+        "role": "assistant",
+        "content": "AI unavailable: Incorrect API key provided: sk-xxxxxxxx. You can find your API key at https://platform.openai.com/account/api-keys.\n\nLocal analysis: This appears to be a HR & recruitment platform. You\nI am starting an HR consultancy that helps companies hire employees.\n\nI want a software system w",
+        "analysis": {
+          "businessUnderstanding": "This appears to be a HR & recruitment platform. You\nI am starting an HR consultancy that helps companies hire employees.\n\nI want a software system w",
+          "targetUsers": [
+            "Admin",
+            "Staff"
+          ],
+          "explicitRequirements": [
+            {
+              "text": "User authentication (login/register)",
+              "evidence": "Standard requirement",
+              "confidence": 0.95
+            },
+            {
+              "text": "Core HR & recruitment record management",
+              "evidence": "Inferred from business type",
+              "confidence": 0.75
+            }
+          ],
+          "missingRequirements": [
+            "User roles not defined",
+            "Reporting requirements not mentioned",
+            "Notification requirements unclear"
+          ],
+          "questions": [
+            "Who are the primary users of this system?",
+            "Do you need multi-user/multi-tenant support?",
+            "Are there compliance or data privacy requirements?",
+            "Do you need mobile app support?"
+          ],
+          "recommendations": [
+            {
+              "text": "Add role-based access control (admin vs staff)",
+              "explanation": "Security baseline for any multi-user system",
+              "confidence": 0.9
+            },
+            {
+              "text": "Include audit trail / activity log",
+              "explanation": "Useful for compliance and debugging",
+              "confidence": 0.7
+            }
+          ],
+          "assumptions": [
+            "Rule-based fallback — AI not available. This analysis is approximate.",
+            "OpenAI API key not configured on server."
+          ]
+        },
+        "source": "fallback"
+      },
+      {
+        "role": "user",
+        "content": "I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where:\n- Companies can create job openings.\n- HR staff can add and manage candidates.\n- Candidates can apply for jobs.\n- HR can schedule interviews.\n- HR can track candidate status.\n- Companies can manage their hiring requirements.\n- Employees should have attendance management.\n- Admin should manage users and permissions."
+      },
+      {
+        "role": "assistant",
+        "content": "AI unavailable: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\n\nLocal analysis: This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
+        "analysis": {
+          "businessUnderstanding": "This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
+          "targetUsers": [
+            "Admin",
+            "Staff"
+          ],
+          "explicitRequirements": [
+            {
+              "text": "User authentication (login/register)",
+              "evidence": "Standard requirement",
+              "confidence": 0.95
+            },
+            {
+              "text": "Core HR & recruitment record management",
+              "evidence": "Inferred from business type",
+              "confidence": 0.75
+            }
+          ],
+          "missingRequirements": [
+            "User roles not defined",
+            "Reporting requirements not mentioned",
+            "Notification requirements unclear"
+          ],
+          "questions": [
+            "Who are the primary users of this system?",
+            "Do you need multi-user/multi-tenant support?",
+            "Are there compliance or data privacy requirements?",
+            "Do you need mobile app support?"
+          ],
+          "recommendations": [
+            {
+              "text": "Add role-based access control (admin vs staff)",
+              "explanation": "Security baseline for any multi-user system",
+              "confidence": 0.9
+            },
+            {
+              "text": "Include audit trail / activity log",
+              "explanation": "Useful for compliance and debugging",
+              "confidence": 0.7
+            }
+          ],
+          "assumptions": [
+            "Rule-based fallback — AI not available. This analysis is approximate.",
+            "OpenAI API key not configured on server."
+          ]
+        },
+        "source": "fallback"
+      },
+      {
+        "role": "user",
+        "content": "I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where:\n- Companies can create job openings.\n- HR staff can add and manage candidates.\n- Candidates can apply for jobs.\n- HR can schedule interviews.\n- HR can track candidate status.\n- Companies can manage their hiring requirements.\n- Employees should have attendance management.\n- Admin should manage users and permissions."
+      },
+      {
+        "role": "assistant",
+        "content": "AI unavailable: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\n\nLocal analysis: This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
+        "analysis": {
+          "businessUnderstanding": "This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
+          "targetUsers": [
+            "Admin",
+            "Staff"
+          ],
+          "explicitRequirements": [
+            {
+              "text": "User authentication (login/register)",
+              "evidence": "Standard requirement",
+              "confidence": 0.95
+            },
+            {
+              "text": "Core HR & recruitment record management",
+              "evidence": "Inferred from business type",
+              "confidence": 0.75
+            }
+          ],
+          "missingRequirements": [
+            "User roles not defined",
+            "Reporting requirements not mentioned",
+            "Notification requirements unclear"
+          ],
+          "questions": [
+            "Who are the primary users of this system?",
+            "Do you need multi-user/multi-tenant support?",
+            "Are there compliance or data privacy requirements?",
+            "Do you need mobile app support?"
+          ],
+          "recommendations": [
+            {
+              "text": "Add role-based access control (admin vs staff)",
+              "explanation": "Security baseline for any multi-user system",
+              "confidence": 0.9
+            },
+            {
+              "text": "Include audit trail / activity log",
+              "explanation": "Useful for compliance and debugging",
+              "confidence": 0.7
+            }
+          ],
+          "assumptions": [
+            "Rule-based fallback — AI not available. This analysis is approximate.",
+            "OpenAI API key not configured on server."
+          ]
+        },
+        "source": "fallback"
+      }
+    ],
+    "consultant": {
+      "businessUnderstanding": "This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
+      "targetUsers": [
+        "Admin",
+        "Staff"
+      ],
+      "explicitRequirements": [
+        {
+          "text": "User authentication (login/register)",
+          "evidence": "Standard requirement",
+          "confidence": 0.95
+        },
+        {
+          "text": "Core HR & recruitment record management",
+          "evidence": "Inferred from business type",
+          "confidence": 0.75
+        }
+      ],
+      "missingRequirements": [
+        "User roles not defined",
+        "Reporting requirements not mentioned",
+        "Notification requirements unclear"
+      ],
+      "questions": [
+        "Who are the primary users of this system?",
+        "Do you need multi-user/multi-tenant support?",
+        "Are there compliance or data privacy requirements?",
+        "Do you need mobile app support?"
+      ],
+      "recommendations": [
+        {
+          "text": "Add role-based access control (admin vs staff)",
+          "explanation": "Security baseline for any multi-user system",
+          "confidence": 0.9
+        },
+        {
+          "text": "Include audit trail / activity log",
+          "explanation": "Useful for compliance and debugging",
+          "confidence": 0.7
+        }
+      ],
+      "assumptions": [
+        "Rule-based fallback — AI not available. This analysis is approximate.",
+        "OpenAI API key not configured on server."
+      ]
+    }
+  }
+]
