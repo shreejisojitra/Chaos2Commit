@@ -4,7 +4,7 @@
  * Free at: https://console.groq.com
  */
 
-const DEFAULT_MODEL = 'openai/gpt-oss-20b';
+const DEFAULT_MODEL = 'openai/gpt-oss-120b'; // more reliable for structured JSON
 const MAX_MESSAGE_LENGTH = 8000;
 const MAX_TURNS = 20;
 
@@ -28,7 +28,7 @@ function getModel(deps = {}) {
 
 // ─── Core call (Groq = OpenAI-compatible) ─────────────────────────────────────
 
-async function callGroq(apiKey, model, systemPrompt, userMessage, deps = {}) {
+async function callGroq(apiKey, model, systemPrompt, userMessage, deps = {}, retries = 2) {
   const fetchImpl = deps.fetch || global.fetch;
 
   const requestBody = {
@@ -37,68 +37,78 @@ async function callGroq(apiKey, model, systemPrompt, userMessage, deps = {}) {
       { role: 'system', content: systemPrompt },
       { role: 'user',   content: userMessage  },
     ],
-    temperature: 0.4,
+    temperature: 0.3,
     max_tokens: 2048,
-    // Note: response_format json_object not supported on all Groq models
-    // We instruct via system prompt and parse manually
   };
 
-  let response;
-  try {
-    response = await fetchImpl('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type':  'application/json',
-      },
-      body: JSON.stringify(requestBody),
-    });
-  } catch (_) {
-    const err = new Error('Could not reach Groq. Check your internet connection.');
-    err.status = 502;
-    throw err;
-  }
-
-  if (!response.ok) {
-    let errMsg = `Groq error (${response.status}).`;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    let response;
     try {
-      const errBody = await response.json();
-      if (errBody.error?.message) errMsg = errBody.error.message;
-    } catch (_) {}
-    const err = new Error(errMsg);
-    err.status = 502;
-    throw err;
-  }
+      response = await fetchImpl('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type':  'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
+    } catch (_) {
+      if (attempt < retries) continue;
+      const err = new Error('Could not reach Groq. Check your internet connection.');
+      err.status = 502;
+      throw err;
+    }
 
-  let payload;
-  try {
-    payload = await response.json();
-  } catch (_) {
-    const err = new Error('Groq returned an unreadable response.');
-    err.status = 502;
-    throw err;
-  }
+    if (!response.ok) {
+      let errMsg = `Groq error (${response.status}).`;
+      try { const b = await response.json(); if (b.error?.message) errMsg = b.error.message; } catch (_) {}
+      if (attempt < retries) { await new Promise(r => setTimeout(r, 1000)); continue; }
+      const err = new Error(errMsg);
+      err.status = 502;
+      throw err;
+    }
 
-  const content = payload.choices?.[0]?.message?.content;
-  if (!content) {
-    const err = new Error('Groq returned an empty response.');
-    err.status = 502;
-    throw err;
-  }
+    let payload;
+    try { payload = await response.json(); } catch (_) {
+      if (attempt < retries) continue;
+      const err = new Error('Groq returned an unreadable response.');
+      err.status = 502;
+      throw err;
+    }
 
-  // Strip markdown fences if present
-  const cleaned = content
-    .replace(/^```json\s*/i, '')
-    .replace(/^```\s*/i, '')
-    .replace(/\s*```$/i, '')
-    .trim();
+    const content = payload.choices?.[0]?.message?.content;
+    if (!content) {
+      if (attempt < retries) { await new Promise(r => setTimeout(r, 800)); continue; }
+      const err = new Error('Groq returned an empty response.');
+      err.status = 502;
+      throw err;
+    }
 
-  try {
-    return JSON.parse(cleaned);
-  } catch (_) {
-    const err = new Error('AI response was not valid JSON. Try again.');
-    err.status = 502;
-    throw err;
+    // Strip markdown fences if present
+    const cleaned = content
+      .replace(/^```json\s*/i, '')
+      .replace(/^```\s*/i, '')
+      .replace(/\s*```$/i, '')
+      .trim();
+
+    // Find first { and last } to extract JSON even if there's preamble text
+    const start = cleaned.indexOf('{');
+    const end   = cleaned.lastIndexOf('}');
+    if (start === -1 || end === -1) {
+      if (attempt < retries) { await new Promise(r => setTimeout(r, 800)); continue; }
+      const err = new Error('AI response was not valid JSON. Try again.');
+      err.status = 502;
+      throw err;
+    }
+
+    try {
+      return JSON.parse(cleaned.slice(start, end + 1));
+    } catch (_) {
+      if (attempt < retries) { await new Promise(r => setTimeout(r, 800)); continue; }
+      const err = new Error('AI response was not valid JSON. Try again.');
+      err.status = 502;
+      throw err;
+    }
   }
 }
 
@@ -202,13 +212,14 @@ async function generateArchitecture({ blueprint }, deps = {}) {
 
   const systemPrompt = `You are a senior software architect.
 Produce a system architecture spec.
-systemDiagram: Mermaid flowchart LR code (NO backtick fences, just the diagram code starting with "flowchart LR").
-erDiagram: Mermaid erDiagram code (NO backtick fences, just the diagram starting with "erDiagram").
-You MUST return ONLY a valid JSON object — no markdown, no explanation, just JSON.
-Return this exact structure:
+IMPORTANT for diagrams:
+- systemDiagram: Mermaid flowchart LR code. NO backtick fences. NO quotes around node labels. Use simple alphanumeric IDs. Example: flowchart LR\n  Client[Browser] --> API[Node API]\n  API --> Auth[Auth Module]\n  API --> DB[(JSON Store)]
+- erDiagram: Mermaid erDiagram code. NO backtick fences. Use simple entity names and field types. Example: erDiagram\n  USER ||--o{ RECORD : creates\n  USER {\n    string id\n    string email\n  }
+- Use \\n for newlines inside the JSON string value (not actual newlines).
+Return ONLY this JSON structure, no extra text, no markdown:
 {
-  "systemDiagram": "flowchart LR\\n  Client[Browser] --> API[Node API]\\n  API --> DB[(JSON Store)]",
-  "erDiagram": "erDiagram\\n  USER ||--o{ RECORD : creates\\n  USER { string id\\n string email }",
+  "systemDiagram": "flowchart LR\\n  Client[Browser] --> API[Node API]\\n  API --> DB[(Store)]",
+  "erDiagram": "erDiagram\\n  USER ||--o{ RECORD : creates\\n  USER {\\n    string id\\n    string email\\n  }",
   "apiEndpoints": [
     {"method": "POST", "path": "/api/auth/login", "description": "User login", "auth": false},
     {"method": "GET", "path": "/api/records", "description": "List records", "auth": true}

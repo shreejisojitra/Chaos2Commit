@@ -5,3 +5,18 @@
 
 # Installed dependencies
 node_modules/
+
+# Runtime data — contains passwords and user data, never commit
+backend/data/store.json
+backend/data/builder-users.json
+backend/data/projects.json
+backend/data/changelog.json
+
+# Generated app data
+generated-app/data/store.json
+generated-app/data/changelog.json
+generated-app/data/projects.json
+
+# Tailwind local install
+frontend/node_modules/
+frontend/package-lock.json

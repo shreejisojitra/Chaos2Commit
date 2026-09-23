@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Project Workspace — AI Solution Builder</title>
+  <script src="/builder/config.js"></script>
+  <script>/* Suppress Tailwind CDN dev warning */const _cw=console.warn;console.warn=(...a)=>{if(a[0]&&String(a[0]).includes("cdn.tailwindcss.com"))return;_cw(...a)};</script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -95,6 +97,7 @@
       <h1 id="project-title" class="text-base font-semibold truncate flex-1">Project</h1>
       <span id="project-status-badge" class="hidden text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600"></span>
       <a href="dashboard.html" class="text-sm text-brand-600 font-medium hover:text-brand-700">All projects</a>
+      <button onclick="fetch((window.ASB_API||'')+'/api/builder/auth/logout',{method:'POST',credentials:'include'}).then(()=>location.href='/builder/login.html')" class="text-xs text-slate-400 hover:text-red-500 px-2 py-1 rounded-lg hover:bg-red-50">Sign out</button>
     </header>
 
     <!-- Pipeline progress bar -->
@@ -378,7 +381,7 @@
 
 <script>
 // ─── Constants ────────────────────────────────────────────────────────────────
-const API = ''; // same origin
+const API = window.ASB_API || ''; // auto-detected from config.js
 const PROJECTS_KEY = 'asb_projects';
 const BILLING_KEY  = 'asb_billing';
 const CREDIT_COSTS = { consultant: 5, document: 3, generate: 25, modify: 15, blueprint: 8, architecture: 8 };
@@ -604,35 +607,145 @@ function renderBlueprint(blueprint) {
 }
 
 // ─── Architecture ─────────────────────────────────────────────────────────────
+
+/**
+ * Clean AI-generated Mermaid diagram string so it renders in Mermaid v10.
+ * - Strip triple-backtick fences  ``` or ```mermaid
+ * - Unescape \\n → real newlines
+ * - Remove leading/trailing blank lines
+ * - Strip any HTML entities the AI may have inserted
+ */
+function cleanMermaid(raw) {
+  if (!raw) return '';
+  let s = String(raw);
+  // Unescape JSON-style \\n that AI sometimes returns
+  s = s.replace(/\\n/g, '\n');
+  // Strip markdown fences
+  s = s.replace(/^```[a-z]*\s*/i, '').replace(/\s*```$/i, '');
+  // Decode basic HTML entities (in case esc() was applied upstream)
+  s = s.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+  // Normalise line endings
+  s = s.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  // Remove blank lines at start/end
+  s = s.trim();
+  return s;
+}
+
+/**
+ * Safely render a Mermaid diagram into a container div.
+ * Shows a plain-text fallback if Mermaid throws.
+ */
+async function renderMermaidInto(container, source) {
+  const clean = cleanMermaid(source);
+  if (!clean) { container.innerHTML = '<p class="text-xs text-slate-400">No diagram</p>'; return; }
+
+  // First show raw source (fallback if render fails)
+  container.innerHTML = `<pre class="text-xs text-slate-400 overflow-x-auto whitespace-pre">${esc(clean)}</pre>`;
+
+  if (!window.mermaid) return;
+  try {
+    mermaid.initialize({ startOnLoad: false, theme: 'neutral', securityLevel: 'loose', fontFamily: 'Inter, sans-serif' });
+    // Use mermaid.render() API for safer async rendering
+    const id = 'mermaid-' + Math.random().toString(36).slice(2, 8);
+    const { svg } = await mermaid.render(id, clean);
+    container.innerHTML = svg;
+  } catch (err) {
+    // Show clean source as code block on failure — never a blank box
+    container.innerHTML = `
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-2 text-xs text-amber-700">
+        Diagram could not render — showing source. (${err.message || 'parse error'})
+      </div>
+      <pre class="text-xs text-slate-600 bg-slate-50 rounded-xl p-3 overflow-x-auto whitespace-pre">${esc(clean)}</pre>`;
+  }
+}
+
 function renderArchitecture(arch) {
   if (!arch) return;
   const el = document.getElementById('arch-content');
   const endpoints = (arch.apiEndpoints||[]).map(ep =>
-    `<tr><td class="font-mono text-xs font-semibold ${ep.method==='GET'?'text-emerald-600':ep.method==='POST'?'text-brand-600':ep.method==='DELETE'?'text-red-500':'text-amber-600'}">${esc(ep.method)}</td><td class="font-mono text-xs">${esc(ep.path)}</td><td class="text-xs text-slate-600">${esc(ep.description)}</td><td class="text-xs">${ep.auth?'<span class="text-xs font-semibold text-amber-600">🔒 Auth</span>':'<span class="text-xs text-slate-400">Public</span>'}</td></tr>`).join('');
+    `<tr>
+      <td class="font-mono text-xs font-semibold ${ep.method==='GET'?'text-emerald-600':ep.method==='POST'?'text-brand-600':ep.method==='DELETE'?'text-red-500':'text-amber-600'} pr-3 py-1.5">${esc(ep.method)}</td>
+      <td class="font-mono text-xs pr-3 py-1.5">${esc(ep.path)}</td>
+      <td class="text-xs text-slate-600 pr-3 py-1.5">${esc(ep.description)}</td>
+      <td class="text-xs py-1.5">${ep.auth?'<span class="text-xs font-semibold text-amber-600">🔒 Auth</span>':'<span class="text-xs text-slate-400">Public</span>'}</td>
+    </tr>`).join('');
+
   el.innerHTML = `
     <div class="bg-white rounded-2xl border border-slate-200 p-5 space-y-5">
       <div>
         <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">System Diagram</p>
-        <div class="bg-slate-50 rounded-xl p-4 overflow-x-auto"><pre class="mermaid">${esc(arch.systemDiagram||'')}</pre></div>
+        <div id="diag-system" class="bg-slate-50 rounded-xl p-4 overflow-x-auto min-h-[80px] flex items-center justify-center">
+          <span class="spinner"></span>
+        </div>
       </div>
       <div>
         <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Entity-Relationship Diagram</p>
-        <div class="bg-slate-50 rounded-xl p-4 overflow-x-auto"><pre class="mermaid">${esc(arch.erDiagram||'')}</pre></div>
+        <div id="diag-er" class="bg-slate-50 rounded-xl p-4 overflow-x-auto min-h-[80px] flex items-center justify-center">
+          <span class="spinner"></span>
+        </div>
       </div>
       <div>
         <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">API Endpoints</p>
-        <div class="overflow-x-auto"><table class="w-full border-collapse"><thead><tr class="text-xs text-slate-400 border-b border-slate-100"><th class="text-left py-1 pr-3">Method</th><th class="text-left py-1 pr-3">Path</th><th class="text-left py-1 pr-3">Description</th><th class="text-left py-1">Auth</th></tr></thead><tbody class="divide-y divide-slate-50">${endpoints}</tbody></table></div>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead><tr class="text-xs text-slate-400 border-b border-slate-100">
+              <th class="text-left py-1 pr-3">Method</th>
+              <th class="text-left py-1 pr-3">Path</th>
+              <th class="text-left py-1 pr-3">Description</th>
+              <th class="text-left py-1">Auth</th>
+            </tr></thead>
+            <tbody class="divide-y divide-slate-50">${endpoints}</tbody>
+          </table>
+        </div>
       </div>
       <div class="grid sm:grid-cols-2 gap-4">
-        <div><p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Sitemap</p><ul class="text-sm text-slate-600 space-y-1">${(arch.sitemap||[]).map(p=>`<li class="flex items-center gap-2"><span class="text-brand-400">□</span>${esc(p)}</li>`).join('')}</ul></div>
-        <div><p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Security</p><ul class="text-sm text-slate-600 space-y-1">${(arch.securityNotes||[]).map(n=>`<li class="flex items-start gap-2"><span class="text-amber-500 mt-0.5">🔒</span>${esc(n)}</li>`).join('')}</ul></div>
+        <div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Sitemap</p>
+          <ul class="text-sm text-slate-600 space-y-1">
+            ${(arch.sitemap||[]).map(p=>`<li class="flex items-center gap-2"><span class="text-brand-400">□</span>${esc(p)}</li>`).join('')}
+          </ul>
+        </div>
+        <div>
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Security</p>
+          <ul class="text-sm text-slate-600 space-y-1">
+            ${(arch.securityNotes||[]).map(n=>`<li class="flex items-start gap-2"><span class="text-amber-500 mt-0.5">🔒</span>${esc(n)}</li>`).join('')}
+          </ul>
+        </div>
       </div>
     </div>`;
-  // Render mermaid diagrams
-  if (window.mermaid) {
-    mermaid.initialize({ startOnLoad: false, theme: 'neutral', securityLevel: 'loose' });
-    mermaid.run({ nodes: el.querySelectorAll('.mermaid') }).catch(() => {});
-  }
+
+  // Render diagrams asynchronously after DOM is ready
+  setTimeout(() => {
+    renderMermaidInto(document.getElementById('diag-system'), arch.systemDiagram);
+    renderMermaidInto(document.getElementById('diag-er'), arch.erDiagram);
+  }, 50);
+}
+
+// ─── Version Restore ──────────────────────────────────────────────────────────
+let _cachedVersions = [];
+
+async function restoreVersion(idx) {
+  if (!confirm('Restore this version? This will add a restore entry — your current version is preserved.')) return;
+  const v = _cachedVersions[idx];
+  if (!v) return;
+
+  // Create a restore entry pointing back to this version
+  const restoreEntry = {
+    version: v.version + '-r' + Date.now().toString(36).slice(-4),
+    changes: 'Restored from v' + v.version + (v.changes ? ': ' + v.changes : ''),
+    action: 'restore',
+    status: 'restored',
+    restoredFrom: v.version,
+    at: new Date().toISOString(),
+    files: v.files || [],
+  };
+
+  project.versions = project.versions || [];
+  project.versions.unshift(restoreEntry);
+  saveProject(project);
+  renderPipeline(project);
+  showStatusToast('Restored to v' + v.version + ' ✓');
+  await loadVersions();
 }
 
 // ─── Versions ─────────────────────────────────────────────────────────────────
@@ -654,19 +767,23 @@ async function loadVersions() {
       if (!combined.find(c => c.version === v.version)) combined.push(v);
     });
     combined.sort((a,b) => String(b.at||'').localeCompare(String(a.at||'')));
-    el.innerHTML = combined.map(v => `
+    _cachedVersions = combined; // cache for restore
+    el.innerHTML = combined.map((v, idx) => `
       <div class="px-5 py-4 flex items-start justify-between gap-3">
-        <div>
+        <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
             <span class="text-sm font-semibold text-slate-900">v${esc(v.version||'?')}</span>
             <span class="text-xs font-semibold px-2 py-0.5 rounded-full ${v.action==='generate'?'bg-brand-50 text-brand-700':v.action==='modify'?'bg-violet-50 text-violet-700':'bg-slate-100 text-slate-600'}">${esc(v.action||'change')}</span>
-            ${v.status==='restored'?'<span class="text-xs text-amber-600">restored</span>':''}
+            ${v.status==='restored'?'<span class="text-xs text-amber-600 font-medium">↩ restored</span>':''}
           </div>
           <p class="text-sm text-slate-600 mt-1">${esc(v.changes||v.plan?.summary||v.spec?.appName||'')}</p>
           <p class="text-xs text-slate-400 mt-0.5">${v.at ? new Date(v.at).toLocaleString() : ''}</p>
           ${v.files ? `<p class="text-xs text-slate-400 mt-0.5">${v.files.length} files touched</p>` : ''}
         </div>
-        <span class="text-xs text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded-full flex-shrink-0">${v.status||'ok'}</span>
+        <div class="flex flex-col gap-1.5 flex-shrink-0 items-end">
+          <span class="text-xs font-medium px-2 py-0.5 rounded-full ${v.status==='ok'?'bg-emerald-50 text-emerald-600':v.status==='restored'?'bg-amber-50 text-amber-600':'bg-slate-100 text-slate-500'}">${esc(v.status||'ok')}</span>
+          ${idx > 0 ? `<button onclick="restoreVersion(${idx})" class="text-xs text-brand-600 hover:text-brand-700 font-medium px-2 py-1 rounded-lg hover:bg-brand-50 transition-colors">↩ Restore</button>` : '<span class="text-xs text-slate-300">Current</span>'}
+        </div>
       </div>`).join('');
   } catch(_) {
     loading.classList.add('hidden');
@@ -734,6 +851,11 @@ function runLocalConsultant(project, message) {
     assumptions: ['Rule-based fallback — AI not available. This analysis is approximate.', 'OpenAI API key not configured on server.'],
   };
 }
+
+// ─── Auth check ────────────────────────────────────────────────────────────────
+fetch((window.ASB_API || '') + '/api/builder/auth/me', { credentials: 'include' })
+  .then(r => { if (!r.ok) location.href = '/builder/login.html'; })
+  .catch(() => { location.href = '/builder/login.html'; });
 
 // ─── Init ──────────────────────────────────────────────────────────────────────
 let project = getProject();

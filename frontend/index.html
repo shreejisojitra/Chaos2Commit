@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Solution Builder — Turn Ideas into Software</title>
   <meta name="description" content="Turn your business idea into a working software solution with AI Solution Builder." />
+  <script>/* Suppress Tailwind CDN dev warning */const _cw=console.warn;console.warn=(...a)=>{if(a[0]&&String(a[0]).includes("cdn.tailwindcss.com"))return;_cw(...a)};</script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -78,8 +79,9 @@
         <div class="hidden md:flex items-center gap-8">
           <a href="#how-it-works" class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">How it Works</a>
           <a href="#features" class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Features</a>
-          <a href="dashboard.html" class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Dashboard</a>
-          <a href="dashboard.html" class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-soft">Get Started</a>
+          <a href="#pricing" class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Pricing</a>
+          <a href="/builder/dashboard.html" class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Dashboard</a>
+          <a href="/builder/register.html" class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-soft">Get Started</a>
         </div>
         <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100" aria-label="Menu">
           <svg id="menu-icon" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -215,13 +217,94 @@
     </div>
   </section>
 
+  <!-- Pricing -->
+  <section id="pricing" class="py-20 md:py-28 bg-slate-50">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">Simple, transparent pricing</h2>
+        <p class="mt-4 text-slate-600">Pay only for what you use. Credits never expire. Start free, no credit card needed.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Free -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col">
+          <p class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Free</p>
+          <p class="mt-3 text-4xl font-extrabold text-slate-900">$0</p>
+          <p class="text-sm text-slate-400 mt-1">Forever free</p>
+          <ul class="mt-6 space-y-3 text-sm text-slate-600 flex-1">
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> 100 credits</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> ~4 app generations</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> AI Consultant</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> Blueprint & Architecture</li>
+            <li class="flex items-center gap-2"><span class="text-slate-300">–</span> Priority support</li>
+          </ul>
+          <a href="/builder/register.html" class="mt-6 block text-center px-4 py-2.5 text-sm font-semibold border-2 border-brand-600 text-brand-600 rounded-xl hover:bg-brand-50 transition-colors">Get started free</a>
+        </div>
+        <!-- Starter -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col">
+          <p class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Starter</p>
+          <p class="mt-3 text-4xl font-extrabold text-slate-900">$19<span class="text-lg font-medium text-slate-400">/mo</span></p>
+          <p class="text-sm text-slate-400 mt-1">For solo builders</p>
+          <ul class="mt-6 space-y-3 text-sm text-slate-600 flex-1">
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> 500 credits/month</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> ~20 app generations</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> All Free features</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> Version history</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> Email support</li>
+          </ul>
+          <a href="/builder/register.html" class="mt-6 block text-center px-4 py-2.5 text-sm font-semibold border-2 border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors">Start Starter</a>
+        </div>
+        <!-- Professional — highlighted -->
+        <div class="bg-gradient-to-br from-brand-600 to-violet-600 rounded-2xl p-6 flex flex-col relative shadow-xl">
+          <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-400 text-amber-900 text-xs font-bold px-3 py-1 rounded-full">Most popular</span>
+          <p class="text-sm font-semibold text-white/70 uppercase tracking-wide">Professional</p>
+          <p class="mt-3 text-4xl font-extrabold text-white">$49<span class="text-lg font-medium text-white/60">/mo</span></p>
+          <p class="text-sm text-white/60 mt-1">For growing teams</p>
+          <ul class="mt-6 space-y-3 text-sm text-white/90 flex-1">
+            <li class="flex items-center gap-2"><span class="text-white">✓</span> 2,000 credits/month</li>
+            <li class="flex items-center gap-2"><span class="text-white">✓</span> ~80 app generations</li>
+            <li class="flex items-center gap-2"><span class="text-white">✓</span> All Starter features</li>
+            <li class="flex items-center gap-2"><span class="text-white">✓</span> Advanced modify & restore</li>
+            <li class="flex items-center gap-2"><span class="text-white">✓</span> Priority support</li>
+          </ul>
+          <a href="/builder/register.html" class="mt-6 block text-center px-4 py-2.5 text-sm font-semibold bg-white text-brand-700 rounded-xl hover:bg-brand-50 transition-colors">Start Professional</a>
+        </div>
+        <!-- Business -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col">
+          <p class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Business</p>
+          <p class="mt-3 text-4xl font-extrabold text-slate-900">$149<span class="text-lg font-medium text-slate-400">/mo</span></p>
+          <p class="text-sm text-slate-400 mt-1">For enterprises</p>
+          <ul class="mt-6 space-y-3 text-sm text-slate-600 flex-1">
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> 10,000 credits/month</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> Unlimited generations</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> All Pro features</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> Dedicated support</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> Custom integrations</li>
+          </ul>
+          <a href="/builder/register.html" class="mt-6 block text-center px-4 py-2.5 text-sm font-semibold border-2 border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors">Contact sales</a>
+        </div>
+      </div>
+      <!-- Credit cost table -->
+      <div class="mt-12 bg-white rounded-2xl border border-slate-200 p-6">
+        <h3 class="text-sm font-semibold text-slate-900 mb-4">How credits are spent</h3>
+        <div class="grid sm:grid-cols-3 md:grid-cols-6 gap-3">
+          <div class="text-center p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">Consultant chat</p><p class="text-lg font-bold text-slate-900 mt-1">5</p><p class="text-xs text-slate-400">credits</p></div>
+          <div class="text-center p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">Blueprint</p><p class="text-lg font-bold text-slate-900 mt-1">8</p><p class="text-xs text-slate-400">credits</p></div>
+          <div class="text-center p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">Architecture</p><p class="text-lg font-bold text-slate-900 mt-1">8</p><p class="text-xs text-slate-400">credits</p></div>
+          <div class="text-center p-3 bg-brand-50 rounded-xl"><p class="text-xs text-brand-600 font-medium">Generate App</p><p class="text-lg font-bold text-brand-700 mt-1">25</p><p class="text-xs text-brand-500">credits</p></div>
+          <div class="text-center p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">Modify App</p><p class="text-lg font-bold text-slate-900 mt-1">15</p><p class="text-xs text-slate-400">credits</p></div>
+          <div class="text-center p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">Document upload</p><p class="text-lg font-bold text-slate-900 mt-1">3</p><p class="text-xs text-slate-400">credits</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- CTA -->
   <section id="get-started" class="py-20 bg-slate-900">
     <div class="max-w-3xl mx-auto px-4 text-center">
       <h2 class="text-3xl md:text-4xl font-bold text-white tracking-tight">Ready to build?</h2>
       <p class="mt-4 text-slate-400">Start with a free project. No credit card required.</p>
-      <a href="dashboard.html" class="mt-8 inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-slate-900 bg-white rounded-xl hover:bg-slate-100 transition-colors">
-        Open Dashboard
+      <a href="/builder/register.html" class="mt-8 inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-slate-900 bg-white rounded-xl hover:bg-slate-100 transition-colors">
+        Get started free
       </a>
     </div>
   </section>
