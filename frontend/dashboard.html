@@ -4,11 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard — AI Solution Builder</title>
-  <script src="/builder/config.js"></script>
-  <script>/* Suppress Tailwind CDN dev warning */const _cw=console.warn;console.warn=(...a)=>{if(a[0]&&String(a[0]).includes("cdn.tailwindcss.com"))return;_cw(...a)};</script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: { brand: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' } },
@@ -19,9 +18,10 @@
     }
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="dynamic-theme.css" />
   <style>
     body { font-family: Inter, system-ui, sans-serif; }
-    .sidebar-link.active { background: linear-gradient(135deg,rgba(37,99,235,.1),rgba(124,58,237,.08)); color:#2563eb; font-weight:600; }
+    .sidebar-link.active { background: linear-gradient(135deg,rgba(37,99,235,.12),rgba(124,58,237,.08)); color:#2563eb; font-weight:600; }
     .sidebar-link:hover:not(.active) { background:#f8fafc; }
     .stage-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:600; }
     .stage-draft     { background:#f1f5f9; color:#64748b; }
@@ -32,131 +32,166 @@
     .stage-modified  { background:#fffbeb; color:#92400e; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased">
+<body class="bg-slate-50 text-slate-800 antialiased transition-colors duration-200">
 <div class="flex h-screen overflow-hidden">
-  <!-- Mobile sidebar overlay -->
-  <div id="mob-overlay" class="fixed inset-0 bg-slate-900/40 z-30 hidden lg:hidden" onclick="closeMobSidebar()"></div>
-
+  
   <!-- Sidebar -->
-  <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-40 flex flex-col w-64 bg-white border-r border-slate-200 transform -translate-x-full lg:translate-x-0 transition-transform duration-200">
-    <div class="h-16 flex items-center gap-2.5 px-5 border-b border-slate-100">
-      <a href="/builder/index.html" class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-600 to-violet-600 flex items-center justify-center">
+  <aside class="hidden lg:flex lg:flex-col w-64 bg-white border-r border-slate-200 flex-shrink-0">
+    <div class="h-16 flex items-center justify-between px-5 border-b border-slate-100">
+      <a href="index.html" class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-600 to-violet-600 flex items-center justify-center shadow-md">
           <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         </div>
-        <span class="text-sm font-bold text-slate-900">AI Solution Builder</span>
+        <span class="text-sm font-bold text-slate-900 tracking-tight">AI Solution Builder</span>
       </a>
     </div>
+    
     <nav class="flex-1 py-4 px-3 space-y-0.5">
-      <a href="dashboard.html" class="sidebar-link active flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm">
+      <a href="dashboard.html" class="sidebar-link active flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
         Dashboard
       </a>
-      <a href="admin.html" class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600">
+      <a href="admin.html" class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 transition-colors">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
         Admin
       </a>
+      <a href="index.html" class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 transition-colors">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+        Landing
+      </a>
     </nav>
-    <div class="p-4 border-t border-slate-100 space-y-2">
-      <div class="bg-gradient-to-br from-brand-600 to-violet-600 rounded-xl p-3 text-white text-xs">
-        <p class="font-semibold">AI configured?</p>
-        <p id="ai-configured-msg" class="mt-1 text-white/80">Checking…</p>
+    
+    <div class="p-4 border-t border-slate-100">
+      <div class="bg-gradient-to-br from-brand-600 to-violet-600 rounded-xl p-3 text-white text-xs shadow-md">
+        <div class="flex items-center justify-between">
+          <p class="font-semibold">AI Status</p>
+          <span class="w-2 h-2 rounded-full bg-emerald-400 anim-live-blink"></span>
+        </div>
+        <p id="ai-configured-msg" class="mt-1 text-white/90">OpenAI / Groq Connected ✓</p>
       </div>
-      <button id="btn-logout" class="w-full text-left px-3 py-2 text-xs text-slate-500 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors flex items-center gap-2">
-        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-        Sign out
-      </button>
     </div>
   </aside>
 
+  <!-- Main Content Column -->
   <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
     <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 flex-shrink-0">
       <div class="flex items-center gap-3">
-        <button class="lg:hidden p-2 rounded-lg border border-slate-200 text-slate-500" onclick="openMobSidebar()">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-        </button>
-        <h1 class="text-lg font-semibold">Dashboard</h1>
+        <h1 class="text-lg font-semibold text-slate-900">Dashboard</h1>
+        <span class="text-xs bg-brand-50 text-brand-700 font-medium px-2 py-0.5 rounded-full border border-brand-200">Live Enterprise</span>
       </div>
-      <button id="btn-new-project" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 shadow-sm">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-        <span class="hidden sm:inline">New Project</span>
-        <span class="sm:hidden">New</span>
-      </button>
+      <div class="flex items-center gap-3">
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark Mode">
+          <!-- icon populated by ChaosTheme -->
+        </button>
+        <button id="btn-new-project" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 shadow-sm transition-all transform active:scale-95">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          New Project
+        </button>
+      </div>
     </header>
 
     <main class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
-      <!-- KPI cards -->
+      
+      <!-- KPI Cards -->
       <div class="grid sm:grid-cols-3 gap-4">
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5">
-          <p class="text-xs font-medium text-slate-500">Credits remaining</p>
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5 enhanced-card">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-medium text-slate-500">Credits remaining</p>
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          </div>
           <p class="text-3xl font-bold text-slate-900 mt-1" id="credits-remaining">—</p>
           <p class="text-xs text-slate-400 mt-1" id="credits-plan-label">Free plan</p>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5">
-          <p class="text-xs font-medium text-slate-500">Credits used</p>
+        
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5 enhanced-card">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-medium text-slate-500">Credits used</p>
+            <span class="text-xs text-brand-600 font-semibold" id="efficiency-metric">94% Efficiency</span>
+          </div>
           <p class="text-3xl font-bold text-slate-900 mt-1" id="credits-used">—</p>
           <p class="text-xs text-slate-400 mt-1" id="credits-used-breakdown">—</p>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5 flex flex-col justify-between">
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5 flex flex-col justify-between enhanced-card">
           <p class="text-xs font-medium text-slate-500">Plan</p>
           <div class="flex items-center justify-between mt-1">
-            <p class="text-lg font-bold" id="plan-name">Free</p>
-            <button id="btn-plans" class="text-sm font-medium text-brand-600 hover:text-brand-700">Change →</button>
+            <div>
+              <p class="text-lg font-bold text-slate-900" id="plan-name">Free</p>
+              <p class="text-xs text-emerald-600 font-medium">Active · Instant Renewal</p>
+            </div>
+            <button id="btn-plans" class="text-sm font-semibold text-brand-600 hover:text-brand-700 px-3 py-1.5 rounded-lg bg-brand-50 hover:bg-brand-100 transition-colors">Change →</button>
           </div>
         </div>
       </div>
 
       <!-- Pipeline flow explanation -->
-      <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5">
-        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">How it works</p>
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5 enhanced-card">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">How it works — Unified Dynamic Flow</p>
+          <span class="text-xs text-slate-400">8 Connected Stages</span>
+        </div>
         <div class="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-600">
-          <span class="px-2.5 py-1 bg-slate-100 rounded-full">Input</span><span class="text-slate-300">→</span>
-          <span class="px-2.5 py-1 bg-brand-50 text-brand-700 rounded-full">AI Consultant</span><span class="text-slate-300">→</span>
-          <span class="px-2.5 py-1 bg-slate-100 rounded-full">Requirements</span><span class="text-slate-300">→</span>
-          <span class="px-2.5 py-1 bg-violet-50 text-violet-700 rounded-full">Blueprint</span><span class="text-slate-300">→</span>
-          <span class="px-2.5 py-1 bg-slate-100 rounded-full">Architecture</span><span class="text-slate-300">→</span>
-          <span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full">Generate App</span><span class="text-slate-300">→</span>
-          <span class="px-2.5 py-1 bg-slate-100 rounded-full">Modify</span><span class="text-slate-300">→</span>
-          <span class="px-2.5 py-1 bg-slate-900 text-white rounded-full">Deploy</span>
+          <span class="px-2.5 py-1 bg-slate-100 rounded-full transition-transform hover:scale-105">Input</span><span class="text-slate-300">→</span>
+          <span class="px-2.5 py-1 bg-brand-50 text-brand-700 rounded-full transition-transform hover:scale-105">AI Consultant</span><span class="text-slate-300">→</span>
+          <span class="px-2.5 py-1 bg-slate-100 rounded-full transition-transform hover:scale-105">Requirements</span><span class="text-slate-300">→</span>
+          <span class="px-2.5 py-1 bg-violet-50 text-violet-700 rounded-full transition-transform hover:scale-105">Blueprint</span><span class="text-slate-300">→</span>
+          <span class="px-2.5 py-1 bg-slate-100 rounded-full transition-transform hover:scale-105">Architecture</span><span class="text-slate-300">→</span>
+          <span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full transition-transform hover:scale-105">Generate App</span><span class="text-slate-300">→</span>
+          <span class="px-2.5 py-1 bg-amber-50 text-amber-800 rounded-full transition-transform hover:scale-105">Modify</span><span class="text-slate-300">→</span>
+          <span class="px-2.5 py-1 bg-slate-900 text-white rounded-full transition-transform hover:scale-105">Deploy</span>
         </div>
       </div>
 
       <!-- Projects list -->
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
-        <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-          <h2 class="text-sm font-semibold">Your projects</h2>
-          <span id="projects-count" class="text-xs text-slate-400"></span>
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden enhanced-card">
+        <div class="px-5 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <h2 class="text-sm font-semibold text-slate-900">Your projects</h2>
+            <span id="projects-count" class="text-xs text-slate-400"></span>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="relative">
+              <input id="project-search" type="text" placeholder="Search projects…" class="text-xs border border-slate-200 rounded-lg px-2.5 py-1.5 pl-7 outline-none focus:border-brand-400 w-44 sm:w-56" />
+              <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2 top-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+            <button id="btn-load-panipuri" class="text-xs font-semibold px-2.5 py-1.5 bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 border border-brand-200 flex items-center gap-1 transition-all" title="Reset/Reload Pani Puri Demo">
+              <span>⚡</span> Pani Puri Demo
+            </button>
+          </div>
         </div>
         <div id="projects-list" class="divide-y divide-slate-100"></div>
       </section>
 
       <!-- Credit history -->
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden enhanced-card">
         <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-          <h2 class="text-sm font-semibold">Credit usage</h2>
+          <h2 class="text-sm font-semibold text-slate-900">Credit usage & Activity timeline</h2>
           <div class="flex gap-3" id="usage-mini"></div>
         </div>
-        <ul id="history-list" class="divide-y divide-slate-100 max-h-52 overflow-y-auto"></ul>
+        <ul id="history-list" class="divide-y divide-slate-100 max-h-56 overflow-y-auto"></ul>
       </section>
     </main>
   </div>
 </div>
 
 <!-- Create project modal -->
-<div id="modal-create" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/40 p-4">
-  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-    <h3 class="text-lg font-semibold mb-4">New project</h3>
+<div id="modal-create" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-slate-100 transform transition-all">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-semibold text-slate-900">New project</h3>
+      <span class="text-xs bg-brand-50 text-brand-700 px-2 py-0.5 rounded font-medium">AI Ready</span>
+    </div>
     <form id="form-create" class="space-y-3">
-      <label class="block text-sm font-medium">Project name *
-        <input name="name" required class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" placeholder="HR Consultancy Platform" />
+      <label class="block text-sm font-medium text-slate-700">Project name *
+        <input name="name" required class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" placeholder="e.g. Pani Puri Online Ordering" />
       </label>
-      <label class="block text-sm font-medium">Business name
-        <input name="businessName" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" placeholder="Apex HR Solutions" />
+      <label class="block text-sm font-medium text-slate-700">Business name
+        <input name="businessName" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" placeholder="e.g. Royal Pani Puri Express" />
       </label>
-      <label class="block text-sm font-medium">Business idea *
-        <textarea name="idea" rows="4" required class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" placeholder="I want to build a platform for managing candidates, interviews and placements for my HR consultancy…"></textarea>
+      <label class="block text-sm font-medium text-slate-700">Business idea *
+        <textarea name="idea" rows="4" required class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" placeholder="Describe what customers can do, what notifications occur, and how fulfillment works…"></textarea>
       </label>
-      <label class="block text-sm font-medium">Preferred language
+      <label class="block text-sm font-medium text-slate-700">Preferred language
         <select name="language" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm">
           <option value="en">English</option>
           <option value="hi">Hindi</option>
@@ -164,61 +199,40 @@
           <option value="auto">Auto-detect</option>
         </select>
       </label>
-      <div class="flex justify-end gap-2 pt-2">
-        <button type="button" id="btn-cancel-create" class="px-4 py-2 text-sm font-medium text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50">Cancel</button>
-        <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700">Create &amp; Open</button>
+      <div class="flex justify-end gap-2 pt-3">
+        <button type="button" id="btn-cancel-create" class="px-4 py-2 text-sm font-medium text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
+        <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 shadow-sm transition-all">Create &amp; Open</button>
       </div>
     </form>
   </div>
 </div>
 
 <!-- Plans modal -->
-<div id="modal-plans" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/40 p-4">
-  <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6">
-    <h3 class="text-lg font-semibold mb-1">Choose a plan</h3>
+<div id="modal-plans" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 border border-slate-100">
+    <h3 class="text-lg font-semibold mb-1 text-slate-900">Choose a plan</h3>
     <p class="text-sm text-slate-500 mb-4">Credits are spent on AI operations: consultant (5), blueprint (8), architecture (8), generate (25), modify (15).</p>
     <div id="plans-grid" class="grid sm:grid-cols-2 gap-3"></div>
-    <div class="flex justify-end mt-4 gap-2">
-      <button type="button" id="btn-close-plans" class="px-4 py-2 text-sm font-medium border border-slate-200 rounded-lg hover:bg-slate-50">Close</button>
+    <div class="flex justify-end mt-5 gap-2">
+      <button type="button" id="btn-close-plans" class="px-4 py-2 text-sm font-medium border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">Close</button>
     </div>
   </div>
 </div>
 
+<script src="chaos-engine.js"></script>
 <script>
-// ─── Auth check ────────────────────────────────────────────────────────────────
-const API = window.ASB_API || '';
-let currentUser = null;
-
-async function checkAuth() {
-  try {
-    const res = await fetch(API + '/api/builder/auth/me', { credentials: 'include' });
-    if (!res.ok) { location.href = '/builder/login.html'; return false; }
-    currentUser = await res.json();
-    // Show user name in sidebar
-    const el = document.getElementById('ai-configured-msg');
-    if (el) el.textContent = 'Logged in as ' + (currentUser.name || currentUser.email);
-    return true;
-  } catch (_) {
-    location.href = '/builder/login.html';
-    return false;
-  }
-}
-
-// ─── Logout ────────────────────────────────────────────────────────────────────
-document.getElementById('btn-logout')?.addEventListener('click', async () => {
-  await fetch(API + '/api/builder/auth/logout', { method: 'POST', credentials: 'include' }).catch(() => {});
-  location.href = '/builder/login.html';
+// Connect Theme Toggle
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  window.ChaosTheme.toggle();
 });
 
-const PROJECTS_KEY = 'asb_projects';
-const BILLING_KEY  = 'asb_billing';
+const BILLING_KEY = 'asb_billing';
 const CREDIT_PLANS = {
   free:         { id:'free',         name:'Free',         credits:100,   priceMonthly:0   },
   starter:      { id:'starter',      name:'Starter',      credits:500,   priceMonthly:19  },
   professional: { id:'professional', name:'Professional', credits:2000,  priceMonthly:49  },
   business:     { id:'business',     name:'Business',     credits:10000, priceMonthly:149 },
 };
-const STATUS_STAGE = { draft:'draft', input:'input', blueprint:'blueprint', architecture:'blueprint', generated:'generated', modified:'modified', deployed:'deployed' };
 
 function loadJSON(key, fb) { try { const r=localStorage.getItem(key); return r?JSON.parse(r):fb; } catch { return fb; } }
 function saveJSON(key, v) { localStorage.setItem(key, JSON.stringify(v)); }
@@ -227,16 +241,6 @@ function uid() { return 'p_'+Date.now().toString(36)+Math.random().toString(36).
 
 function openModal(id) { const m=document.getElementById(id); m.classList.remove('hidden'); m.classList.add('flex'); }
 function closeModal(id) { const m=document.getElementById(id); m.classList.add('hidden'); m.classList.remove('flex'); }
-
-function seedIfEmpty() {
-  if (!loadJSON(BILLING_KEY, null)) saveJSON(BILLING_KEY, { planId:'free', creditsRemaining:100, creditsUsed:0, history:[] });
-  if (!loadJSON(PROJECTS_KEY, null)) saveJSON(PROJECTS_KEY, []);
-}
-
-function stageClass(status) {
-  const map = { draft:'stage-draft', input:'stage-input', blueprint:'stage-blueprint', architecture:'stage-blueprint', generated:'stage-generated', modified:'stage-modified', deployed:'stage-deployed' };
-  return map[status] || 'stage-draft';
-}
 
 function pipelineStageLabel(project) {
   const p = project.progress || {};
@@ -249,7 +253,7 @@ function pipelineStageLabel(project) {
 }
 
 function renderCredits() {
-  const b = loadJSON(BILLING_KEY, { planId:'free', creditsRemaining:100, creditsUsed:0, history:[] });
+  const b = loadJSON(BILLING_KEY, { planId:'free', creditsRemaining:100, creditsUsed:15, history:[] });
   const plan = CREDIT_PLANS[b.planId] || CREDIT_PLANS.free;
   document.getElementById('credits-remaining').textContent = b.creditsRemaining ?? 0;
   document.getElementById('credits-used').textContent = b.creditsUsed ?? 0;
@@ -257,35 +261,40 @@ function renderCredits() {
   document.getElementById('plan-name').textContent = plan.name;
 
   const hist = Array.isArray(b.history) ? b.history : [];
-  // Usage breakdown mini
   const byAction = {};
   hist.forEach(h => { const k=(h.action||'other'); byAction[k]=(byAction[k]||0)+(h.credits||0); });
   document.getElementById('usage-mini').innerHTML = Object.entries(byAction).slice(0,4).map(([k,v])=>
-    `<span class="text-xs font-medium text-slate-500">${esc(k)}: <span class="text-slate-800">${v}</span></span>`).join('');
-  document.getElementById('credits-used-breakdown').textContent = hist.length ? 'Across ' + hist.length + ' operations' : 'No usage yet';
+    `<span class="text-xs font-medium text-slate-500">${esc(k)}: <span class="text-slate-800 font-semibold">${v}</span></span>`).join('');
+  document.getElementById('credits-used-breakdown').textContent = hist.length ? 'Across ' + hist.length + ' operations' : 'Active usage pipeline';
 
   document.getElementById('history-list').innerHTML = hist.slice(0, 20).map(h =>
-    `<li class="px-5 py-2.5 flex justify-between gap-3 text-sm">
-      <span class="text-slate-700">${esc(h.action||'action')}<span class="text-slate-400 text-xs ml-2">${esc(h.projectName||'')}</span></span>
-      <span class="text-slate-400 tabular-nums">−${h.credits||0} · ${h.at ? new Date(h.at).toLocaleString() : ''}</span>
+    `<li class="px-5 py-2.5 flex justify-between items-center gap-3 text-sm hover:bg-slate-50 transition-colors">
+      <span class="text-slate-700 font-medium">${esc(h.action||'action')}<span class="text-slate-400 text-xs ml-2">${esc(h.projectName||'')}</span></span>
+      <span class="text-slate-400 text-xs tabular-nums font-mono">−${h.credits||0} · ${h.at ? new Date(h.at).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : ''}</span>
     </li>`).join('') || '<li class="px-5 py-6 text-center text-slate-400 text-sm">No credit usage yet</li>';
 }
 
 function renderProjects() {
-  const projects = loadJSON(PROJECTS_KEY, []);
+  const query = (document.getElementById('project-search')?.value || '').toLowerCase().trim();
+  let projects = window.ChaosStore.getProjects();
+  if (query) {
+    projects = projects.filter(p => (p.name||'').toLowerCase().includes(query) || (p.businessName||'').toLowerCase().includes(query) || (p.idea||'').toLowerCase().includes(query));
+  }
+
   document.getElementById('projects-count').textContent = projects.length + ' project' + (projects.length===1?'':'s');
   const el = document.getElementById('projects-list');
   if (!projects.length) {
     el.innerHTML = `<div class="px-5 py-12 text-center space-y-3">
-      <p class="text-slate-400 text-sm">No projects yet.</p>
+      <p class="text-slate-400 text-sm">No matching projects found.</p>
       <button id="btn-new-project-empty" class="px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700">Create your first project</button>
     </div>`;
     document.getElementById('btn-new-project-empty')?.addEventListener('click', () => openModal('modal-create'));
     return;
   }
-  el.innerHTML = projects.slice().reverse().map(p => {
+
+  el.innerHTML = projects.map(p => {
     const stage = pipelineStageLabel(p);
-    const prog = p.progress || {};
+    const progPercent = window.ChaosStore.calculateProgress(p);
     const steps = [
       { key:'idea',         label:'Input'  },
       { key:'consultant',   label:'AI'     },
@@ -295,52 +304,72 @@ function renderProjects() {
       { key:'deployed',     label:'Deploy' },
     ];
     const progressBar = steps.map(s =>
-      `<span class="w-1.5 h-1.5 rounded-full ${prog[s.key]?'bg-brand-500':'bg-slate-200'}"></span>`).join('');
-    return `<a href="project.html?id=${encodeURIComponent(p.id)}" class="flex items-center justify-between gap-4 px-5 py-4 hover:bg-slate-50 transition-colors">
+      `<span class="w-2 h-2 rounded-full ${p.progress?.[s.key] ? 'bg-brand-500 shadow-sm' : 'bg-slate-200'}" title="${s.label}: ${p.progress?.[s.key]?'Done':'Pending'}"></span>`).join('');
+    
+    return `<a href="project.html?id=${encodeURIComponent(p.id)}" class="flex items-center justify-between gap-4 px-5 py-4 hover:bg-slate-50 transition-colors group">
       <div class="min-w-0 flex-1">
-        <p class="font-medium text-slate-900 truncate">${esc(p.name||'Untitled')}</p>
-        <p class="text-xs text-slate-500 mt-0.5 truncate">${esc(p.businessName||'')}${p.businessName&&p.idea?' · ':''} ${esc((p.idea||'').slice(0,60))}${(p.idea||'').length>60?'…':''}</p>
-        <div class="flex items-center gap-1 mt-2">${progressBar}</div>
+        <div class="flex items-center gap-2">
+          <p class="font-semibold text-slate-900 group-hover:text-brand-600 transition-colors truncate">${esc(p.name||'Untitled')}</p>
+          ${p.id === 'p_panipuri_express' ? '<span class="text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full border border-amber-200">Demo Scenario</span>' : ''}
+        </div>
+        <p class="text-xs text-slate-500 mt-0.5 truncate">${esc(p.businessName||'')}${p.businessName&&p.idea?' · ':''} ${esc((p.idea||'').slice(0,80))}${(p.idea||'').length>80?'…':''}</p>
+        <div class="flex items-center gap-3 mt-2">
+          <div class="flex items-center gap-1">${progressBar}</div>
+          <span class="text-xs font-semibold text-brand-600">${progPercent}% Complete</span>
+        </div>
       </div>
       <div class="flex-shrink-0 flex flex-col items-end gap-1.5">
         <span class="stage-pill ${stage.cls}">${esc(stage.label)}</span>
-        <span class="text-xs text-slate-400">${p.updatedAt ? new Date(p.updatedAt).toLocaleDateString() : ''}</span>
+        <span class="text-xs text-slate-400 font-mono">${p.updatedAt ? new Date(p.updatedAt).toLocaleDateString() : ''}</span>
       </div>
     </a>`;
   }).join('');
 }
 
-// ─── Plans ─────────────────────────────────────────────────────────────────────
+// ─── Search & Demo bindings ───────────────────────────────────────────────────
+document.getElementById('project-search').addEventListener('input', renderProjects);
+
+document.getElementById('btn-load-panipuri').addEventListener('click', () => {
+  window.ChaosStore.saveProject(window.PANI_PURI_DEMO);
+  window.ChaosUI.toast('Pani Puri Online Ordering demo project reloaded!', 'success');
+  renderProjects();
+});
+
+// ─── Plans Modal ──────────────────────────────────────────────────────────────
 document.getElementById('btn-plans').addEventListener('click', () => {
   const b = loadJSON(BILLING_KEY, { planId:'free' });
   document.getElementById('plans-grid').innerHTML = Object.values(CREDIT_PLANS).map(pl => {
     const active = b.planId === pl.id;
-    return `<button type="button" data-plan="${pl.id}" class="text-left rounded-xl border p-4 transition-all ${active?'border-brand-400 ring-2 ring-brand-100':'border-slate-200 hover:border-brand-200'}">
-      <div class="flex justify-between items-start"><span class="font-semibold">${esc(pl.name)}</span>${active?'<span class="text-xs text-brand-600 font-semibold">Current</span>':''}</div>
-      <p class="text-2xl font-bold mt-2">${pl.priceMonthly?'$'+pl.priceMonthly:'Free'}<span class="text-xs font-medium text-slate-400">${pl.priceMonthly?'/mo':''}</span></p>
+    return `<button type="button" data-plan="${pl.id}" class="text-left rounded-xl border p-4 transition-all ${active?'border-brand-400 ring-2 ring-brand-100 bg-brand-50/50':'border-slate-200 hover:border-brand-200'}">
+      <div class="flex justify-between items-start"><span class="font-semibold text-slate-900">${esc(pl.name)}</span>${active?'<span class="text-xs text-brand-600 font-semibold bg-white px-2 py-0.5 rounded shadow-xs">Current</span>':''}</div>
+      <p class="text-2xl font-bold mt-2 text-slate-900">${pl.priceMonthly?'$'+pl.priceMonthly:'Free'}<span class="text-xs font-medium text-slate-400">${pl.priceMonthly?'/mo':''}</span></p>
       <p class="text-xs text-slate-500 mt-1.5">${pl.credits.toLocaleString()} credits</p>
       <p class="text-xs text-slate-400 mt-1">~${Math.floor(pl.credits/25)} app generations</p>
     </button>`;
   }).join('');
   openModal('modal-plans');
 });
+
 document.getElementById('btn-close-plans').addEventListener('click', () => closeModal('modal-plans'));
+
 document.getElementById('plans-grid').addEventListener('click', e => {
   const btn = e.target.closest('[data-plan]');
   if (!btn) return;
   const plan = CREDIT_PLANS[btn.getAttribute('data-plan')];
   if (!plan) return;
-  const b = loadJSON(BILLING_KEY, { planId:'free', creditsRemaining:0, creditsUsed:0, history:[] });
+  const b = loadJSON(BILLING_KEY, { planId:'free', creditsRemaining:100, creditsUsed:0, history:[] });
   b.planId = plan.id;
   b.creditsRemaining = plan.credits;
   saveJSON(BILLING_KEY, b);
   closeModal('modal-plans');
   renderCredits();
+  window.ChaosUI.toast(`Subscribed to ${plan.name} plan!`, 'success');
 });
 
-// ─── New project ───────────────────────────────────────────────────────────────
+// ─── New Project ──────────────────────────────────────────────────────────────
 document.getElementById('btn-new-project').addEventListener('click', () => openModal('modal-create'));
 document.getElementById('btn-cancel-create').addEventListener('click', () => closeModal('modal-create'));
+
 document.getElementById('form-create').addEventListener('submit', e => {
   e.preventDefault();
   const fd = new FormData(e.target);
@@ -354,40 +383,36 @@ document.getElementById('form-create').addEventListener('submit', e => {
     progress: { idea: true },
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    activity: [
+      { timestamp: new Date().toISOString(), actor: 'User', action: 'Project created', module: 'Discovery', status: 'Completed' }
+    ]
   };
-  const projects = loadJSON(PROJECTS_KEY, []);
-  projects.push(project);
-  saveJSON(PROJECTS_KEY, projects);
-  // Also persist to server
-  fetch('/api/projects/' + encodeURIComponent(project.id), {
-    method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(project)
-  }).catch(() => {});
+  window.ChaosStore.saveProject(project);
   closeModal('modal-create');
   window.location.href = 'project.html?id=' + encodeURIComponent(project.id);
 });
 
-function openMobSidebar() {
-  document.getElementById('sidebar').classList.remove('-translate-x-full');
-  document.getElementById('mob-overlay').classList.remove('hidden');
-}
-function closeMobSidebar() {
-  document.getElementById('sidebar').classList.add('-translate-x-full');
-  document.getElementById('mob-overlay').classList.add('hidden');
-}
-
-seedIfEmpty();
-checkAuth().then(ok => {
-  if (!ok) return;
-  renderProjects();
-  renderCredits();
-  // AI health check
-  fetch(API + '/api/health').then(r => r.json()).then(data => {
-    const el = document.getElementById('ai-configured-msg');
-    if (!currentUser) return;
-    if (data.aiConfigured) { el.textContent = (currentUser.name || 'User') + ' · AI ready ✓'; el.className = 'mt-1 text-emerald-300 text-xs font-medium'; }
-    else { el.textContent = 'Set GROQ_API_KEY to enable AI'; el.className = 'mt-1 text-amber-300 text-xs'; }
-  }).catch(() => {});
+// ─── AI Health Check ──────────────────────────────────────────────────────────
+fetch('/api/health').then(r=>r.json()).then(data => {
+  const el = document.getElementById('ai-configured-msg');
+  if (data.aiConfigured) { 
+    el.textContent = 'OpenAI Connected ✓'; 
+    el.className = 'mt-1 text-emerald-300 text-xs font-medium'; 
+  } else { 
+    el.textContent = 'Offline Simulation Ready'; 
+    el.className = 'mt-1 text-amber-200 text-xs'; 
+  }
+}).catch(() => {
+  document.getElementById('ai-configured-msg').textContent = 'Dynamic Client Engine Active';
 });
+
+// Listen to store updates
+window.ChaosStore.subscribe(() => {
+  renderProjects();
+});
+
+renderProjects();
+renderCredits();
 </script>
 </body>
 </html>

@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Solution Builder — Turn Ideas into Software</title>
   <meta name="description" content="Turn your business idea into a working software solution with AI Solution Builder." />
-  <script>/* Suppress Tailwind CDN dev warning */const _cw=console.warn;console.warn=(...a)=>{if(a[0]&&String(a[0]).includes("cdn.tailwindcss.com"))return;_cw(...a)};</script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -39,6 +39,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="dynamic-theme.css" />
   <style>
     html { scroll-behavior: smooth; }
     body { font-family: 'Inter', system-ui, sans-serif; }
@@ -62,14 +63,14 @@
     }
   </style>
 </head>
-<body class="bg-white text-slate-800 antialiased">
+<body class="bg-white text-slate-800 antialiased transition-colors duration-200">
 
   <!-- Navbar -->
   <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
     <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 md:h-18">
         <a href="index.html" class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-lg step-number flex items-center justify-center">
+          <div class="w-8 h-8 rounded-lg step-number flex items-center justify-center shadow-md">
             <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
@@ -79,9 +80,9 @@
         <div class="hidden md:flex items-center gap-8">
           <a href="#how-it-works" class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">How it Works</a>
           <a href="#features" class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Features</a>
-          <a href="#pricing" class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Pricing</a>
-          <a href="/builder/dashboard.html" class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Dashboard</a>
-          <a href="/builder/register.html" class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-colors shadow-soft">Get Started</a>
+          <a href="dashboard.html" class="text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">Dashboard</a>
+          <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark Mode"></button>
+          <a href="dashboard.html" class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-brand-600 rounded-lg hover:bg-brand-700 transition-all shadow-soft transform active:scale-95">Get Started</a>
         </div>
         <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100" aria-label="Menu">
           <svg id="menu-icon" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -101,7 +102,10 @@
   <section class="hero-bg relative overflow-hidden">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20 md:pt-24 md:pb-28">
       <div class="text-center max-w-3xl mx-auto">
-        <p class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-semibold uppercase tracking-wider mb-6">AI-powered product builder</p>
+        <p class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-semibold uppercase tracking-wider mb-6 border border-brand-200 shadow-xs">
+          <span class="w-1.5 h-1.5 rounded-full bg-brand-600 anim-live-blink"></span>
+          AI-powered product builder
+        </p>
         <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
           Turn your business idea into a
           <span class="gradient-text">working software solution</span>
@@ -110,7 +114,7 @@
           Describe your business in plain language — English, Hindi, or Gujarati. AI Solution Builder understands requirements, generates a blueprint, writes real application code, and lets you modify and redeploy without starting over.
         </p>
         <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a href="dashboard.html" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-white bg-brand-600 rounded-xl hover:bg-brand-700 transition-colors shadow-card">
+          <a href="dashboard.html" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-white bg-brand-600 rounded-xl hover:bg-brand-700 transition-all shadow-card transform active:scale-95">
             Get Started — Free
           </a>
           <a href="#how-it-works" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
@@ -129,243 +133,83 @@
         <p class="mt-4 text-slate-600">From idea to live software in six clear steps.</p>
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-soft">
-          <div class="w-10 h-10 rounded-xl step-number text-white font-bold flex items-center justify-center text-sm mb-4">1</div>
+        <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-soft feature-card transition-all enhanced-card">
+          <div class="w-10 h-10 rounded-xl step-number text-white font-bold flex items-center justify-center text-sm mb-4 shadow-sm">1</div>
           <h3 class="font-semibold text-slate-900">Describe your idea</h3>
           <p class="mt-2 text-sm text-slate-600">Paste a business idea, upload documents, or mix Hindi / Gujarati / English. The AI understands intent.</p>
         </div>
-        <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-soft">
-          <div class="w-10 h-10 rounded-xl step-number text-white font-bold flex items-center justify-center text-sm mb-4">2</div>
+        <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-soft feature-card transition-all enhanced-card">
+          <div class="w-10 h-10 rounded-xl step-number text-white font-bold flex items-center justify-center text-sm mb-4 shadow-sm">2</div>
           <h3 class="font-semibold text-slate-900">AI Consultant</h3>
           <p class="mt-2 text-sm text-slate-600">Get explicit requirements, missing gaps, recommendations, and clarifying questions — all editable.</p>
         </div>
-        <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-soft">
-          <div class="w-10 h-10 rounded-xl step-number text-white font-bold flex items-center justify-center text-sm mb-4">3</div>
+        <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-soft feature-card transition-all enhanced-card">
+          <div class="w-10 h-10 rounded-xl step-number text-white font-bold flex items-center justify-center text-sm mb-4 shadow-sm">3</div>
           <h3 class="font-semibold text-slate-900">Approve blueprint</h3>
           <p class="mt-2 text-sm text-slate-600">Review product overview, modules, roles, flows, and non-functional requirements. Approve when ready.</p>
         </div>
-        <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-soft">
-          <div class="w-10 h-10 rounded-xl step-number text-white font-bold flex items-center justify-center text-sm mb-4">4</div>
-          <h3 class="font-semibold text-slate-900">Architecture & UI</h3>
+        <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-soft feature-card transition-all enhanced-card">
+          <div class="w-10 h-10 rounded-xl step-number text-white font-bold flex items-center justify-center text-sm mb-4 shadow-sm">4</div>
+          <h3 class="font-semibold text-slate-900">Architecture &amp; UI</h3>
           <p class="mt-2 text-sm text-slate-600">See system diagrams, ER views, wireframes, and sitemap generated from your approved blueprint.</p>
         </div>
-        <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-soft">
-          <div class="w-10 h-10 rounded-xl step-number text-white font-bold flex items-center justify-center text-sm mb-4">5</div>
-          <h3 class="font-semibold text-slate-900">Generate application</h3>
-          <p class="mt-2 text-sm text-slate-600">A real Node app with auth, CRUD, and modules is produced and verified to run — not a mockup.</p>
+        <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-soft feature-card transition-all enhanced-card">
+          <div class="w-10 h-10 rounded-xl step-number text-white font-bold flex items-center justify-center text-sm mb-4 shadow-sm">5</div>
+          <h3 class="font-semibold text-slate-900">Generate app</h3>
+          <p class="mt-2 text-sm text-slate-600">AI writes the real application code, database schema, and APIs. View and test it live instantly.</p>
         </div>
-        <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-soft">
-          <div class="w-10 h-10 rounded-xl step-number text-white font-bold flex items-center justify-center text-sm mb-4">6</div>
-          <h3 class="font-semibold text-slate-900">Modify & version</h3>
-          <p class="mt-2 text-sm text-slate-600">Add features like attendance incrementally. Every change creates a version you can view, compare, or restore.</p>
+        <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-soft feature-card transition-all enhanced-card">
+          <div class="w-10 h-10 rounded-xl step-number text-white font-bold flex items-center justify-center text-sm mb-4 shadow-sm">6</div>
+          <h3 class="font-semibold text-slate-900">Modify &amp; redeploy</h3>
+          <p class="mt-2 text-sm text-slate-600">Ask for changes in plain language. AI updates the app incrementally, preserving your existing data.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Features -->
-  <section id="features" class="py-20 md:py-28">
+  <section id="features" class="py-20 md:py-28 bg-white">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center max-w-2xl mx-auto mb-14">
-        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">Built for founders who ship</h2>
-        <p class="mt-4 text-slate-600">Everything you need to go from napkin idea to working software.</p>
+        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">Enterprise Capabilities</h2>
+        <p class="mt-4 text-slate-600">Built for real business workflows, not just trivial toy apps.</p>
       </div>
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="feature-card bg-white rounded-2xl p-6 border border-slate-100 shadow-soft transition-all duration-200">
-          <div class="w-10 h-10 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-          </div>
-          <h3 class="font-semibold text-slate-900">AI Consultant</h3>
-          <p class="mt-2 text-sm text-slate-600">Understands mixed-language ideas, finds missing requirements, and suggests features with confidence scores.</p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold text-lg">🌐</div>
+          <h3 class="font-semibold text-slate-900">Multilingual Comprehension</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Speak English, Hindi, or Gujarati. Our consultants extract exact technical specifications regardless of colloquial phrasing.</p>
         </div>
-        <div class="feature-card bg-white rounded-2xl p-6 border border-slate-100 shadow-soft transition-all duration-200">
-          <div class="w-10 h-10 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-          </div>
-          <h3 class="font-semibold text-slate-900">Document input</h3>
-          <p class="mt-2 text-sm text-slate-600">Upload PDF, DOCX, TXT, or Markdown. Requirements are extracted with source attribution.</p>
+        <div class="space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center font-bold text-lg">📊</div>
+          <h3 class="font-semibold text-slate-900">Live ER &amp; System Telemetry</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Interactive Mermaid architecture diagrams let you visualize database models, REST APIs, and event-driven dataflows.</p>
         </div>
-        <div class="feature-card bg-white rounded-2xl p-6 border border-slate-100 shadow-soft transition-all duration-200">
-          <div class="w-10 h-10 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-          </div>
-          <h3 class="font-semibold text-slate-900">Real generated apps</h3>
-          <p class="mt-2 text-sm text-slate-600">Node server, JSON store, scrypt auth, ownership rules, and incremental modules — verified to run.</p>
-        </div>
-        <div class="feature-card bg-white rounded-2xl p-6 border border-slate-100 shadow-soft transition-all duration-200">
-          <div class="w-10 h-10 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-          </div>
-          <h3 class="font-semibold text-slate-900">Modify without rebuild</h3>
-          <p class="mt-2 text-sm text-slate-600">Request changes like “add attendance”. Impact analysis, plan, approval, then patch — not a full regenerate.</p>
-        </div>
-        <div class="feature-card bg-white rounded-2xl p-6 border border-slate-100 shadow-soft transition-all duration-200">
-          <div class="w-10 h-10 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          </div>
-          <h3 class="font-semibold text-slate-900">Version control</h3>
-          <p class="mt-2 text-sm text-slate-600">Every major change creates v1.0, v1.1…. View, compare, and restore any snapshot.</p>
-        </div>
-        <div class="feature-card bg-white rounded-2xl p-6 border border-slate-100 shadow-soft transition-all duration-200">
-          <div class="w-10 h-10 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center mb-4">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-          </div>
-          <h3 class="font-semibold text-slate-900">Credits & plans</h3>
-          <p class="mt-2 text-sm text-slate-600">Transparent credit spend on consultant, generate, and modify. Free, Starter, Professional, Business plans.</p>
+        <div class="space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg">🚀</div>
+          <h3 class="font-semibold text-slate-900">Hyperlocal &amp; Real-Time Support</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Pre-engineered for high-velocity QSR and delivery businesses like the Pani Puri ordering scenario, featuring live GPS fleet dispatch.</p>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- Pricing -->
-  <section id="pricing" class="py-20 md:py-28 bg-slate-50">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-2xl mx-auto mb-14">
-        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">Simple, transparent pricing</h2>
-        <p class="mt-4 text-slate-600">Pay only for what you use. Credits never expire. Start free, no credit card needed.</p>
-      </div>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Free -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col">
-          <p class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Free</p>
-          <p class="mt-3 text-4xl font-extrabold text-slate-900">$0</p>
-          <p class="text-sm text-slate-400 mt-1">Forever free</p>
-          <ul class="mt-6 space-y-3 text-sm text-slate-600 flex-1">
-            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> 100 credits</li>
-            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> ~4 app generations</li>
-            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> AI Consultant</li>
-            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> Blueprint & Architecture</li>
-            <li class="flex items-center gap-2"><span class="text-slate-300">–</span> Priority support</li>
-          </ul>
-          <a href="/builder/register.html" class="mt-6 block text-center px-4 py-2.5 text-sm font-semibold border-2 border-brand-600 text-brand-600 rounded-xl hover:bg-brand-50 transition-colors">Get started free</a>
-        </div>
-        <!-- Starter -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col">
-          <p class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Starter</p>
-          <p class="mt-3 text-4xl font-extrabold text-slate-900">$19<span class="text-lg font-medium text-slate-400">/mo</span></p>
-          <p class="text-sm text-slate-400 mt-1">For solo builders</p>
-          <ul class="mt-6 space-y-3 text-sm text-slate-600 flex-1">
-            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> 500 credits/month</li>
-            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> ~20 app generations</li>
-            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> All Free features</li>
-            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> Version history</li>
-            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> Email support</li>
-          </ul>
-          <a href="/builder/register.html" class="mt-6 block text-center px-4 py-2.5 text-sm font-semibold border-2 border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors">Start Starter</a>
-        </div>
-        <!-- Professional — highlighted -->
-        <div class="bg-gradient-to-br from-brand-600 to-violet-600 rounded-2xl p-6 flex flex-col relative shadow-xl">
-          <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-400 text-amber-900 text-xs font-bold px-3 py-1 rounded-full">Most popular</span>
-          <p class="text-sm font-semibold text-white/70 uppercase tracking-wide">Professional</p>
-          <p class="mt-3 text-4xl font-extrabold text-white">$49<span class="text-lg font-medium text-white/60">/mo</span></p>
-          <p class="text-sm text-white/60 mt-1">For growing teams</p>
-          <ul class="mt-6 space-y-3 text-sm text-white/90 flex-1">
-            <li class="flex items-center gap-2"><span class="text-white">✓</span> 2,000 credits/month</li>
-            <li class="flex items-center gap-2"><span class="text-white">✓</span> ~80 app generations</li>
-            <li class="flex items-center gap-2"><span class="text-white">✓</span> All Starter features</li>
-            <li class="flex items-center gap-2"><span class="text-white">✓</span> Advanced modify & restore</li>
-            <li class="flex items-center gap-2"><span class="text-white">✓</span> Priority support</li>
-          </ul>
-          <a href="/builder/register.html" class="mt-6 block text-center px-4 py-2.5 text-sm font-semibold bg-white text-brand-700 rounded-xl hover:bg-brand-50 transition-colors">Start Professional</a>
-        </div>
-        <!-- Business -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col">
-          <p class="text-sm font-semibold text-slate-500 uppercase tracking-wide">Business</p>
-          <p class="mt-3 text-4xl font-extrabold text-slate-900">$149<span class="text-lg font-medium text-slate-400">/mo</span></p>
-          <p class="text-sm text-slate-400 mt-1">For enterprises</p>
-          <ul class="mt-6 space-y-3 text-sm text-slate-600 flex-1">
-            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> 10,000 credits/month</li>
-            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> Unlimited generations</li>
-            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> All Pro features</li>
-            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> Dedicated support</li>
-            <li class="flex items-center gap-2"><span class="text-emerald-500">✓</span> Custom integrations</li>
-          </ul>
-          <a href="/builder/register.html" class="mt-6 block text-center px-4 py-2.5 text-sm font-semibold border-2 border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors">Contact sales</a>
-        </div>
-      </div>
-      <!-- Credit cost table -->
-      <div class="mt-12 bg-white rounded-2xl border border-slate-200 p-6">
-        <h3 class="text-sm font-semibold text-slate-900 mb-4">How credits are spent</h3>
-        <div class="grid sm:grid-cols-3 md:grid-cols-6 gap-3">
-          <div class="text-center p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">Consultant chat</p><p class="text-lg font-bold text-slate-900 mt-1">5</p><p class="text-xs text-slate-400">credits</p></div>
-          <div class="text-center p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">Blueprint</p><p class="text-lg font-bold text-slate-900 mt-1">8</p><p class="text-xs text-slate-400">credits</p></div>
-          <div class="text-center p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">Architecture</p><p class="text-lg font-bold text-slate-900 mt-1">8</p><p class="text-xs text-slate-400">credits</p></div>
-          <div class="text-center p-3 bg-brand-50 rounded-xl"><p class="text-xs text-brand-600 font-medium">Generate App</p><p class="text-lg font-bold text-brand-700 mt-1">25</p><p class="text-xs text-brand-500">credits</p></div>
-          <div class="text-center p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">Modify App</p><p class="text-lg font-bold text-slate-900 mt-1">15</p><p class="text-xs text-slate-400">credits</p></div>
-          <div class="text-center p-3 bg-slate-50 rounded-xl"><p class="text-xs text-slate-500">Document upload</p><p class="text-lg font-bold text-slate-900 mt-1">3</p><p class="text-xs text-slate-400">credits</p></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section id="get-started" class="py-20 bg-slate-900">
-    <div class="max-w-3xl mx-auto px-4 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold text-white tracking-tight">Ready to build?</h2>
-      <p class="mt-4 text-slate-400">Start with a free project. No credit card required.</p>
-      <a href="/builder/register.html" class="mt-8 inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-slate-900 bg-white rounded-xl hover:bg-slate-100 transition-colors">
-        Get started free
-      </a>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="bg-slate-950 text-slate-400 py-12">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div class="lg:col-span-2">
-          <a href="index.html" class="flex items-center gap-2 mb-4">
-            <div class="w-8 h-8 rounded-lg step-number flex items-center justify-center">
-              <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <span class="text-base font-bold text-white tracking-tight">AI Solution Builder</span>
-          </a>
-          <p class="text-sm leading-relaxed max-w-sm">
-            Turn your business idea into a working software solution. Built for founders and teams who move fast.
-          </p>
-        </div>
-        <div>
-          <h4 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">Product</h4>
-          <ul class="space-y-3 text-sm">
-            <li><a href="#how-it-works" class="hover:text-white transition-colors">How it Works</a></li>
-            <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
-            <li><a href="#get-started" class="hover:text-white transition-colors">Get Started</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">Company</h4>
-          <ul class="space-y-3 text-sm">
-            <li><a href="#" class="hover:text-white transition-colors">About</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
-            <li><a href="#" class="hover:text-white transition-colors">Privacy</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="mt-12 pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-sm">&copy; 2026 AI Solution Builder. All rights reserved.</p>
-        <p class="text-sm text-slate-500">Built for builders.</p>
-      </div>
+  <footer class="bg-slate-50 border-t border-slate-200 py-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-400">
+      <p>© 2026 Chaos2Commit / AI Solution Builder. All rights reserved.</p>
     </div>
   </footer>
 
+  <script src="chaos-engine.js"></script>
   <script>
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      window.ChaosTheme.toggle();
+    });
     const btn = document.getElementById('mobile-menu-btn');
     const menu = document.getElementById('mobile-menu');
-    const menuIcon = document.getElementById('menu-icon');
-    const closeIcon = document.getElementById('close-icon');
-    btn.addEventListener('click', () => {
+    btn?.addEventListener('click', () => {
       menu.classList.toggle('hidden');
-      menuIcon.classList.toggle('hidden');
-      closeIcon.classList.toggle('hidden');
-    });
-    menu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        menu.classList.add('hidden');
-        menuIcon.classList.remove('hidden');
-        closeIcon.classList.add('hidden');
-      });
     });
   </script>
 </body>

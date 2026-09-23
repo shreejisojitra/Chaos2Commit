@@ -2240,5 +2240,1700 @@
       "deployedAt": "2026-09-23T16:39:03.768Z",
       "note": "Running locally. For production deployment, export the generated-app directory to Render, Railway, or Vercel + serverless adapter."
     }
+  },
+  {
+    "id": "p_muecghjui7mb05",
+    "name": "business idea",
+    "businessName": "Apex HR Solution",
+    "idea": "I want to open Paani puri shop and allow swiggy in that",
+    "language": "en",
+    "status": "generated",
+    "progress": {
+      "idea": true,
+      "consultant": true,
+      "requirements": true,
+      "blueprint": true,
+      "architecture": true,
+      "build": true,
+      "deployed": true
+    },
+    "createdAt": "2026-09-23T16:55:31.290Z",
+    "updatedAt": "2026-09-23T17:23:55.191Z",
+    "docText": "BUSINESS TRANSFORMATION REQUIREMENT DOCUMENT\r\n\r\nProject Name:\r\nPani Puri Shop Online Ordering and Delivery Management System\r\n\r\nBusiness Type:\r\nFood and Beverage – Pani Puri Shop\r\n\r\nBusiness Idea:\r\nI want to open a Pani Puri shop and make the shop available for online ordering through food delivery platforms such as Swiggy. Customers should be able to discover the shop, view the menu, place an order, receive order notifications, and track their delivery.\r\n\r\nBUSINESS OBJECTIVE:\r\n\r\nThe main objective is to digitally transform the Pani Puri shop so that customers can order food online instead of visiting the shop physically.\r\n\r\nThe system should help manage online orders, notify the shop when a new order is received, notify customers about order status, and provide live delivery tracking.\r\n\r\nCURRENT BUSINESS PROCESS:\r\n\r\nCurrently, customers visit the shop physically and place their orders directly at the counter.\r\n\r\nThe shop does not currently have an online ordering system.\r\n\r\nThere is no automated order notification system.\r\n\r\nThere is no live delivery tracking system.\r\n\r\nThe business wants to start accepting online orders and provide delivery services.\r\n\r\nPROPOSED ONLINE PROCESS:\r\n\r\n1. Customer opens the food delivery application.\r\n\r\n2. Customer searches for the Pani Puri shop.\r\n\r\n3. Customer views the available menu items.\r\n\r\n4. Customer selects Pani Puri and other available food items.\r\n\r\n5. Customer selects quantity and adds items to the cart.\r\n\r\n6. Customer confirms the delivery address.\r\n\r\n7. Customer places the order.\r\n\r\n8. The shop receives an instant notification about the new order.\r\n\r\n9. The shop accepts or rejects the order.\r\n\r\n10. If the order is accepted, the shop starts preparing the order.\r\n\r\n11. The customer receives an order status notification.\r\n\r\n12. After preparation, the delivery partner collects the order from the shop.\r\n\r\n13. The delivery partner starts the delivery.\r\n\r\n14. The customer receives a notification that the order is out for delivery.\r\n\r\n15. The delivery partner's GPS location is shared while the delivery is active.\r\n\r\n16. The customer can open the tracking screen and view the delivery partner's live location on a map.\r\n\r\n17. The customer can see the estimated delivery status.\r\n\r\n18. The delivery partner reaches the customer's location.\r\n\r\n19. The order is delivered.\r\n\r\n20. The customer receives a delivery completion notification.\r\n\r\nCUSTOMER REQUIREMENTS:\r\n\r\nThe customer should be able to:\r\n\r\n* Search for the Pani Puri shop.\r\n* View the shop profile.\r\n* View the food menu.\r\n* View item names, prices and descriptions.\r\n* Select food items.\r\n* Select quantity.\r\n* Add items to cart.\r\n* View total order amount.\r\n* Enter or select delivery address.\r\n* Place an online order.\r\n* Receive order confirmation.\r\n* Receive order status notifications.\r\n* View order history.\r\n* Track an active delivery.\r\n* View the delivery partner's live GPS location.\r\n* View delivery status.\r\n* Receive notification when the order is delivered.\r\n* Provide feedback or rating after delivery.\r\n\r\nSHOP OWNER REQUIREMENTS:\r\n\r\nThe shop owner should be able to:\r\n\r\n* Create and manage the shop profile.\r\n* Add menu items.\r\n* Edit menu items.\r\n* Remove unavailable menu items.\r\n* Set item prices.\r\n* View incoming orders.\r\n* Receive instant notifications for new orders.\r\n* Accept or reject orders.\r\n* Update order status.\r\n* Mark orders as preparing.\r\n* Mark orders as ready.\r\n* View delivery status.\r\n* View active orders.\r\n* View completed orders.\r\n* View daily sales.\r\n* View order history.\r\n* Manage shop operating hours.\r\n\r\nDELIVERY PARTNER REQUIREMENTS:\r\n\r\nThe delivery partner should be able to:\r\n\r\n* Receive delivery assignment.\r\n* Accept a delivery.\r\n* View customer delivery address.\r\n* View shop pickup location.\r\n* Pick up the order from the shop.\r\n* Start delivery.\r\n* Share GPS location during active delivery.\r\n* Update delivery status.\r\n* Navigate to the customer location.\r\n* Mark the order as delivered.\r\n\r\nNOTIFICATION REQUIREMENTS:\r\n\r\nThe system should send notifications for important order events.\r\n\r\nCustomer notifications should include:\r\n\r\n* Order placed.\r\n* Order accepted.\r\n* Order rejected.\r\n* Order preparation started.\r\n* Order ready.\r\n* Order picked up.\r\n* Order out for delivery.\r\n* Delivery partner location available.\r\n* Order delivered.\r\n\r\nShop notifications should include:\r\n\r\n* New order received.\r\n* Order cancellation.\r\n* Delivery partner assigned.\r\n* Delivery partner arriving for pickup.\r\n\r\nDelivery partner notifications should include:\r\n\r\n* New delivery assignment.\r\n* Order ready for pickup.\r\n* Customer delivery information.\r\n* Delivery status updates.\r\n\r\nLIVE GPS TRACKING:\r\n\r\nThe system should provide live GPS tracking when an order is out for delivery.\r\n\r\nThe delivery partner's current location should be periodically updated.\r\n\r\nThe customer should be able to open a tracking page and see:\r\n\r\n* Delivery partner's current location.\r\n* Customer's delivery location.\r\n* Route between delivery partner and customer.\r\n* Delivery status.\r\n* Estimated delivery information.\r\n\r\nGPS tracking should only be active while the delivery is in progress.\r\n\r\nORDER STATUS:\r\n\r\nThe order should have the following statuses:\r\n\r\nPLACED\r\n↓\r\nACCEPTED\r\n↓\r\nPREPARING\r\n↓\r\nREADY FOR PICKUP\r\n↓\r\nPICKED UP\r\n↓\r\nOUT FOR DELIVERY\r\n↓\r\nDELIVERED\r\n\r\nIf the shop rejects an order, the status should become:\r\n\r\nREJECTED\r\n\r\nIf the customer cancels an order where cancellation is allowed, the status should become:\r\n\r\nCANCELLED\r\n\r\nPAYMENT REQUIREMENTS:\r\n\r\nThe system should support online payment for customer orders.\r\n\r\nPossible payment methods include:\r\n\r\n* UPI\r\n* Credit Card\r\n* Debit Card\r\n* Digital Wallet\r\n* Cash on Delivery if supported\r\n\r\nThe payment status should be associated with the order.\r\n\r\nADMIN REQUIREMENTS:\r\n\r\nAn administrator should be able to:\r\n\r\n* Manage shops.\r\n* Manage users.\r\n* Manage delivery partners.\r\n* View orders.\r\n* Monitor active deliveries.\r\n* View order statistics.\r\n* View payment information.\r\n* Manage platform settings.\r\n* Monitor system activity.\r\n\r\nDATABASE REQUIREMENTS:\r\n\r\nThe system may require entities such as:\r\n\r\nCustomer\r\nShop\r\nMenu Item\r\nOrder\r\nOrder Item\r\nDelivery Partner\r\nDelivery\r\nAddress\r\nPayment\r\nNotification\r\nGPS Location\r\nReview\r\n\r\nImportant relationships should be maintained between these entities.\r\n\r\nFor example:\r\n\r\nCustomer → Order\r\n\r\nOrder → Order Items\r\n\r\nOrder → Payment\r\n\r\nOrder → Delivery\r\n\r\nDelivery → Delivery Partner\r\n\r\nDelivery → GPS Location\r\n\r\nShop → Menu Items\r\n\r\nShop → Orders\r\n\r\nTECHNOLOGY REQUIREMENTS:\r\n\r\nThe proposed system should support:\r\n\r\n* Web application.\r\n* Mobile-friendly customer interface.\r\n* Shop management interface.\r\n* Delivery partner interface.\r\n* Backend APIs.\r\n* Database.\r\n* Notification service.\r\n* GPS/location service.\r\n* Map integration.\r\n* Payment integration.\r\n* Food delivery platform integration.\r\n\r\nPOTENTIAL AI OPPORTUNITIES:\r\n\r\nAI may be used for:\r\n\r\n* Personalized food recommendations.\r\n* Customer order recommendations.\r\n* Demand prediction.\r\n* Sales forecasting.\r\n* Popular item prediction.\r\n* Delivery time prediction.\r\n* Customer feedback analysis.\r\n* Automated customer support.\r\n* Business insights.\r\n* Inventory or ingredient demand prediction.\r\n\r\nBUSINESS GOALS:\r\n\r\nThe system should help the Pani Puri shop:\r\n\r\n1. Increase online orders.\r\n2. Reach more customers.\r\n3. Reduce manual order handling.\r\n4. Provide faster order notifications.\r\n5. Improve delivery visibility.\r\n6. Improve customer experience.\r\n7. Track business performance.\r\n8. Support future business expansion.\r\n\r\nEXPECTED OUTCOME:\r\n\r\nThe final solution should provide an integrated digital ordering and delivery management system for the Pani Puri shop.\r\n\r\nThe system should connect customers, the shop owner, delivery partners and administrators.\r\n\r\nThe solution should support online ordering, order management, notifications, delivery tracking, GPS location sharing, payment processing, business analytics and future AI-based improvements.\r\n\r\nThe proposed system should be scalable so that additional shops, menu items, delivery partners and customers can be added in the future.\r\n",
+    "docName": "Pani_Puri_Shop_Business_Requirements.txt",
+    "requirements": "when user gives order it should give notification and live gps location should be on when user want to track delivery so that they can see",
+    "process": "",
+    "consultantConversation": [
+      {
+        "role": "user",
+        "content": "I want to open Paani puri shop and allow swiggy in that"
+      },
+      {
+        "role": "assistant",
+        "content": "AI unavailable: Groq API key not set. Add GROQ_API_KEY to backend/.env and restart. Free key at https://console.groq.com\n\nLocal analysis: This appears to be a retail platform. I want to open Paani puri shop and allow swiggy in that",
+        "analysis": {
+          "businessUnderstanding": "This appears to be a retail platform. I want to open Paani puri shop and allow swiggy in that",
+          "targetUsers": [
+            "Admin",
+            "Staff"
+          ],
+          "explicitRequirements": [
+            {
+              "text": "User authentication (login/register)",
+              "evidence": "Standard requirement",
+              "confidence": 0.95
+            },
+            {
+              "text": "Core retail record management",
+              "evidence": "Inferred from business type",
+              "confidence": 0.75
+            }
+          ],
+          "missingRequirements": [
+            "User roles not defined",
+            "Reporting requirements not mentioned",
+            "Notification requirements unclear"
+          ],
+          "questions": [
+            "Who are the primary users of this system?",
+            "Do you need multi-user/multi-tenant support?",
+            "Are there compliance or data privacy requirements?",
+            "Do you need mobile app support?"
+          ],
+          "recommendations": [
+            {
+              "text": "Add role-based access control (admin vs staff)",
+              "explanation": "Security baseline for any multi-user system",
+              "confidence": 0.9
+            },
+            {
+              "text": "Include audit trail / activity log",
+              "explanation": "Useful for compliance and debugging",
+              "confidence": 0.7
+            }
+          ],
+          "assumptions": [
+            "Rule-based fallback — AI not available. This analysis is approximate.",
+            "OpenAI API key not configured on server."
+          ]
+        },
+        "source": "fallback"
+      },
+      {
+        "role": "user",
+        "content": "I want to open Paani puri shop and allow swiggy in that"
+      },
+      {
+        "role": "assistant",
+        "content": "AI unavailable: Groq API key not set. Add GROQ_API_KEY to backend/.env and restart. Free key at https://console.groq.com\n\nLocal analysis: This appears to be a retail platform. I want to open Paani puri shop and allow swiggy in that",
+        "analysis": {
+          "businessUnderstanding": "This appears to be a retail platform. I want to open Paani puri shop and allow swiggy in that",
+          "targetUsers": [
+            "Admin",
+            "Staff"
+          ],
+          "explicitRequirements": [
+            {
+              "text": "User authentication (login/register)",
+              "evidence": "Standard requirement",
+              "confidence": 0.95
+            },
+            {
+              "text": "Core retail record management",
+              "evidence": "Inferred from business type",
+              "confidence": 0.75
+            }
+          ],
+          "missingRequirements": [
+            "User roles not defined",
+            "Reporting requirements not mentioned",
+            "Notification requirements unclear"
+          ],
+          "questions": [
+            "Who are the primary users of this system?",
+            "Do you need multi-user/multi-tenant support?",
+            "Are there compliance or data privacy requirements?",
+            "Do you need mobile app support?"
+          ],
+          "recommendations": [
+            {
+              "text": "Add role-based access control (admin vs staff)",
+              "explanation": "Security baseline for any multi-user system",
+              "confidence": 0.9
+            },
+            {
+              "text": "Include audit trail / activity log",
+              "explanation": "Useful for compliance and debugging",
+              "confidence": 0.7
+            }
+          ],
+          "assumptions": [
+            "Rule-based fallback — AI not available. This analysis is approximate.",
+            "OpenAI API key not configured on server."
+          ]
+        },
+        "source": "fallback"
+      },
+      {
+        "role": "user",
+        "content": "I want to open Paani puri shop and allow swiggy in that"
+      },
+      {
+        "role": "assistant",
+        "content": "AI unavailable: Groq API key not set. Add GROQ_API_KEY to backend/.env and restart. Free key at https://console.groq.com\n\nLocal analysis: This appears to be a retail platform. I want to open Paani puri shop and allow swiggy in that",
+        "analysis": {
+          "businessUnderstanding": "This appears to be a retail platform. I want to open Paani puri shop and allow swiggy in that",
+          "targetUsers": [
+            "Admin",
+            "Staff"
+          ],
+          "explicitRequirements": [
+            {
+              "text": "User authentication (login/register)",
+              "evidence": "Standard requirement",
+              "confidence": 0.95
+            },
+            {
+              "text": "Core retail record management",
+              "evidence": "Inferred from business type",
+              "confidence": 0.75
+            }
+          ],
+          "missingRequirements": [
+            "User roles not defined",
+            "Reporting requirements not mentioned",
+            "Notification requirements unclear"
+          ],
+          "questions": [
+            "Who are the primary users of this system?",
+            "Do you need multi-user/multi-tenant support?",
+            "Are there compliance or data privacy requirements?",
+            "Do you need mobile app support?"
+          ],
+          "recommendations": [
+            {
+              "text": "Add role-based access control (admin vs staff)",
+              "explanation": "Security baseline for any multi-user system",
+              "confidence": 0.9
+            },
+            {
+              "text": "Include audit trail / activity log",
+              "explanation": "Useful for compliance and debugging",
+              "confidence": 0.7
+            }
+          ],
+          "assumptions": [
+            "Rule-based fallback — AI not available. This analysis is approximate.",
+            "OpenAI API key not configured on server."
+          ]
+        },
+        "source": "fallback"
+      },
+      {
+        "role": "user",
+        "content": "I want to open a Pani Puri shop and make the shop available for online ordering through food delivery platforms such as Swiggy. Customers should be able to discover the shop, view the menu, place an order, receive order notifications, and track their delivery."
+      },
+      {
+        "role": "assistant",
+        "content": "The business is a Pani Puri shop that will accept online orders through food delivery platforms such as Swiggy, providing customers with menu browsing, ordering, notifications, and live delivery tracking.",
+        "analysis": {
+          "businessUnderstanding": "The business is a Pani Puri shop that will accept online orders through food delivery platforms such as Swiggy, providing customers with menu browsing, ordering, notifications, and live delivery tracking.",
+          "targetUsers": [
+            "Customers",
+            "Shop Owner",
+            "Delivery Partner"
+          ],
+          "explicitRequirements": [
+            {
+              "text": "Customers must be able to search for the shop, view the menu, add items to cart, place an order, and receive order status notifications.",
+              "evidence": "\"The customer should be able to: Search for the Pani Puri shop. View the shop profile. View the food menu. ... Place an online order. Receive order status notifications.\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "The shop owner must receive instant notifications for new orders and be able to accept or reject orders, update order status, and manage the menu.",
+              "evidence": "\"The shop owner should be able to: Receive instant notifications for new orders. Accept or reject orders. Update order status. Add menu items. ...\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "Delivery partners must receive delivery assignments, share GPS location during active delivery, and update delivery status.",
+              "evidence": "\"The delivery partner should be able to: Receive delivery assignment. Share GPS location during active delivery. Update delivery status.\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "The system must provide live GPS tracking only while the delivery is in progress.",
+              "evidence": "\"GPS tracking should only be active while the delivery is in progress.\"",
+              "confidence": 0.9
+            },
+            {
+              "text": "Order status flow must include PLACED, ACCEPTED, PREPARING, READY FOR PICKUP, PICKED UP, OUT FOR DELIVERY, DELIVERED, with REJECTED and CANCELLED as alternatives.",
+              "evidence": "\"The order should have the following statuses: PLACED, ACCEPTED, PREPARING, READY FOR PICKUP, PICKED UP, OUT FOR DELIVERY, DELIVERED. If the shop rejects an order, the status should become REJECTED.\"",
+              "confidence": 0.9
+            }
+          ],
+          "missingRequirements": [
+            "Payment gateway integration details (e.g., UPI, card, wallet).",
+            "Admin panel for managing shops, users, and delivery partners.",
+            "Analytics and reporting for sales and performance.",
+            "Security and data privacy compliance.",
+            "Integration specifics with Swiggy API (authentication, endpoints)."
+          ],
+          "questions": [
+            "Which payment methods will the shop support and how will they be integrated?",
+            "Will the system use Swiggy’s API for order placement or will it act as a separate platform?",
+            "What level of GPS accuracy and update frequency is required for delivery tracking?",
+            "How will cancellations and refunds be handled?",
+            "What are the expected volume and concurrency requirements for the system?"
+          ],
+          "recommendations": [
+            {
+              "text": "Integrate with Swiggy’s official API to handle order placement, status updates, and delivery partner assignment.",
+              "explanation": "Using the official API reduces development effort, ensures compliance with Swiggy’s policies, and provides reliable data exchange.",
+              "confidence": 0.85
+            },
+            {
+              "text": "Implement push notifications via Firebase Cloud Messaging or similar to deliver real‑time order updates to customers and shop owners.",
+              "explanation": "Push notifications provide instant communication, improving user experience and reducing missed orders.",
+              "confidence": 0.8
+            },
+            {
+              "text": "Use a map service (e.g., Google Maps or Mapbox) for live GPS tracking and route visualization.",
+              "explanation": "A proven map SDK offers accurate routing, distance estimation, and a polished UI for tracking.",
+              "confidence": 0.8
+            },
+            {
+              "text": "Design the backend with a microservices architecture separating order, notification, and tracking services.",
+              "explanation": "This allows independent scaling, easier maintenance, and clearer separation of concerns.",
+              "confidence": 0.75
+            }
+          ],
+          "assumptions": [
+            "Swiggy provides an API that allows external shops to place orders and receive status updates.",
+            "Customers will use Swiggy’s app for ordering, not a separate custom app.",
+            "The shop has a reliable internet connection for real‑time notifications and GPS updates."
+          ]
+        },
+        "source": "openai"
+      }
+    ],
+    "consultant": {
+      "businessUnderstanding": "The business is a Pani Puri shop that will accept online orders through food delivery platforms such as Swiggy, providing customers with menu browsing, ordering, notifications, and live delivery tracking.",
+      "targetUsers": [
+        "Customers",
+        "Shop Owner",
+        "Delivery Partner"
+      ],
+      "explicitRequirements": [
+        {
+          "text": "Customers must be able to search for the shop, view the menu, add items to cart, place an order, and receive order status notifications.",
+          "evidence": "\"The customer should be able to: Search for the Pani Puri shop. View the shop profile. View the food menu. ... Place an online order. Receive order status notifications.\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "The shop owner must receive instant notifications for new orders and be able to accept or reject orders, update order status, and manage the menu.",
+          "evidence": "\"The shop owner should be able to: Receive instant notifications for new orders. Accept or reject orders. Update order status. Add menu items. ...\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Delivery partners must receive delivery assignments, share GPS location during active delivery, and update delivery status.",
+          "evidence": "\"The delivery partner should be able to: Receive delivery assignment. Share GPS location during active delivery. Update delivery status.\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "The system must provide live GPS tracking only while the delivery is in progress.",
+          "evidence": "\"GPS tracking should only be active while the delivery is in progress.\"",
+          "confidence": 0.9
+        },
+        {
+          "text": "Order status flow must include PLACED, ACCEPTED, PREPARING, READY FOR PICKUP, PICKED UP, OUT FOR DELIVERY, DELIVERED, with REJECTED and CANCELLED as alternatives.",
+          "evidence": "\"The order should have the following statuses: PLACED, ACCEPTED, PREPARING, READY FOR PICKUP, PICKED UP, OUT FOR DELIVERY, DELIVERED. If the shop rejects an order, the status should become REJECTED.\"",
+          "confidence": 0.9
+        }
+      ],
+      "missingRequirements": [
+        "Payment gateway integration details (e.g., UPI, card, wallet).",
+        "Admin panel for managing shops, users, and delivery partners.",
+        "Analytics and reporting for sales and performance.",
+        "Security and data privacy compliance.",
+        "Integration specifics with Swiggy API (authentication, endpoints)."
+      ],
+      "questions": [
+        "Which payment methods will the shop support and how will they be integrated?",
+        "Will the system use Swiggy’s API for order placement or will it act as a separate platform?",
+        "What level of GPS accuracy and update frequency is required for delivery tracking?",
+        "How will cancellations and refunds be handled?",
+        "What are the expected volume and concurrency requirements for the system?"
+      ],
+      "recommendations": [
+        {
+          "text": "Integrate with Swiggy’s official API to handle order placement, status updates, and delivery partner assignment.",
+          "explanation": "Using the official API reduces development effort, ensures compliance with Swiggy’s policies, and provides reliable data exchange.",
+          "confidence": 0.85
+        },
+        {
+          "text": "Implement push notifications via Firebase Cloud Messaging or similar to deliver real‑time order updates to customers and shop owners.",
+          "explanation": "Push notifications provide instant communication, improving user experience and reducing missed orders.",
+          "confidence": 0.8
+        },
+        {
+          "text": "Use a map service (e.g., Google Maps or Mapbox) for live GPS tracking and route visualization.",
+          "explanation": "A proven map SDK offers accurate routing, distance estimation, and a polished UI for tracking.",
+          "confidence": 0.8
+        },
+        {
+          "text": "Design the backend with a microservices architecture separating order, notification, and tracking services.",
+          "explanation": "This allows independent scaling, easier maintenance, and clearer separation of concerns.",
+          "confidence": 0.75
+        }
+      ],
+      "assumptions": [
+        "Swiggy provides an API that allows external shops to place orders and receive status updates.",
+        "Customers will use Swiggy’s app for ordering, not a separate custom app.",
+        "The shop has a reliable internet connection for real‑time notifications and GPS updates."
+      ]
+    },
+    "requirements_list": [
+      {
+        "type": "explicit",
+        "text": "Customers must be able to search for the shop, view the menu, add items to cart, place an order, and receive order status notifications.",
+        "evidence": "\"The customer should be able to: Search for the Pani Puri shop. View the shop profile. View the food menu. ... Place an online order. Receive order status notifications.\"",
+        "confidence": 0.95,
+        "state": "accepted"
+      },
+      {
+        "type": "explicit",
+        "text": "The shop owner must receive instant notifications for new orders and be able to accept or reject orders, update order status, and manage the menu.",
+        "evidence": "\"The shop owner should be able to: Receive instant notifications for new orders. Accept or reject orders. Update order status. Add menu items. ...\"",
+        "confidence": 0.95,
+        "state": "accepted"
+      },
+      {
+        "type": "explicit",
+        "text": "Delivery partners must receive delivery assignments, share GPS location during active delivery, and update delivery status.",
+        "evidence": "\"The delivery partner should be able to: Receive delivery assignment. Share GPS location during active delivery. Update delivery status.\"",
+        "confidence": 0.95,
+        "state": "accepted"
+      },
+      {
+        "type": "explicit",
+        "text": "The system must provide live GPS tracking only while the delivery is in progress.",
+        "evidence": "\"GPS tracking should only be active while the delivery is in progress.\"",
+        "confidence": 0.9,
+        "state": "accepted"
+      },
+      {
+        "type": "explicit",
+        "text": "Order status flow must include PLACED, ACCEPTED, PREPARING, READY FOR PICKUP, PICKED UP, OUT FOR DELIVERY, DELIVERED, with REJECTED and CANCELLED as alternatives.",
+        "evidence": "\"The order should have the following statuses: PLACED, ACCEPTED, PREPARING, READY FOR PICKUP, PICKED UP, OUT FOR DELIVERY, DELIVERED. If the shop rejects an order, the status should become REJECTED.\"",
+        "confidence": 0.9,
+        "state": "accepted"
+      },
+      {
+        "type": "missing",
+        "text": "Payment gateway integration details (e.g., UPI, card, wallet).",
+        "evidence": "",
+        "state": "pending"
+      },
+      {
+        "type": "missing",
+        "text": "Admin panel for managing shops, users, and delivery partners.",
+        "evidence": "",
+        "state": "pending"
+      },
+      {
+        "type": "missing",
+        "text": "Analytics and reporting for sales and performance.",
+        "evidence": "",
+        "state": "pending"
+      },
+      {
+        "type": "missing",
+        "text": "Security and data privacy compliance.",
+        "evidence": "",
+        "state": "accepted"
+      },
+      {
+        "type": "missing",
+        "text": "Integration specifics with Swiggy API (authentication, endpoints).",
+        "evidence": "",
+        "state": "rejected"
+      },
+      {
+        "type": "recommendation",
+        "text": "Integrate with Swiggy’s official API to handle order placement, status updates, and delivery partner assignment.",
+        "evidence": "Using the official API reduces development effort, ensures compliance with Swiggy’s policies, and provides reliable data exchange.",
+        "confidence": 0.85,
+        "state": "pending"
+      },
+      {
+        "type": "recommendation",
+        "text": "Implement push notifications via Firebase Cloud Messaging or similar to deliver real‑time order updates to customers and shop owners.",
+        "evidence": "Push notifications provide instant communication, improving user experience and reducing missed orders.",
+        "confidence": 0.8,
+        "state": "pending"
+      },
+      {
+        "type": "recommendation",
+        "text": "Use a map service (e.g., Google Maps or Mapbox) for live GPS tracking and route visualization.",
+        "evidence": "A proven map SDK offers accurate routing, distance estimation, and a polished UI for tracking.",
+        "confidence": 0.8,
+        "state": "pending"
+      },
+      {
+        "type": "recommendation",
+        "text": "Design the backend with a microservices architecture separating order, notification, and tracking services.",
+        "evidence": "This allows independent scaling, easier maintenance, and clearer separation of concerns.",
+        "confidence": 0.75,
+        "state": "pending"
+      }
+    ],
+    "blueprint": {
+      "productName": "PaniPuriExpress",
+      "productDescription": "An integrated platform for a Pani Puri shop to accept orders via Swiggy, manage menu, handle real-time notifications, and provide live GPS tracking for deliveries.",
+      "targetUsers": [
+        "Customer",
+        "Shop Owner",
+        "Delivery Partner"
+      ],
+      "coreModules": [
+        {
+          "id": "auth",
+          "name": "Authentication",
+          "description": "User login and registration via Swiggy OAuth and internal accounts",
+          "priority": "must-have"
+        },
+        {
+          "id": "menu",
+          "name": "Menu Management",
+          "description": "Browse, search, and manage menu items",
+          "priority": "must-have"
+        },
+        {
+          "id": "order",
+          "name": "Order Processing",
+          "description": "Place orders, track status, and integrate with Swiggy API",
+          "priority": "must-have"
+        },
+        {
+          "id": "notification",
+          "name": "Push Notifications",
+          "description": "Real-time updates via FCM",
+          "priority": "must-have"
+        },
+        {
+          "id": "tracking",
+          "name": "Live Tracking",
+          "description": "GPS tracking during delivery with map integration",
+          "priority": "must-have"
+        },
+        {
+          "id": "integration",
+          "name": "Swiggy Integration",
+          "description": "Handle order placement, status sync, and delivery assignment",
+          "priority": "must-have"
+        }
+      ],
+      "dataEntities": [
+        {
+          "name": "User",
+          "fields": [
+            "id",
+            "email",
+            "name",
+            "role",
+            "created_at"
+          ]
+        },
+        {
+          "name": "MenuItem",
+          "fields": [
+            "id",
+            "name",
+            "description",
+            "price",
+            "image_url",
+            "available"
+          ]
+        },
+        {
+          "name": "Order",
+          "fields": [
+            "id",
+            "user_id",
+            "items",
+            "total_amount",
+            "status",
+            "created_at",
+            "updated_at",
+            "delivery_partner_id"
+          ]
+        },
+        {
+          "name": "DeliveryPartner",
+          "fields": [
+            "id",
+            "name",
+            "phone",
+            "vehicle_type",
+            "current_location",
+            "status"
+          ]
+        },
+        {
+          "name": "Notification",
+          "fields": [
+            "id",
+            "user_id",
+            "order_id",
+            "type",
+            "message",
+            "sent_at",
+            "read"
+          ]
+        }
+      ],
+      "userRoles": [
+        "customer",
+        "owner",
+        "deliveryPartner"
+      ],
+      "keyFlows": [
+        "Customer searches shop, views menu, adds items to cart, and places an order",
+        "Shop owner receives instant notification for new order and accepts or rejects it",
+        "Order status updates flow through PLACED → ACCEPTED → PREPARING → READY FOR PICKUP → PICKED UP → OUT FOR DELIVERY → DELIVERED",
+        "Delivery partner receives assignment, shares GPS location during active delivery, and updates delivery status",
+        "Customer receives real-time notifications and can view live GPS tracking during delivery"
+      ],
+      "nonFunctionalRequirements": [
+        "Responsive UI across devices",
+        "Secure authentication and password storage",
+        "Real-time push notifications with minimal latency",
+        "Live GPS tracking only enabled during delivery phase",
+        "Scalable microservices architecture",
+        "Compliance with Swiggy API terms and rate limits",
+        "High availability and fault tolerance",
+        "Data encryption at rest and in transit"
+      ],
+      "techStack": {
+        "backend": "Node.js with Express and microservices",
+        "frontend": "React.js with Redux",
+        "database": "PostgreSQL",
+        "deployment": "Render with Docker and Kubernetes"
+      }
+    },
+    "architecture": {
+      "systemDiagram": "flowchart LR\\n  Browser[Browser] --> API[API Gateway]\\n  API --> AuthService[Auth Service]\\n  API --> MenuService[Menu Service]\\n  API --> OrderService[Order Service]\\n  API --> NotificationService[Notification Service]\\n  API --> TrackingService[Tracking Service]\\n  API --> SwiggyService[Swiggy Integration]\\n  AuthService --> Postgres[(PostgreSQL)]\\n  MenuService --> Postgres\\n  OrderService --> Postgres\\n  NotificationService --> Postgres\\n  TrackingService --> Postgres\\n  SwiggyService --> Postgres",
+      "erDiagram": "erDiagram\\n  USER ||--o{ ORDER : places\\n  ORDER }o--|| MENU_ITEM : contains\\n  ORDER }o--|| DELIVERY_PARTNER : assigned_to\\n  USER }o--|| NOTIFICATION : receives\\n  USER {\\n    string id PK\\n    string email\\n    string password\\n    string role\\n  }\\n  MENU_ITEM {\\n    string id PK\\n    string name\\n    string description\\n    decimal price\\n    string category\\n  }\\n  ORDER {\\n    string id PK\\n    string user_id FK\\n    string status\\n    decimal total_amount\\n    datetime created_at\\n  }\\n  DELIVERY_PARTNER {\\n    string id PK\\n    string name\\n    string vehicle\\n    decimal rating\\n  }\\n  NOTIFICATION {\\n    string id PK\\n    string user_id FK\\n    string type\\n    string message\\n    datetime read_at\\n  }",
+      "apiEndpoints": [
+        {
+          "method": "POST",
+          "path": "/api/auth/login",
+          "description": "User login",
+          "auth": false
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/register",
+          "description": "User registration",
+          "auth": false
+        },
+        {
+          "method": "GET",
+          "path": "/api/auth/me",
+          "description": "Get current user",
+          "auth": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/auth/logout",
+          "description": "Logout user",
+          "auth": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/menu",
+          "description": "List menu items",
+          "auth": false
+        },
+        {
+          "method": "POST",
+          "path": "/api/menu",
+          "description": "Create menu item",
+          "auth": true,
+          "role": "owner"
+        },
+        {
+          "method": "PUT",
+          "path": "/api/menu/:id",
+          "description": "Update menu item",
+          "auth": true,
+          "role": "owner"
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/menu/:id",
+          "description": "Delete menu item",
+          "auth": true,
+          "role": "owner"
+        },
+        {
+          "method": "POST",
+          "path": "/api/orders",
+          "description": "Place order",
+          "auth": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/orders",
+          "description": "List user orders",
+          "auth": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/orders/:id",
+          "description": "Get order details",
+          "auth": true
+        },
+        {
+          "method": "PUT",
+          "path": "/api/orders/:id/status",
+          "description": "Update order status",
+          "auth": true,
+          "role": "owner"
+        },
+        {
+          "method": "POST",
+          "path": "/api/notifications",
+          "description": "Send notification",
+          "auth": true,
+          "role": "owner"
+        },
+        {
+          "method": "GET",
+          "path": "/api/notifications",
+          "description": "List notifications",
+          "auth": true
+        },
+        {
+          "method": "PUT",
+          "path": "/api/notifications/:id/read",
+          "description": "Mark notification as read",
+          "auth": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/orders/:id/tracking",
+          "description": "Live tracking of order",
+          "auth": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/swiggy/orders",
+          "description": "Sync orders from Swiggy",
+          "auth": true,
+          "role": "owner"
+        },
+        {
+          "method": "POST",
+          "path": "/api/swiggy/orders",
+          "description": "Create order in Swiggy",
+          "auth": true,
+          "role": "owner"
+        }
+      ],
+      "sitemap": [
+        "Login",
+        "Register",
+        "Menu",
+        "Cart",
+        "Checkout",
+        "Order History",
+        "Order Tracking",
+        "Notifications",
+        "Admin Dashboard",
+        "Delivery Partner Dashboard"
+      ],
+      "securityNotes": [
+        "Passwords hashed with bcrypt",
+        "JWT tokens for stateless auth",
+        "HTTPS enforced",
+        "CSRF protection on state-changing endpoints",
+        "Rate limiting per IP",
+        "Input validation and sanitization",
+        "Secure HttpOnly cookies",
+        "CORS configured for trusted origins",
+        "Environment variables for secrets"
+      ]
+    },
+    "generationSpec": {
+      "appName": "PaniPuriExpress",
+      "businessName": "PaniPuri Express Pvt Ltd",
+      "entityName": "Order",
+      "entityNamePlural": "Orders",
+      "entityFields": [
+        {
+          "name": "user_id",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "items",
+          "type": "json",
+          "required": true
+        },
+        {
+          "name": "total_amount",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "delivery_partner_id",
+          "type": "number",
+          "required": false
+        }
+      ],
+      "modules": [
+        "auth",
+        "menu",
+        "order",
+        "notification",
+        "tracking",
+        "integration",
+        "zomatoIntegration"
+      ],
+      "userRoles": [
+        "customer",
+        "owner",
+        "deliveryPartner"
+      ],
+      "pages": [
+        "index.html",
+        "login.html",
+        "register.html"
+      ]
+    },
+    "versions": [
+      {
+        "version": "1.1.7",
+        "changes": "Add Zomato integration to the app",
+        "at": "2026-09-23T17:23:28.572Z",
+        "status": "ok"
+      },
+      {
+        "version": "1.1.6",
+        "changes": "Initial app generated",
+        "at": "2026-09-23T17:23:05.569Z",
+        "status": "ok"
+      },
+      {
+        "version": "1.1.5",
+        "changes": "Initial app generated",
+        "at": "2026-09-23T17:23:00.053Z",
+        "status": "ok"
+      },
+      {
+        "version": "1.1.4",
+        "changes": "Initial app generated",
+        "at": "2026-09-23T17:21:28.385Z",
+        "status": "ok"
+      }
+    ],
+    "deployment": {
+      "id": "8431470ead6a",
+      "projectId": "p_muecghjui7mb05",
+      "appName": "PaniPuriExpress",
+      "version": "1.1.7",
+      "url": "http://127.0.0.1:3847",
+      "status": "running",
+      "platform": "local",
+      "deployedAt": "2026-09-23T17:23:55.176Z",
+      "note": "Running locally. For production deployment, export the generated-app directory to Render, Railway, or Vercel + serverless adapter."
+    }
+  },
+  {
+    "id": "test_verify_p1",
+    "name": "Test Verification Project",
+    "updatedAt": "2026-09-23T17:43:43.253Z",
+    "createdAt": "2026-09-23T17:43:43.253Z"
+  },
+  {
+    "id": "p_panipuri_express",
+    "name": "Pani Puri Online Ordering & Delivery Management System",
+    "businessName": "Royal Pani Puri Express",
+    "idea": "A Pani Puri shop wants to accept online orders through a Swiggy-like platform. The shop should receive new-order notifications. Customers should be able to track their delivery partner using live GPS.",
+    "requirements": "Customer registration/login, browse Pani Puri menu with custom spice & water choices, add products to cart, place order with online payment, shop receives instant order notification, shop prepares order, delivery partner assignment, live GPS tracking, status alerts, order history.",
+    "process": "Currently customers wait in long queues at the counter, or order via phone calls which are often missed. Payments are cash or direct UPI with no automated confirmation. No delivery partner tracking exists.",
+    "language": "en",
+    "status": "blueprint",
+    "progress": {
+      "idea": true,
+      "consultant": true,
+      "requirements": true,
+      "blueprint": true,
+      "architecture": true,
+      "build": false,
+      "deployed": false
+    },
+    "businessContext": {
+      "domain": "Food & Beverage / Hyperlocal QSR",
+      "targetAudience": "Street food lovers, family gatherings, office parties",
+      "currentProcess": "Counter service, manual billing, phone orders, cash/UPI receipts",
+      "coreProblems": [
+        "Peak evening counter congestion",
+        "Untracked phone orders",
+        "No delivery dispatcher",
+        "Lack of real-time order visibility"
+      ],
+      "objectives": [
+        "Launch digital ordering platform",
+        "Automate kitchen preparation ticket generation",
+        "Enable live delivery partner GPS tracking",
+        "Increase daily orders by 250%"
+      ]
+    },
+    "requirements_list": [
+      {
+        "id": "req_1",
+        "text": "Customer authentication via Mobile OTP and Email login",
+        "type": "explicit",
+        "confidence": 0.98,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Core user security requirement"
+      },
+      {
+        "id": "req_2",
+        "text": "Interactive Pani Puri Menu with customizable pani options (Teekha, Meetha, Hing, Garlic) and quantity packs",
+        "type": "explicit",
+        "confidence": 0.95,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Direct business offering"
+      },
+      {
+        "id": "req_3",
+        "text": "Real-time cart & instant digital checkout with Razorpay/Stripe integration",
+        "type": "explicit",
+        "confidence": 0.94,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Payment gateway requirement"
+      },
+      {
+        "id": "req_4",
+        "text": "Shop live order dashboard with audio ring alerts on incoming orders",
+        "type": "explicit",
+        "confidence": 0.92,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Store operations efficiency"
+      },
+      {
+        "id": "req_5",
+        "text": "Kitchen order management (Accept, Preparing, Packed, Ready for Dispatch)",
+        "type": "explicit",
+        "confidence": 0.96,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Order lifecycle management"
+      },
+      {
+        "id": "req_6",
+        "text": "Automated delivery partner assignment based on proximity and shop readiness",
+        "type": "missing",
+        "confidence": 0.88,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Identified gap in delivery workflow"
+      },
+      {
+        "id": "req_7",
+        "text": "Live GPS location tracking of delivery partner on interactive map with ETA",
+        "type": "explicit",
+        "confidence": 0.97,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Explicit customer requirement"
+      },
+      {
+        "id": "req_8",
+        "text": "WhatsApp & SMS notifications for order confirmation, dispatch, and delivery",
+        "type": "recommendation",
+        "confidence": 0.85,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Enhances customer trust and reduces support calls"
+      },
+      {
+        "id": "req_9",
+        "text": "Customer order history, digital receipts, and delivery rating system",
+        "type": "explicit",
+        "confidence": 0.91,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Retention & feedback"
+      },
+      {
+        "id": "req_10",
+        "text": "Admin analytics for top-selling flavours, sales volume, peak hours, and delivery times",
+        "type": "recommendation",
+        "confidence": 0.89,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Business intelligence for shop scaling"
+      }
+    ],
+    "consultantConversation": [
+      {
+        "role": "user",
+        "content": "We want customers to order Pani Puri online from our shop with custom pani options and live delivery tracking."
+      },
+      {
+        "role": "assistant",
+        "content": "I've analyzed your business model for **Royal Pani Puri Express**! Hyperlocal street-food delivery requires tight synchronization between order packaging (to keep puris crisp) and instant driver dispatch.\n\nKey insights extracted:\n1. **Packaging Sensitivity**: Water & puris must be packed separately; prep time is minimal (3-5 minutes).\n2. **Order Dispatching**: Immediate pairing with nearby delivery executives prevents delays.\n3. **Live GPS Tracking**: Real-time telemetry map builds customer anticipation and reduces incoming inquiry calls.",
+        "source": "openai",
+        "analysis": {
+          "businessUnderstanding": "Hyperlocal street food delivery platform with fast kitchen turnaround and live delivery partner dispatch.",
+          "explicitRequirements": [
+            {
+              "text": "Customer ordering with custom flavor variations",
+              "evidence": "User prompt",
+              "confidence": 0.98
+            },
+            {
+              "text": "Live GPS driver tracking",
+              "evidence": "User prompt",
+              "confidence": 0.97
+            },
+            {
+              "text": "Shop order receipt alerts",
+              "evidence": "User prompt",
+              "confidence": 0.95
+            }
+          ],
+          "missingRequirements": [
+            "Separate water packaging selection to maintain puri crispness",
+            "Automated delivery partner proximity dispatch algorithm",
+            "Estimated Time of Arrival (ETA) calculation with live traffic"
+          ],
+          "questions": [
+            "Do you offer scheduled delivery for parties or on-demand only?",
+            "Will the delivery fleet be in-house staff or third-party riders?",
+            "Do you need multi-branch support across multiple city outlets?"
+          ],
+          "recommendations": [
+            {
+              "text": "WebSockets for zero-latency kitchen alerts and live rider coordinates",
+              "explanation": "Eliminates HTTP polling overhead for GPS coordinates",
+              "confidence": 0.95
+            },
+            {
+              "text": "Integrated UPI and Card payments with instant merchant settlements",
+              "explanation": "Prevents delivery cancellation risk",
+              "confidence": 0.92
+            }
+          ]
+        }
+      }
+    ],
+    "blueprint": {
+      "productName": "Royal Pani Puri Express — Order & Fleet Platform",
+      "productDescription": "Complete on-demand hyperlocal street-food ordering, kitchen dispatch, and real-time GPS tracking solution.",
+      "targetUsers": [
+        "Online Customers",
+        "Shop Owners & Kitchen Staff",
+        "Delivery Fleet Partners",
+        "Business Admin"
+      ],
+      "userRoles": [
+        "customer",
+        "shop_manager",
+        "delivery_partner",
+        "admin"
+      ],
+      "coreModules": [
+        {
+          "name": "Customer Ordering Portal",
+          "description": "Browse Pani Puri flavours, custom spice/sweet levels, cart & checkout",
+          "priority": "must-have"
+        },
+        {
+          "name": "Kitchen Order Management (KDS)",
+          "description": "Real-time order board with audio chimes and preparation timer",
+          "priority": "must-have"
+        },
+        {
+          "name": "Fleet Dispatch & GPS Tracking",
+          "description": "Driver assignment engine with live geolocation streaming",
+          "priority": "must-have"
+        },
+        {
+          "name": "Payment & Billing Gateway",
+          "description": "Secure payments via Razorpay / Stripe with instant digital invoices",
+          "priority": "must-have"
+        },
+        {
+          "name": "Notification Service",
+          "description": "WhatsApp, SMS, and Push notifications for all order lifecycle events",
+          "priority": "high"
+        },
+        {
+          "name": "Analytics & Inventory Dashboard",
+          "description": "Monitor daily sales, top-selling waters, and fleet response times",
+          "priority": "medium"
+        }
+      ],
+      "dataEntities": [
+        {
+          "name": "Users",
+          "fields": [
+            "id",
+            "name",
+            "phone",
+            "email",
+            "role",
+            "created_at"
+          ]
+        },
+        {
+          "name": "MenuItems",
+          "fields": [
+            "id",
+            "title",
+            "category",
+            "price",
+            "flavours",
+            "is_available"
+          ]
+        },
+        {
+          "name": "Orders",
+          "fields": [
+            "id",
+            "customer_id",
+            "shop_id",
+            "driver_id",
+            "status",
+            "total_amount",
+            "delivery_address",
+            "created_at"
+          ]
+        },
+        {
+          "name": "OrderItems",
+          "fields": [
+            "id",
+            "order_id",
+            "item_id",
+            "quantity",
+            "spice_level",
+            "pani_type"
+          ]
+        },
+        {
+          "name": "Deliveries",
+          "fields": [
+            "id",
+            "order_id",
+            "driver_id",
+            "current_lat",
+            "current_lng",
+            "eta_minutes",
+            "status"
+          ]
+        },
+        {
+          "name": "Payments",
+          "fields": [
+            "id",
+            "order_id",
+            "transaction_ref",
+            "amount",
+            "method",
+            "status"
+          ]
+        }
+      ],
+      "keyFlows": [
+        "Customer customizes Pani Puri pack (e.g. 50 puris + Teekha Pudina + Khatta Meetha) → pays online",
+        "Shop receives instant sound alert → accepts order → begins hygienic vacuum packaging",
+        "System alerts nearby delivery partner → driver accepts and heads to shop",
+        "Driver picks up package → GPS coordinates stream live to customer app",
+        "Delivery partner arrives at customer address → OTP verified → order marked delivered"
+      ],
+      "techStack": {
+        "frontend": "React 19 / Vite / Tailwind CSS",
+        "backend": "Node.js / Express / Socket.io",
+        "database": "PostgreSQL + Redis (for live GPS caching)",
+        "deployment": "Docker / Node Server / Render / Railway"
+      }
+    },
+    "architecture": {
+      "systemDiagram": "graph TD\n  Customer[📱 Customer Mobile Web] -->|HTTP / WebSocket| Gateway[API Gateway / Node.js]\n  Shop[🖥️ Shop Kitchen Dashboard] -->|WebSocket Listen| Gateway\n  Driver[🛵 Delivery Partner App] -->|GPS Streaming| Gateway\n  Gateway --> Auth[🔐 Auth & Security Service]\n  Gateway --> OrderService[📦 Order Management Engine]\n  Gateway --> TrackingService[📍 Real-time GPS Tracker]\n  Gateway --> PaymentService[💳 Razorpay Gateway]\n  TrackingService --> Redis[(⚡ Redis Live Coordinates)]\n  OrderService --> DB[(🗄️ PostgreSQL Database)]\n  OrderService --> Notif[🔔 WhatsApp / SMS Service]",
+      "erDiagram": "erDiagram\n  USERS ||--o{ ORDERS : places\n  SHOPS ||--o{ ORDERS : fulfills\n  ORDERS ||--|{ ORDER_ITEMS : contains\n  ORDERS ||--|| DELIVERIES : dispatched_via\n  DELIVERIES ||--o{ GPS_LOGS : records\n  ORDERS ||--|| PAYMENTS : settled_by\n  MENU_ITEMS ||--o{ ORDER_ITEMS : specified_in",
+      "apiEndpoints": [
+        {
+          "method": "POST",
+          "path": "/api/orders",
+          "description": "Create and initialize a new Pani Puri order",
+          "auth": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/orders/:id",
+          "description": "Retrieve order details, items and current status",
+          "auth": true
+        },
+        {
+          "method": "PUT",
+          "path": "/api/orders/:id/status",
+          "description": "Update status (preparing, ready, dispatched, delivered)",
+          "auth": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/delivery/assign",
+          "description": "Assign nearest delivery partner to order",
+          "auth": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/delivery/:orderId/location",
+          "description": "Fetch live GPS latitude/longitude and ETA",
+          "auth": false
+        },
+        {
+          "method": "POST",
+          "path": "/api/payments/verify",
+          "description": "Verify payment gateway signature and webhook",
+          "auth": true
+        }
+      ],
+      "sitemap": [
+        "/ (Customer Order Front & Menu)",
+        "/cart (Custom Flavor Picker & Checkout)",
+        "/tracking/:id (Live GPS Delivery Map)",
+        "/shop/dashboard (Kitchen Order Display System)",
+        "/driver/portal (Delivery Partner Order & Navigation)",
+        "/admin/analytics (Sales & Business Reports)"
+      ],
+      "securityNotes": [
+        "JWT tokens with HttpOnly cookies for customer and staff sessions",
+        "Rate limiting on order endpoints to prevent fake traffic surges",
+        "HMAC SHA-256 signature verification for payment webhooks",
+        "Obfuscation of customer phone numbers between driver and buyer"
+      ]
+    },
+    "businessAnalysis": {
+      "currentState": "Physical street cart / shop setup with manual queuing, verbal orders, paper tokens, and zero delivery infrastructure.",
+      "futureState": "Automated omnichannel food ordering platform with digital kitchen queue, automated rider dispatch, and live GPS map tracking.",
+      "gapAnalysis": "Lack of digital ordering interface, absence of real-time inventory tracking for puris/water, zero delivery coordination.",
+      "opportunities": [
+        "Party & event bulk catering bookings via the web app",
+        "Subscription model: \"Weekly Puri Fix\" for regular families",
+        "Automated re-stock alerts for fresh mint, tamarind, and boondi"
+      ]
+    },
+    "activity": [
+      {
+        "timestamp": "2026-09-23T17:15:52.213Z",
+        "actor": "System",
+        "action": "Project initialized",
+        "module": "Discovery",
+        "status": "Completed"
+      },
+      {
+        "timestamp": "2026-09-23T17:35:52.213Z",
+        "actor": "AI Consultant",
+        "action": "Extracted 10 business requirements",
+        "module": "Requirements",
+        "status": "Completed"
+      },
+      {
+        "timestamp": "2026-09-23T17:55:52.213Z",
+        "actor": "Solution Builder",
+        "action": "Generated Product Blueprint",
+        "module": "Blueprint",
+        "status": "Completed"
+      },
+      {
+        "timestamp": "2026-09-23T18:05:52.213Z",
+        "actor": "Architecture Engine",
+        "action": "Generated System and ER Diagrams",
+        "module": "Architecture",
+        "status": "Completed"
+      }
+    ],
+    "notifications": [
+      {
+        "id": "notif_1",
+        "type": "success",
+        "title": "Blueprint Generated",
+        "message": "Hyperlocal Pani Puri solution blueprint ready for review.",
+        "time": "15m ago",
+        "read": false
+      },
+      {
+        "id": "notif_2",
+        "type": "info",
+        "title": "GPS Tracking Configured",
+        "message": "WebSockets and Redis enabled for live location dispatch.",
+        "time": "10m ago",
+        "read": false
+      }
+    ],
+    "updatedAt": "2026-09-23T18:58:05.447Z",
+    "createdAt": "2026-09-22T18:15:52.213Z"
+  },
+  {
+    "id": "p_mueg3ktuvqlhbi",
+    "name": "asdfgh",
+    "businessName": "1234",
+    "idea": "A Pani Puri shop wants to accept online orders through a Swiggy-like platform. The shop should receive new-order notifications. Customers should be able to track their delivery partner using live GPS.",
+    "language": "en",
+    "status": "deployed",
+    "progress": {
+      "idea": true,
+      "requirements": true,
+      "consultant": true,
+      "blueprint": true,
+      "architecture": true,
+      "build": true,
+      "deployed": true
+    },
+    "createdAt": "2026-09-23T18:37:27.474Z",
+    "updatedAt": "2026-09-23T18:39:41.519Z",
+    "activity": [
+      {
+        "timestamp": "2026-09-23T18:37:27.474Z",
+        "actor": "User",
+        "action": "Project created",
+        "module": "Discovery",
+        "status": "Completed"
+      }
+    ],
+    "requirements": "Customer registration/login, browse Pani Puri menu with custom spice & water choices, add products to cart, place order with online payment, shop receives instant order notification, shop prepares order, delivery partner assignment, live GPS tracking, status alerts, order history.",
+    "process": "Currently customers wait in long queues at the counter, or order via phone calls which are often missed. Payments are cash or direct UPI with no automated confirmation. No delivery partner tracking exists.",
+    "requirements_list": [
+      {
+        "id": "req_1",
+        "text": "Customer authentication via Mobile OTP and Email login",
+        "type": "explicit",
+        "confidence": 0.98,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Core user security requirement"
+      },
+      {
+        "id": "req_2",
+        "text": "Interactive Pani Puri Menu with customizable pani options (Teekha, Meetha, Hing, Garlic) and quantity packs",
+        "type": "explicit",
+        "confidence": 0.95,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Direct business offering"
+      },
+      {
+        "id": "req_3",
+        "text": "Real-time cart & instant digital checkout with Razorpay/Stripe integration",
+        "type": "explicit",
+        "confidence": 0.94,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Payment gateway requirement"
+      },
+      {
+        "id": "req_4",
+        "text": "Shop live order dashboard with audio ring alerts on incoming orders",
+        "type": "explicit",
+        "confidence": 0.92,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Store operations efficiency"
+      },
+      {
+        "id": "req_5",
+        "text": "Kitchen order management (Accept, Preparing, Packed, Ready for Dispatch)",
+        "type": "explicit",
+        "confidence": 0.96,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Order lifecycle management"
+      },
+      {
+        "id": "req_6",
+        "text": "Automated delivery partner assignment based on proximity and shop readiness",
+        "type": "missing",
+        "confidence": 0.88,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Identified gap in delivery workflow"
+      },
+      {
+        "id": "req_7",
+        "text": "Live GPS location tracking of delivery partner on interactive map with ETA",
+        "type": "explicit",
+        "confidence": 0.97,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Explicit customer requirement"
+      },
+      {
+        "id": "req_8",
+        "text": "WhatsApp & SMS notifications for order confirmation, dispatch, and delivery",
+        "type": "recommendation",
+        "confidence": 0.85,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Enhances customer trust and reduces support calls"
+      },
+      {
+        "id": "req_9",
+        "text": "Customer order history, digital receipts, and delivery rating system",
+        "type": "explicit",
+        "confidence": 0.91,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Retention & feedback"
+      },
+      {
+        "id": "req_10",
+        "text": "Admin analytics for top-selling flavours, sales volume, peak hours, and delivery times",
+        "type": "recommendation",
+        "confidence": 0.89,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Business intelligence for shop scaling"
+      }
+    ],
+    "consultantConversation": [
+      {
+        "role": "user",
+        "content": "I want to open a Pani Puri shop and make the shop available for online ordering through food delivery platforms such as Swiggy. Customers should be able to discover the shop, view the menu, place an order, receive order notifications, and track their delivery."
+      },
+      {
+        "role": "assistant",
+        "content": "I've mapped your requirements into the **Royal Pani Puri Express** solution model!\n\n1. **Flavor Customization**: Customers can toggle Teekha, Meetha, Garlic, and Hing water.\n2. **Kitchen Order Notification**: Kitchen tablet sounds an immediate chime when an order arrives.\n3. **Live GPS Fleet Map**: Geolocation tracking connects rider with customer with live ETA countdown.",
+        "analysis": {
+          "businessUnderstanding": "Hyperlocal street food delivery platform with fast kitchen turnaround and live delivery partner dispatch.",
+          "explicitRequirements": [
+            {
+              "text": "Customer ordering with custom flavor variations",
+              "evidence": "User prompt",
+              "confidence": 0.98
+            },
+            {
+              "text": "Live GPS driver tracking",
+              "evidence": "User prompt",
+              "confidence": 0.97
+            },
+            {
+              "text": "Shop order receipt alerts",
+              "evidence": "User prompt",
+              "confidence": 0.95
+            }
+          ],
+          "missingRequirements": [
+            "Separate water packaging selection to maintain puri crispness",
+            "Automated delivery partner proximity dispatch algorithm",
+            "Estimated Time of Arrival (ETA) calculation with live traffic"
+          ],
+          "questions": [
+            "Do you offer scheduled delivery for parties or on-demand only?",
+            "Will the delivery fleet be in-house staff or third-party riders?",
+            "Do you need multi-branch support across multiple city outlets?"
+          ],
+          "recommendations": [
+            {
+              "text": "WebSockets for zero-latency kitchen alerts and live rider coordinates",
+              "explanation": "Eliminates HTTP polling overhead for GPS coordinates",
+              "confidence": 0.95
+            },
+            {
+              "text": "Integrated UPI and Card payments with instant merchant settlements",
+              "explanation": "Prevents delivery cancellation risk",
+              "confidence": 0.92
+            }
+          ]
+        },
+        "source": "domain_engine"
+      }
+    ],
+    "consultant": {
+      "businessUnderstanding": "Hyperlocal street food delivery platform with fast kitchen turnaround and live delivery partner dispatch.",
+      "explicitRequirements": [
+        {
+          "text": "Customer ordering with custom flavor variations",
+          "evidence": "User prompt",
+          "confidence": 0.98
+        },
+        {
+          "text": "Live GPS driver tracking",
+          "evidence": "User prompt",
+          "confidence": 0.97
+        },
+        {
+          "text": "Shop order receipt alerts",
+          "evidence": "User prompt",
+          "confidence": 0.95
+        }
+      ],
+      "missingRequirements": [
+        "Separate water packaging selection to maintain puri crispness",
+        "Automated delivery partner proximity dispatch algorithm",
+        "Estimated Time of Arrival (ETA) calculation with live traffic"
+      ],
+      "questions": [
+        "Do you offer scheduled delivery for parties or on-demand only?",
+        "Will the delivery fleet be in-house staff or third-party riders?",
+        "Do you need multi-branch support across multiple city outlets?"
+      ],
+      "recommendations": [
+        {
+          "text": "WebSockets for zero-latency kitchen alerts and live rider coordinates",
+          "explanation": "Eliminates HTTP polling overhead for GPS coordinates",
+          "confidence": 0.95
+        },
+        {
+          "text": "Integrated UPI and Card payments with instant merchant settlements",
+          "explanation": "Prevents delivery cancellation risk",
+          "confidence": 0.92
+        }
+      ]
+    },
+    "blueprint": {
+      "productName": "Royal Pani Puri Express — Order & Fleet Platform",
+      "productDescription": "Complete on-demand hyperlocal street-food ordering, kitchen dispatch, and real-time GPS tracking solution.",
+      "targetUsers": [
+        "Online Customers",
+        "Shop Owners & Kitchen Staff",
+        "Delivery Fleet Partners",
+        "Business Admin"
+      ],
+      "userRoles": [
+        "customer",
+        "shop_manager",
+        "delivery_partner",
+        "admin"
+      ],
+      "coreModules": [
+        {
+          "name": "Customer Ordering Portal",
+          "description": "Browse Pani Puri flavours, custom spice/sweet levels, cart & checkout",
+          "priority": "must-have"
+        },
+        {
+          "name": "Kitchen Order Management (KDS)",
+          "description": "Real-time order board with audio chimes and preparation timer",
+          "priority": "must-have"
+        },
+        {
+          "name": "Fleet Dispatch & GPS Tracking",
+          "description": "Driver assignment engine with live geolocation streaming",
+          "priority": "must-have"
+        },
+        {
+          "name": "Payment & Billing Gateway",
+          "description": "Secure payments via Razorpay / Stripe with instant digital invoices",
+          "priority": "must-have"
+        },
+        {
+          "name": "Notification Service",
+          "description": "WhatsApp, SMS, and Push notifications for all order lifecycle events",
+          "priority": "high"
+        },
+        {
+          "name": "Analytics & Inventory Dashboard",
+          "description": "Monitor daily sales, top-selling waters, and fleet response times",
+          "priority": "medium"
+        }
+      ],
+      "dataEntities": [
+        {
+          "name": "Users",
+          "fields": [
+            "id",
+            "name",
+            "phone",
+            "email",
+            "role",
+            "created_at"
+          ]
+        },
+        {
+          "name": "MenuItems",
+          "fields": [
+            "id",
+            "title",
+            "category",
+            "price",
+            "flavours",
+            "is_available"
+          ]
+        },
+        {
+          "name": "Orders",
+          "fields": [
+            "id",
+            "customer_id",
+            "shop_id",
+            "driver_id",
+            "status",
+            "total_amount",
+            "delivery_address",
+            "created_at"
+          ]
+        },
+        {
+          "name": "OrderItems",
+          "fields": [
+            "id",
+            "order_id",
+            "item_id",
+            "quantity",
+            "spice_level",
+            "pani_type"
+          ]
+        },
+        {
+          "name": "Deliveries",
+          "fields": [
+            "id",
+            "order_id",
+            "driver_id",
+            "current_lat",
+            "current_lng",
+            "eta_minutes",
+            "status"
+          ]
+        },
+        {
+          "name": "Payments",
+          "fields": [
+            "id",
+            "order_id",
+            "transaction_ref",
+            "amount",
+            "method",
+            "status"
+          ]
+        }
+      ],
+      "keyFlows": [
+        "Customer customizes Pani Puri pack (e.g. 50 puris + Teekha Pudina + Khatta Meetha) → pays online",
+        "Shop receives instant sound alert → accepts order → begins hygienic vacuum packaging",
+        "System alerts nearby delivery partner → driver accepts and heads to shop",
+        "Driver picks up package → GPS coordinates stream live to customer app",
+        "Delivery partner arrives at customer address → OTP verified → order marked delivered"
+      ],
+      "techStack": {
+        "frontend": "React 19 / Vite / Tailwind CSS",
+        "backend": "Node.js / Express / Socket.io",
+        "database": "PostgreSQL + Redis (for live GPS caching)",
+        "deployment": "Docker / Node Server / Render / Railway"
+      }
+    },
+    "architecture": {
+      "systemDiagram": "graph TD\n  Customer[📱 Customer Mobile Web] -->|HTTP / WebSocket| Gateway[API Gateway / Node.js]\n  Shop[🖥️ Shop Kitchen Dashboard] -->|WebSocket Listen| Gateway\n  Driver[🛵 Delivery Partner App] -->|GPS Streaming| Gateway\n  Gateway --> Auth[🔐 Auth & Security Service]\n  Gateway --> OrderService[📦 Order Management Engine]\n  Gateway --> TrackingService[📍 Real-time GPS Tracker]\n  Gateway --> PaymentService[💳 Razorpay Gateway]\n  TrackingService --> Redis[(⚡ Redis Live Coordinates)]\n  OrderService --> DB[(🗄️ PostgreSQL Database)]\n  OrderService --> Notif[🔔 WhatsApp / SMS Service]",
+      "erDiagram": "erDiagram\n  USERS ||--o{ ORDERS : places\n  SHOPS ||--o{ ORDERS : fulfills\n  ORDERS ||--|{ ORDER_ITEMS : contains\n  ORDERS ||--|| DELIVERIES : dispatched_via\n  DELIVERIES ||--o{ GPS_LOGS : records\n  ORDERS ||--|| PAYMENTS : settled_by\n  MENU_ITEMS ||--o{ ORDER_ITEMS : specified_in",
+      "apiEndpoints": [
+        {
+          "method": "POST",
+          "path": "/api/orders",
+          "description": "Create and initialize a new Pani Puri order",
+          "auth": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/orders/:id",
+          "description": "Retrieve order details, items and current status",
+          "auth": true
+        },
+        {
+          "method": "PUT",
+          "path": "/api/orders/:id/status",
+          "description": "Update status (preparing, ready, dispatched, delivered)",
+          "auth": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/delivery/assign",
+          "description": "Assign nearest delivery partner to order",
+          "auth": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/delivery/:orderId/location",
+          "description": "Fetch live GPS latitude/longitude and ETA",
+          "auth": false
+        },
+        {
+          "method": "POST",
+          "path": "/api/payments/verify",
+          "description": "Verify payment gateway signature and webhook",
+          "auth": true
+        }
+      ],
+      "sitemap": [
+        "/ (Customer Order Front & Menu)",
+        "/cart (Custom Flavor Picker & Checkout)",
+        "/tracking/:id (Live GPS Delivery Map)",
+        "/shop/dashboard (Kitchen Order Display System)",
+        "/driver/portal (Delivery Partner Order & Navigation)",
+        "/admin/analytics (Sales & Business Reports)"
+      ],
+      "securityNotes": [
+        "JWT tokens with HttpOnly cookies for customer and staff sessions",
+        "Rate limiting on order endpoints to prevent fake traffic surges",
+        "HMAC SHA-256 signature verification for payment webhooks",
+        "Obfuscation of customer phone numbers between driver and buyer"
+      ]
+    },
+    "generationSpec": {
+      "entityName": "Order",
+      "entityNamePlural": "Orders",
+      "modules": [
+        "ordering",
+        "fleet",
+        "payments",
+        "kitchen_kds"
+      ]
+    },
+    "versions": [
+      {
+        "version": "1.0.0",
+        "changes": "Initial app generated from blueprint",
+        "at": "2026-09-23T18:39:14.416Z",
+        "status": "ok"
+      }
+    ]
+  },
+  {
+    "id": "p_muegicapafzlf9",
+    "name": "AANSHI BHUT",
+    "businessName": "1234",
+    "idea": "A Pani Puri shop wants to accept online orders through a Swiggy-like platform. The shop should receive new-order notifications. Customers should be able to track their delivery partner using live GPS.",
+    "language": "en",
+    "status": "draft",
+    "progress": {
+      "idea": true
+    },
+    "createdAt": "2026-09-23T18:48:56.257Z",
+    "updatedAt": "2026-09-23T18:49:16.709Z",
+    "activity": [
+      {
+        "timestamp": "2026-09-23T18:48:56.258Z",
+        "actor": "User",
+        "action": "Project created",
+        "module": "Discovery",
+        "status": "Completed"
+      }
+    ],
+    "requirements": "Customer registration/login, browse Pani Puri menu with custom spice & water choices, add products to cart, place order with online payment, shop receives instant order notification, shop prepares order, delivery partner assignment, live GPS tracking, status alerts, order history.",
+    "process": "Currently customers wait in long queues at the counter, or order via phone calls which are often missed. Payments are cash or direct UPI with no automated confirmation. No delivery partner tracking exists."
   }
 ]

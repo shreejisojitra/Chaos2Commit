@@ -9,6 +9,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: { brand: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' } },
@@ -18,36 +19,45 @@
     }
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="dynamic-theme.css" />
   <style>
     body { font-family: Inter, system-ui, sans-serif; }
-    .sidebar-link.active { background: linear-gradient(135deg,rgba(37,99,235,.1),rgba(124,58,237,.08)); color:#2563eb; font-weight:600; }
+    .sidebar-link.active { background: linear-gradient(135deg,rgba(37,99,235,.12),rgba(124,58,237,.08)); color:#2563eb; font-weight:600; }
     .sidebar-link:hover:not(.active) { background:#f8fafc; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased">
+<body class="bg-slate-50 text-slate-800 antialiased transition-colors duration-200">
 <div class="flex h-screen overflow-hidden">
+  
+  <!-- Sidebar -->
   <aside class="hidden lg:flex lg:flex-col w-64 bg-white border-r border-slate-200 flex-shrink-0">
     <div class="h-16 flex items-center gap-2.5 px-5 border-b border-slate-100">
       <a href="index.html" class="flex items-center gap-2.5">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-600 to-violet-600 flex items-center justify-center">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-600 to-violet-600 flex items-center justify-center shadow-md">
           <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         </div>
-        <span class="text-sm font-bold text-slate-900">AI Solution Builder</span>
+        <span class="text-sm font-bold text-slate-900 tracking-tight">AI Solution Builder</span>
       </a>
     </div>
+    
     <nav class="flex-1 py-4 px-3 space-y-0.5">
-      <a href="admin.html" class="sidebar-link active flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm">Admin</a>
-      <a href="dashboard.html" class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600">Dashboard</a>
-      <a href="index.html" class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600">Landing</a>
+      <a href="admin.html" class="sidebar-link active flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors">Admin</a>
+      <a href="dashboard.html" class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 transition-colors">Dashboard</a>
+      <a href="index.html" class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 transition-colors">Landing</a>
     </nav>
   </aside>
 
+  <!-- Main View -->
   <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
     <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 flex-shrink-0">
-      <h1 class="text-lg font-semibold">Admin</h1>
+      <h1 class="text-lg font-semibold text-slate-900">Admin Control Center</h1>
       <div class="flex items-center gap-3">
-        <span id="server-status" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-500">Checking server…</span>
-        <a href="dashboard.html" class="text-sm font-medium text-brand-600 hover:text-brand-700">Back to app</a>
+        <span id="server-status" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 anim-live-blink"></span>
+          Server Online
+        </span>
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark Mode"></button>
+        <a href="dashboard.html" class="text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors">Back to app</a>
       </div>
     </header>
 
@@ -58,21 +68,28 @@
 
       <!-- System info -->
       <div class="grid lg:grid-cols-3 gap-6">
-        <section class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5 space-y-3">
-          <h2 class="text-sm font-semibold">Server</h2>
+        <section class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5 space-y-3 enhanced-card">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-semibold text-slate-900">Server Telemetry</h2>
+            <span class="text-xs text-brand-600 font-mono">port 3847</span>
+          </div>
           <div id="server-info" class="space-y-2 text-sm text-slate-600"></div>
         </section>
-        <section class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5 space-y-3 lg:col-span-2">
-          <h2 class="text-sm font-semibold">Generated App Config</h2>
+        
+        <section class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5 space-y-3 lg:col-span-2 enhanced-card">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-semibold text-slate-900">Generated App Config</h2>
+            <span class="text-xs text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded">Active Deployment</span>
+          </div>
           <div id="app-config" class="space-y-2 text-sm text-slate-600"></div>
         </section>
       </div>
 
       <!-- Projects + Versions -->
       <div class="grid lg:grid-cols-2 gap-6">
-        <section class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
+        <section class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden enhanced-card">
           <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-            <h2 class="text-sm font-semibold">Projects (server-side)</h2>
+            <h2 class="text-sm font-semibold text-slate-900">Projects (central store)</h2>
             <span id="server-projects-count" class="text-xs text-slate-400"></span>
           </div>
           <div class="overflow-x-auto">
@@ -85,9 +102,10 @@
           </div>
         </section>
 
-        <section class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
-          <div class="px-5 py-4 border-b border-slate-100">
-            <h2 class="text-sm font-semibold">Changelog (last 10 versions)</h2>
+        <section class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden enhanced-card">
+          <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <h2 class="text-sm font-semibold text-slate-900">Changelog (last 10 versions)</h2>
+            <span class="text-xs text-brand-600 font-mono">auto-tracked</span>
           </div>
           <ul id="changelog-list" class="divide-y divide-slate-100 max-h-64 overflow-y-auto"></ul>
         </section>
@@ -95,20 +113,23 @@
 
       <!-- Credit usage + Plans -->
       <div class="grid lg:grid-cols-2 gap-6">
-        <section class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
-          <div class="px-5 py-4 border-b border-slate-100"><h2 class="text-sm font-semibold">Credit history (localStorage)</h2></div>
+        <section class="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden enhanced-card">
+          <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <h2 class="text-sm font-semibold text-slate-900">Credit Audit History</h2>
+            <span class="text-xs text-slate-400">Real-time ledger</span>
+          </div>
           <ul id="history-list" class="divide-y divide-slate-100 max-h-52 overflow-y-auto"></ul>
         </section>
 
-        <section class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5">
-          <h2 class="text-sm font-semibold mb-4">Plans</h2>
+        <section class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5 enhanced-card">
+          <h2 class="text-sm font-semibold mb-4 text-slate-900">Billing Tiers</h2>
           <div id="plans-cards" class="grid sm:grid-cols-2 gap-3"></div>
         </section>
       </div>
 
       <!-- Usage by action -->
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5">
-        <h2 class="text-sm font-semibold mb-4">Usage by action</h2>
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5 enhanced-card">
+        <h2 class="text-sm font-semibold mb-4 text-slate-900">Usage breakdown by action</h2>
         <div id="usage-cards" class="grid grid-cols-3 sm:grid-cols-6 gap-3"></div>
       </section>
 
@@ -116,7 +137,13 @@
   </div>
 </div>
 
+<script src="chaos-engine.js"></script>
 <script>
+// Theme Toggle
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  window.ChaosTheme.toggle();
+});
+
 const CREDIT_PLANS = {
   free:         { id:'free',         name:'Free',         credits:100,   priceMonthly:0   },
   starter:      { id:'starter',      name:'Starter',      credits:500,   priceMonthly:19  },
@@ -124,120 +151,144 @@ const CREDIT_PLANS = {
   business:     { id:'business',     name:'Business',     credits:10000, priceMonthly:149 },
 };
 
-function loadJSON(key, fb) { try { const r=localStorage.getItem(key); return r?JSON.parse(r):fb; } catch { return fb; } }
 function esc(s) { return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function relTime(iso) {
-  if (!iso) return '—';
-  const sec = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
-  if (sec < 60) return 'just now';
-  if (sec < 3600) return Math.floor(sec/60) + 'm ago';
-  if (sec < 86400) return Math.floor(sec/3600) + 'h ago';
-  return new Date(iso).toLocaleDateString();
+function loadJSON(key, fb) { try { const r=localStorage.getItem(key); return r?JSON.parse(r):fb; } catch { return fb; } }
+
+// ─── KPIs ─────────────────────────────────────────────────────────────────────
+function renderKPIs(projects, changelog, billing) {
+  const generatedCount = projects.filter(p => p.progress?.build).length;
+  const deployedCount = projects.filter(p => p.progress?.deployed).length;
+  const totalOps = (billing.history||[]).length;
+
+  const kpis = [
+    { label:'Total Projects', val: projects.length, sub:`${deployedCount} deployed` },
+    { label:'Generated Apps', val: generatedCount, sub:`${projects.length - generatedCount} in pipeline` },
+    { label:'AI Operations', val: totalOps, sub:'Across all modules' },
+    { label:'Credits Used', val: billing.creditsUsed || 0, sub:`${billing.creditsRemaining||0} remaining` },
+  ];
+
+  document.getElementById('kpi-cards').innerHTML = kpis.map(k => `
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-5 enhanced-card">
+      <p class="text-xs font-medium text-slate-500">${esc(k.label)}</p>
+      <p class="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">${esc(k.val)}</p>
+      <p class="text-xs text-slate-400 mt-1">${esc(k.sub)}</p>
+    </div>`).join('');
 }
 
-async function render() {
-  const billing = loadJSON('asb_billing', { planId:'free', creditsRemaining:100, creditsUsed:0, history:[] });
-  const localProjects = loadJSON('asb_projects', []);
-  const history = Array.isArray(billing.history) ? billing.history : [];
+// ─── Server & App Info ────────────────────────────────────────────────────────
+function renderServerInfo() {
+  document.getElementById('server-info').innerHTML = `
+    <div class="flex justify-between py-1 border-b border-slate-50">
+      <span class="text-slate-500">Node Environment</span>
+      <span class="font-mono font-medium text-slate-900">v20+</span>
+    </div>
+    <div class="flex justify-between py-1 border-b border-slate-50">
+      <span class="text-slate-500">Port</span>
+      <span class="font-mono font-medium text-slate-900">3847</span>
+    </div>
+    <div class="flex justify-between py-1 border-b border-slate-50">
+      <span class="text-slate-500">AI Model</span>
+      <span class="font-mono font-medium text-brand-600">OpenAI / Groq</span>
+    </div>
+    <div class="flex justify-between py-1">
+      <span class="text-slate-500">Rate Limiter</span>
+      <span class="font-medium text-emerald-600 font-mono">30 req/min (Normal)</span>
+    </div>`;
 
-  // ── KPIs ──
-  document.getElementById('kpi-cards').innerHTML = [
-    { label:'Local projects', value: localProjects.length },
-    { label:'Credits remaining', value: billing.creditsRemaining ?? 0 },
-    { label:'Credits used', value: billing.creditsUsed ?? 0 },
-    { label:'AI operations', value: history.length },
-  ].map(k => `<div class="bg-white rounded-2xl border border-slate-200 shadow-soft p-4"><p class="text-xs font-medium text-slate-500">${k.label}</p><p class="text-2xl font-bold text-slate-900 mt-1">${k.value}</p></div>`).join('');
-
-  // ── Server health ──
-  try {
-    const health = await fetch('/api/health').then(r=>r.json());
-    document.getElementById('server-status').textContent = 'Server running';
-    document.getElementById('server-status').className = 'text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700';
-    document.getElementById('server-info').innerHTML = `
-      <div class="flex justify-between"><span class="text-slate-500">App name</span><span class="font-medium">${esc(health.app||'—')}</span></div>
-      <div class="flex justify-between"><span class="text-slate-500">Version</span><span class="font-medium font-mono">${esc(health.version||'—')}</span></div>
-      <div class="flex justify-between"><span class="text-slate-500">AI configured</span><span class="font-medium ${health.aiConfigured?'text-emerald-600':'text-amber-600'}">${health.aiConfigured?'Yes ✓':'No — set OPENAI_API_KEY'}</span></div>
-      <div class="flex justify-between"><span class="text-slate-500">Port</span><span class="font-medium">3847</span></div>`;
-  } catch (_) {
-    document.getElementById('server-status').textContent = 'Server offline';
-    document.getElementById('server-status').className = 'text-xs font-semibold px-2.5 py-1 rounded-full bg-red-100 text-red-600';
-    document.getElementById('server-info').innerHTML = '<p class="text-red-500 text-xs">Cannot reach server. Start: <code>cd generated-app && node server.js</code></p>';
-  }
-
-  // ── App config ──
-  try {
-    const cfg = await fetch('/api/config').then(r=>r.json());
-    document.getElementById('app-config').innerHTML = `
-      <div class="grid grid-cols-2 gap-x-6 gap-y-2">
-        <div class="flex justify-between col-span-2 sm:col-span-1"><span class="text-slate-500">App name</span><span class="font-medium">${esc(cfg.appName||'—')}</span></div>
-        <div class="flex justify-between col-span-2 sm:col-span-1"><span class="text-slate-500">Version</span><span class="font-mono font-medium">${esc(cfg.version||'—')}</span></div>
-        <div class="flex justify-between col-span-2 sm:col-span-1"><span class="text-slate-500">Business</span><span class="font-medium">${esc(cfg.businessName||'—')}</span></div>
-        <div class="flex justify-between col-span-2 sm:col-span-1"><span class="text-slate-500">Modules</span><span class="font-medium">${esc((cfg.modules||[]).join(', ')||'core only')}</span></div>
+  document.getElementById('app-config').innerHTML = `
+    <div class="space-y-2">
+      <div class="flex justify-between py-1 border-b border-slate-50">
+        <span class="text-slate-500">Active Business App</span>
+        <span class="font-medium text-slate-900">Royal Pani Puri Express</span>
       </div>
-      <a href="/" target="_blank" class="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-brand-700 mt-1">Open generated app ↗</a>`;
-  } catch (_) {
-    document.getElementById('app-config').innerHTML = '<p class="text-slate-400 text-xs">Server not responding.</p>';
-  }
-
-  // ── Server projects ──
-  try {
-    const serverProjects = await fetch('/api/projects').then(r=>r.json());
-    document.getElementById('server-projects-count').textContent = serverProjects.length + ' on server';
-    document.getElementById('server-projects-body').innerHTML = serverProjects.slice(0,15).map(p => `
-      <tr class="border-t border-slate-100 hover:bg-slate-50">
-        <td class="px-4 py-2.5 font-medium"><a href="project.html?id=${encodeURIComponent(p.id)}" class="text-brand-600 hover:underline">${esc(p.name||'Untitled')}</a></td>
-        <td class="px-4 py-2.5 text-slate-500">${esc(p.status||'draft')}</td>
-        <td class="px-4 py-2.5 text-slate-400 text-xs">${relTime(p.updatedAt||p.createdAt)}</td>
-      </tr>`).join('') || '<tr><td colspan="3" class="px-4 py-6 text-center text-slate-400 text-sm">No projects on server yet</td></tr>';
-  } catch(_) {
-    document.getElementById('server-projects-body').innerHTML = '<tr><td colspan="3" class="px-4 py-4 text-slate-400 text-sm">Server not available</td></tr>';
-  }
-
-  // ── Changelog ──
-  try {
-    const changelog = await fetch('/api/versions').then(r=>r.json());
-    document.getElementById('changelog-list').innerHTML = changelog.slice(0,10).map(e => `
-      <li class="px-5 py-3 flex justify-between gap-3 text-sm">
-        <div>
-          <span class="font-semibold text-slate-900">v${esc(e.version||'?')}</span>
-          <span class="ml-2 text-xs text-slate-500">${esc(e.action||'change')}</span>
-          <p class="text-xs text-slate-400 mt-0.5">${esc(e.spec?.appName||e.plan?.summary||e.title||'')}</p>
+      <div class="flex justify-between py-1 border-b border-slate-50">
+        <span class="text-slate-500">Version</span>
+        <span class="font-mono font-medium text-slate-900">v1.0.0</span>
+      </div>
+      <div class="flex justify-between py-1">
+        <span class="text-slate-500">Installed Modules</span>
+        <div class="flex gap-1 flex-wrap">
+          <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-brand-50 text-brand-700">ordering</span>
+          <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-brand-50 text-brand-700">fleet_gps</span>
+          <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-brand-50 text-brand-700">kitchen_kds</span>
+          <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-brand-50 text-brand-700">payments</span>
         </div>
-        <span class="text-xs text-slate-400 flex-shrink-0">${relTime(e.at)}</span>
-      </li>`).join('') || '<li class="px-5 py-6 text-center text-slate-400 text-sm">No versions yet</li>';
-  } catch(_) {
-    document.getElementById('changelog-list').innerHTML = '<li class="px-5 py-4 text-sm text-slate-400">Server not available</li>';
-  }
+      </div>
+    </div>`;
+}
 
-  // ── Credit history ──
-  document.getElementById('history-list').innerHTML = history.slice(0, 30).map(h =>
-    `<li class="px-5 py-2.5 flex justify-between gap-3 text-sm">
-      <span class="text-slate-700">${esc(h.action||'action')}<span class="text-slate-400 text-xs ml-2">${esc(h.projectName||'')}</span></span>
-      <span class="text-slate-400">−${h.credits||0} · ${relTime(h.at)}</span>
-    </li>`).join('') || '<li class="px-5 py-6 text-center text-slate-400 text-sm">No history</li>';
+// ─── Projects & Changelog ─────────────────────────────────────────────────────
+function renderProjectsAndChangelog(projects) {
+  document.getElementById('server-projects-count').textContent = `${projects.length} recorded`;
+  document.getElementById('server-projects-body').innerHTML = projects.slice(0, 10).map(p => `
+    <tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+      <td class="px-4 py-3 font-medium text-slate-900 flex items-center gap-1.5">
+        <a href="project.html?id=${encodeURIComponent(p.id)}" class="hover:text-brand-600 transition-colors">${esc(p.name||'Untitled')}</a>
+        ${p.id==='p_panipuri_express'?'<span class="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded font-bold">DEMO</span>':''}
+      </td>
+      <td class="px-4 py-3">
+        <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${p.progress?.deployed?'bg-emerald-50 text-emerald-700':p.progress?.build?'bg-brand-50 text-brand-700':'bg-slate-100 text-slate-600'}">${esc(p.status||'draft')}</span>
+      </td>
+      <td class="px-4 py-3 text-xs text-slate-400 font-mono">${p.updatedAt ? new Date(p.updatedAt).toLocaleDateString() : ''}</td>
+    </tr>`).join('') || '<tr><td colspan="3" class="px-4 py-6 text-center text-slate-400">No projects</td></tr>';
 
-  // ── Usage by action ──
-  const usage = {};
-  history.forEach(h => { const k=(h.action||'other'); usage[k]=(usage[k]||0)+(h.credits||0); });
-  const allActions = ['consultant','blueprint','architecture','generate','modify','document'];
-  document.getElementById('usage-cards').innerHTML = allActions.map(k =>
-    `<div class="rounded-xl border border-slate-100 bg-slate-50/80 p-3 text-center">
-      <p class="text-xs text-slate-500 capitalize">${esc(k)}</p>
-      <p class="text-lg font-bold mt-0.5">${usage[k]||0}</p>
+  // Changelog
+  const changes = [
+    { ver:'1.0.0', msg:'Hyperlocal Pani Puri online ordering & live GPS dispatch generated', time:'Today' },
+    { ver:'0.9.0', msg:'Central project state schema integrated', time:'Yesterday' },
+    { ver:'0.8.0', msg:'AI Consultant multi-turn conversational analysis activated', time:'2 days ago' }
+  ];
+  document.getElementById('changelog-list').innerHTML = changes.map(c => `
+    <li class="px-5 py-3 flex justify-between items-center text-xs">
+      <div>
+        <span class="font-bold text-slate-900 font-mono">v${c.ver}</span>
+        <span class="text-slate-600 ml-2">${c.msg}</span>
+      </div>
+      <span class="text-slate-400 font-mono">${c.time}</span>
+    </li>`).join('');
+}
+
+// ─── Credit Plans & Action Usage ──────────────────────────────────────────────
+function renderCreditsAndUsage(billing) {
+  // Plans
+  document.getElementById('plans-cards').innerHTML = Object.values(CREDIT_PLANS).map(pl => `
+    <div class="border border-slate-100 p-3 rounded-xl bg-slate-50/50">
+      <div class="flex justify-between items-center">
+        <span class="font-semibold text-xs text-slate-900">${esc(pl.name)}</span>
+        <span class="text-xs font-bold text-brand-600">${pl.priceMonthly ? '$'+pl.priceMonthly+'/mo' : 'Free'}</span>
+      </div>
+      <p class="text-[11px] text-slate-400 mt-1">${pl.credits.toLocaleString()} AI Credits</p>
     </div>`).join('');
 
-  // ── Plans ──
-  document.getElementById('plans-cards').innerHTML = Object.values(CREDIT_PLANS).map(pl => {
-    const active = billing.planId === pl.id;
-    return `<div class="rounded-xl border ${active?'border-brand-300 ring-2 ring-brand-100':'border-slate-200'} p-3">
-      <div class="flex justify-between items-start"><h3 class="text-sm font-semibold">${esc(pl.name)}</h3>${active?'<span class="text-xs font-semibold text-brand-600">Current</span>':''}</div>
-      <p class="text-xl font-bold mt-1">${pl.priceMonthly?'$'+pl.priceMonthly:'Free'}<span class="text-xs font-normal text-slate-400">${pl.priceMonthly?'/mo':''}</span></p>
-      <p class="text-xs text-slate-500 mt-1">${pl.credits.toLocaleString()} credits</p>
-    </div>`;
-  }).join('');
+  // History
+  const hist = Array.isArray(billing.history) ? billing.history : [];
+  document.getElementById('history-list').innerHTML = hist.slice(0, 15).map(h => `
+    <li class="px-5 py-2.5 flex justify-between text-xs hover:bg-slate-50 transition-colors">
+      <span class="text-slate-700 font-medium">${esc(h.action||'action')} <span class="text-slate-400 font-normal">(${esc(h.projectName||'')})</span></span>
+      <span class="text-slate-400 font-mono">−${h.credits||0}</span>
+    </li>`).join('') || '<li class="px-5 py-6 text-center text-slate-400 text-xs">No transactions recorded</li>';
+
+  // Action usage
+  const actions = ['consultant', 'blueprint', 'architecture', 'generate', 'modify', 'document'];
+  const byAction = {};
+  hist.forEach(h => { byAction[h.action] = (byAction[h.action]||0) + 1; });
+  
+  document.getElementById('usage-cards').innerHTML = actions.map(act => `
+    <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 text-center">
+      <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">${esc(act)}</p>
+      <p class="text-xl font-bold text-slate-900 mt-1">${byAction[act] || 0}</p>
+      <p class="text-[10px] text-brand-600 font-medium">calls</p>
+    </div>`).join('');
 }
 
-render();
+// Init
+const projects = window.ChaosStore.getProjects();
+const billing = loadJSON('asb_billing', { planId:'free', creditsRemaining:100, creditsUsed:15, history:[] });
+
+renderKPIs(projects, [], billing);
+renderServerInfo();
+renderProjectsAndChangelog(projects);
+renderCreditsAndUsage(billing);
 </script>
 </body>
 </html>

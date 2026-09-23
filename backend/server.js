@@ -13,7 +13,6 @@ const path = require('path');
 const crypto = require('crypto');
 const { URL } = require('url');
 const db = require('./db');
-const builderDb = require('./builder-db');
 const aiService = require('./ai-service');
 const generator = require('./generator');
 const projectStore = require('./project-store');
@@ -22,9 +21,13 @@ const config = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), '
 const PORT = process.env.PORT || config.port || 3847;
 const SESSION_SECRET = process.env.SESSION_SECRET || 'asb-generated-app-secret';
 
-// Builder HTML files served at /builder/<file>
+// Builder HTML and asset files served at /builder/<file>
 // In separated structure: frontend/ is sibling of backend/
-const BUILDER_FILES = new Set(['index.html', 'dashboard.html', 'project.html', 'admin.html']);
+const BUILDER_FILES = new Set([
+  'index.html', 'dashboard.html', 'project.html', 'admin.html',
+  'dynamic-theme.css', 'chaos-engine.js',
+  'index-enhanced.html', 'dashboard-enhanced.html', 'project-enhanced.html', 'admin-enhanced.html'
+]);
 const FRONTEND_DIR  = path.join(__dirname, '..', 'frontend');
 
 // ─── Incremental feature modules ─────────────────────────────────────────────
@@ -64,39 +67,8 @@ function checkAiRateLimit(ip) {
   return true;
 }
 
-// ─── Sessions (generated app) ──────────────────────────────────────────────────
+// ─── Sessions ─────────────────────────────────────────────────────────────────
 const sessions = new Map();
-
-// ─── Builder sessions (platform auth) ─────────────────────────────────────────
-const builderSessions = new Map();
-
-function getBuilderSession(req) {
-  const cookies = parseCookies(req.headers.cookie);
-  const sid = cookies.bsid;
-  if (!sid || !builderSessions.has(sid)) return null;
-  return { sid, data: builderSessions.get(sid) };
-}
-
-function setBuilderSession(res, sid, data) {
-  builderSessions.set(sid, data);
-  res.setHeader('Set-Cookie',
-    `bsid=${sid}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${7 * 24 * 3600}`
-  );
-}
-
-function clearBuilderSession(res, sid) {
-  if (sid) builderSessions.delete(sid);
-  res.setHeader('Set-Cookie', 'bsid=; Path=/; HttpOnly; Max-Age=0');
-}
-
-function requireBuilderAuth(req, res) {
-  const sess = getBuilderSession(req);
-  if (!sess || !sess.data.userId) {
-    sendJson(res, 401, { error: 'Builder authentication required', redirect: '/builder/login.html' });
-    return null;
-  }
-  return sess;
-}
 
 function parseCookies(header) {
   const out = {};
@@ -187,10 +159,9 @@ function serveStatic(req, res, filePath) {
 
 function serveBuilderStatic(res, filePath) {
   if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) { res.writeHead(404); return res.end('Not found'); }
-  const data = fs.readFileSync(filePath);
   const ext = path.extname(filePath).toLowerCase();
-  const mime = ext === '.js' ? 'application/javascript; charset=utf-8' : 'text/html; charset=utf-8';
-  res.writeHead(200, { 'Content-Type': mime, 'Content-Length': data.length, 'Cache-Control': 'no-store' });
+  const data = fs.readFileSync(filePath);
+  res.writeHead(200, { 'Content-Type': MIME[ext] || 'text/html; charset=utf-8', 'Content-Length': data.length, 'Cache-Control': 'no-store' });
   res.end(data);
 }
 
@@ -234,72 +205,9 @@ const server = http.createServer(async (req, res) => {
       });
     }
 
-    // ── Builder Auth ─────────────────────────────────────────────────────────
-    if (pathname.startsWith('/api/builder/auth')) {
-      if (method === 'POST' && pathname === '/api/builder/auth/register') {
-        const body = await readBody(req);
-        const name     = String(body.name     || '').trim();
-        const email    = String(body.email    || '').trim().toLowerCase();
-        const password = String(body.password || '');
-        if (!name || !email || !password)
-          return sendJson(res, 400, { error: 'Name, email and password required' });
-        if (password.length < 6)
-          return sendJson(res, 400, { error: 'Password must be at least 6 characters' });
-        try {
-          const user = builderDb.createUser({ name, email, password });
-          const sid  = sessionId();
-          setBuilderSession(res, sid, { userId: user.id, email: user.email, name: user.name });
-          return sendJson(res, 201, builderDb.getPublic(user));
-        } catch (err) {
-          return sendJson(res, err.status || 400, { error: err.message });
-        }
-      }
-
-      if (method === 'POST' && pathname === '/api/builder/auth/login') {
-        const body = await readBody(req);
-        const email    = String(body.email    || '').trim().toLowerCase();
-        const password = String(body.password || '');
-        if (!email || !password)
-          return sendJson(res, 400, { error: 'Email and password required' });
-        const user = builderDb.getUserByEmail(email);
-        if (!user || !builderDb.verifyPassword(password, user.password_hash))
-          return sendJson(res, 401, { error: 'Invalid email or password' });
-        const sid = sessionId();
-        setBuilderSession(res, sid, { userId: user.id, email: user.email, name: user.name });
-        return sendJson(res, 200, builderDb.getPublic(user));
-      }
-
-      if (method === 'POST' && pathname === '/api/builder/auth/logout') {
-        const sess = getBuilderSession(req);
-        clearBuilderSession(res, sess?.sid);
-        return sendJson(res, 200, { ok: true });
-      }
-
-      if (method === 'GET' && pathname === '/api/builder/auth/me') {
-        const sess = getBuilderSession(req);
-        if (!sess) return sendJson(res, 401, { error: 'Not authenticated', redirect: '/builder/login.html' });
-        const user = builderDb.getUserById(sess.data.userId);
-        if (!user) return sendJson(res, 401, { error: 'User not found' });
-        return sendJson(res, 200, builderDb.getPublic(user));
-      }
-    }
-
     // ── Builder pages ────────────────────────────────────────────────────────
     if (method === 'GET' && pathname.startsWith('/builder/')) {
       const file = pathname.slice('/builder/'.length);
-
-      // Public pages (no auth needed)
-      const PUBLIC_BUILDER = new Set(['login.html', 'register.html', 'config.js']);
-      if (file === 'config.js') return serveBuilderStatic(res, path.join(FRONTEND_DIR, 'config.js'));
-      if (PUBLIC_BUILDER.has(file)) return serveBuilderStatic(res, path.join(FRONTEND_DIR, file));
-
-      // Protected pages — redirect to login if not authenticated
-      const sess = getBuilderSession(req);
-      if (!sess) {
-        res.writeHead(302, { Location: '/builder/login.html' });
-        return res.end();
-      }
-
       if (!BUILDER_FILES.has(file)) return sendJson(res, 404, { error: 'Not found' });
       return serveBuilderStatic(res, path.join(FRONTEND_DIR, file));
     }
@@ -339,8 +247,6 @@ const server = http.createServer(async (req, res) => {
 
     // ── AI Consultant chat ───────────────────────────────────────────────────
     if (method === 'POST' && pathname === '/api/ai/chat') {
-      const builderSess = requireBuilderAuth(req, res);
-      if (!builderSess) return;
       const ip = req.socket.remoteAddress || 'unknown';
       if (!checkAiRateLimit(ip)) return sendJson(res, 429, { error: 'Too many requests. Please wait a minute.' });
 
@@ -661,17 +567,10 @@ const server = http.createServer(async (req, res) => {
           const body = await getBody();
           const title = body.title !== undefined ? String(body.title).trim() : existing.title;
           const description = body.description !== undefined ? String(body.description).trim() : existing.description;
-          // Accept any status — domain apps use custom status values
-          const status = body.status !== undefined ? String(body.status).trim() : existing.status;
+          let status = body.status !== undefined ? String(body.status).trim() : existing.status;
+          if (!new Set(['open', 'in_progress', 'done', 'archived']).has(status)) status = existing.status;
           if (!title) return sendJson(res, 400, { error: 'Title is required' });
-          // Passthrough extra domain fields
-          const extraFields = {};
-          Object.keys(body).forEach(k => {
-            if (!['title', 'description', 'status', 'id', 'owner_id', 'created_at', 'updated_at'].includes(k)) {
-              extraFields[k] = String(body[k] ?? '').slice(0, 2000);
-            }
-          });
-          return sendJson(res, 200, db.updateRecord(existing.id, { title, description, status, ...extraFields }));
+          return sendJson(res, 200, db.updateRecord(existing.id, { title, description, status }));
         }
         if (method === 'DELETE') {
           const existing = db.getRecord(id);
@@ -687,14 +586,14 @@ const server = http.createServer(async (req, res) => {
         const title = String(body.title || '').trim();
         if (!title) return sendJson(res, 400, { error: 'Title is required' });
         const description = String(body.description || '').trim();
-        // Accept any status value — generated apps use domain-specific statuses
-        const status = String(body.status || 'new').trim() || 'new';
-        // Passthrough all extra domain fields from the spec
+        let status = String(body.status || 'open').trim();
+        if (!new Set(['open', 'in_progress', 'done', 'archived']).has(status)) status = 'open';
+        // Merge any extra fields from the spec
         const extraFields = {};
+        const cfg = readCurrentConfig();
+        // (generic passthrough of extra body fields)
         Object.keys(body).forEach((k) => {
-          if (!['title', 'description', 'status', 'owner_id', 'id', 'created_at', 'updated_at'].includes(k)) {
-            extraFields[k] = String(body[k] ?? '').slice(0, 2000);
-          }
+          if (!['title', 'description', 'status'].includes(k)) extraFields[k] = body[k];
         });
         const row = db.createRecord({ title, description, status, owner_id: sess.data.userId, ...extraFields });
         return sendJson(res, 201, row);
@@ -709,27 +608,14 @@ const server = http.createServer(async (req, res) => {
     }
     if (method === 'GET') {
       const safePath = pathname === '/' ? '/index.html' : pathname;
-      // Check if file exists first, else serve 404 page
-      const fullPath = path.join(__dirname, 'public', path.normalize(safePath));
-      const pubRoot  = path.resolve(path.join(__dirname, 'public'));
-      if (!path.resolve(fullPath).startsWith(pubRoot)) { res.writeHead(403); return res.end('Forbidden'); }
-      if (!fs.existsSync(fullPath) || !fs.statSync(fullPath).isFile()) {
-        res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
-        return res.end(`<!DOCTYPE html><html><head><title>404 Not Found</title>
-<style>body{font-family:Inter,sans-serif;background:#f8fafc;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}
-.card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:2.5rem;text-align:center;max-width:420px}
-h1{font-size:3rem;font-weight:800;color:#1e3a8a;margin:0}p{color:#64748b;margin:.75rem 0 1.5rem}
-a{background:#2563eb;color:#fff;padding:.6rem 1.5rem;border-radius:8px;text-decoration:none;font-weight:600;font-size:.9rem}</style></head>
-<body><div class="card"><h1>404</h1><p>Page not found.</p><a href="/">Go home</a></div></body></html>`);
-      }
-      return serveStatic(req, res, fullPath);
+      return serveStatic(req, res, path.join(__dirname, 'public', path.normalize(safePath)));
     }
 
-    sendJson(res, 404, { error: 'Not found', path: pathname });
+    sendJson(res, 404, { error: 'Not found' });
   } catch (err) {
     if (err.status === 413) return sendJson(res, 413, { error: 'Request body too large.' });
     console.error('[server error]', err);
-    sendJsonStream(res, 500, { error: 'Internal server error', message: err.message });
+    sendJsonStream(res, 500, { error: 'Internal server error' });
   }
 });
 

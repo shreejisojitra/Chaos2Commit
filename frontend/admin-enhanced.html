@@ -30,7 +30,7 @@
   <!-- Sidebar -->
   <aside class="hidden lg:flex lg:flex-col w-64 bg-white border-r border-slate-200 flex-shrink-0">
     <div class="h-16 flex items-center gap-2.5 px-5 border-b border-slate-100">
-      <a href="index.html" class="flex items-center gap-2.5">
+      <a href="index-enhanced.html" class="flex items-center gap-2.5">
         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-600 to-violet-600 flex items-center justify-center shadow-md">
           <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         </div>
@@ -39,9 +39,9 @@
     </div>
     
     <nav class="flex-1 py-4 px-3 space-y-0.5">
-      <a href="admin.html" class="sidebar-link active flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors">Admin</a>
-      <a href="dashboard.html" class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 transition-colors">Dashboard</a>
-      <a href="index.html" class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 transition-colors">Landing</a>
+      <a href="admin-enhanced.html" class="sidebar-link active flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors">Admin</a>
+      <a href="dashboard-enhanced.html" class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 transition-colors">Dashboard</a>
+      <a href="index-enhanced.html" class="sidebar-link flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-600 transition-colors">Landing</a>
     </nav>
   </aside>
 
@@ -55,7 +55,7 @@
           Server Online
         </span>
         <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Dark Mode"></button>
-        <a href="dashboard.html" class="text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors">Back to app</a>
+        <a href="dashboard-enhanced.html" class="text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors">Back to app</a>
       </div>
     </header>
 
@@ -221,7 +221,7 @@ function renderProjectsAndChangelog(projects) {
   document.getElementById('server-projects-body').innerHTML = projects.slice(0, 10).map(p => `
     <tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors">
       <td class="px-4 py-3 font-medium text-slate-900 flex items-center gap-1.5">
-        <a href="project.html?id=${encodeURIComponent(p.id)}" class="hover:text-brand-600 transition-colors">${esc(p.name||'Untitled')}</a>
+        <a href="project-enhanced.html?id=${encodeURIComponent(p.id)}" class="hover:text-brand-600 transition-colors">${esc(p.name||'Untitled')}</a>
         ${p.id==='p_panipuri_express'?'<span class="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded font-bold">DEMO</span>':''}
       </td>
       <td class="px-4 py-3">

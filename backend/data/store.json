@@ -70,11 +70,20 @@
       "owner_id": 1,
       "created_at": "2026-09-23T16:38:06.859Z",
       "updated_at": "2026-09-23T16:38:06.859Z"
+    },
+    {
+      "id": 7,
+      "title": "Test record 1790185233171",
+      "description": "",
+      "status": "open",
+      "owner_id": 1,
+      "created_at": "2026-09-23T17:40:33.175Z",
+      "updated_at": "2026-09-23T17:40:33.175Z"
     }
   ],
   "seq": {
     "users": 4,
-    "records": 7,
+    "records": 8,
     "attendance": 5
   },
   "attendance": [

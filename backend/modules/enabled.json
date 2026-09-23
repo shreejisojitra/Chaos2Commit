@@ -1,1 +1,9 @@
-["attendance"]
+[
+    "auth",
+    "menu",
+    "order",
+    "notification",
+    "tracking",
+    "integration",
+    "zomatoIntegration"
+]
