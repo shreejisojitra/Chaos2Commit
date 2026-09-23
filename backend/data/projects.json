@@ -7,21 +7,36 @@
     "language": "en",
     "status": "draft",
     "progress": {
+      "idea": true
+    },
+    "createdAt": "2026-09-23T05:13:40.173Z",
+    "updatedAt": "2026-09-23T11:31:22.445Z",
+    "consultantConversation": [],
+    "consultant": null
+  },
+  {
+    "id": "p_mue24bysgy5mp7",
+    "name": "SHREEJI SOJITRA",
+    "businessName": "sh",
+    "idea": "I am starting a small online bakery business that sells customized cakes, pastries, and desserts. I want a software system to manage customers, orders, cake customization requests, payments, delivery schedules, inventory, and notifications.",
+    "language": "en",
+    "status": "draft",
+    "progress": {
       "idea": true,
       "consultant": true
     },
-    "createdAt": "2026-09-23T05:13:40.173Z",
-    "updatedAt": "2026-09-23T05:55:40.818Z",
+    "createdAt": "2026-09-23T12:06:08.020Z",
+    "updatedAt": "2026-09-23T12:44:25.680Z",
     "consultantConversation": [
       {
         "role": "user",
-        "content": "I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where:\n- Companies can create job openings.\n- HR staff can add and manage candidates.\n- Candidates can apply for jobs.\n- HR can schedule interviews.\n- HR can track candidate status.\n- Companies can manage their hiring requirements.\n- Employees should have attendance management.\n- Admin should manage users and permissions."
+        "content": "I am starting a small online bakery that sells customized cakes, pastries, cupcakes, and other desserts. Customers should be able to browse the available products, select cake size and flavor, upload reference images for custom designs, add special instructions, and place orders online. The bakery team needs to manage customer information, orders, customization requests, payments, inventory, and delivery schedules. Customers should receive notifications about order confirmation, preparation status, and delivery. The system should also provide dashboards and reports for sales, inventory, and order management."
       },
       {
         "role": "assistant",
-        "content": "AI unavailable: The AI provider could not complete this request. Please try again.\n\nLocal analysis: This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
+        "content": "AI unavailable: This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs/get-started).\n\nLocal analysis: This appears to be a retail platform. I am starting a small online bakery that sells customized cakes, pastries, cupcakes, and other desse",
         "analysis": {
-          "businessUnderstanding": "This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
+          "businessUnderstanding": "This appears to be a retail platform. I am starting a small online bakery that sells customized cakes, pastries, cupcakes, and other desse",
           "targetUsers": [
             "Admin",
             "Staff"
@@ -33,7 +48,7 @@
               "confidence": 0.95
             },
             {
-              "text": "Core HR & recruitment record management",
+              "text": "Core retail record management",
               "evidence": "Inferred from business type",
               "confidence": 0.75
             }
@@ -70,269 +85,222 @@
       },
       {
         "role": "user",
-        "content": "I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where:\n- Companies can create job openings.\n- HR staff can add and manage candidates.\n- Candidates can apply for jobs.\n- HR can schedule interviews.\n- HR can track candidate status.\n- Companies can manage their hiring requirements.\n- Employees should have attendance management.\n- Admin should manage users and permissions."
+        "content": "I am starting a small online bakery that sells customized cakes, pastries, cupcakes, and other desserts. Customers should be able to browse the available products, select cake size and flavor, upload reference images for custom designs, add special instructions, and place orders online. The bakery team needs to manage customer information, orders, customization requests, payments, inventory, and delivery schedules. Customers should receive notifications about order confirmation, preparation status, and delivery. The system should also provide dashboards and reports for sales, inventory, and order management."
       },
       {
         "role": "assistant",
-        "content": "AI unavailable: The AI provider could not complete this request. Please try again.\n\nLocal analysis: This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
+        "content": "A small online bakery that sells customized cakes, pastries, cupcakes, and desserts, allowing customers to browse products, customize orders with images and instructions, and place orders online. The bakery team manages customer data, orders, custom requests, payments, inventory, and delivery, while customers receive status notifications and the system offers dashboards and reports.",
         "analysis": {
-          "businessUnderstanding": "This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
+          "businessUnderstanding": "A small online bakery that sells customized cakes, pastries, cupcakes, and desserts, allowing customers to browse products, customize orders with images and instructions, and place orders online. The bakery team manages customer data, orders, custom requests, payments, inventory, and delivery, while customers receive status notifications and the system offers dashboards and reports.",
           "targetUsers": [
-            "Admin",
-            "Staff"
+            "Customers",
+            "Bakery Team"
           ],
           "explicitRequirements": [
             {
-              "text": "User authentication (login/register)",
-              "evidence": "Standard requirement",
+              "text": "Customers can browse available products",
+              "evidence": "\"Customers should be able to browse the available products\"",
               "confidence": 0.95
             },
             {
-              "text": "Core HR & recruitment record management",
-              "evidence": "Inferred from business type",
-              "confidence": 0.75
-            }
-          ],
-          "missingRequirements": [
-            "User roles not defined",
-            "Reporting requirements not mentioned",
-            "Notification requirements unclear"
-          ],
-          "questions": [
-            "Who are the primary users of this system?",
-            "Do you need multi-user/multi-tenant support?",
-            "Are there compliance or data privacy requirements?",
-            "Do you need mobile app support?"
-          ],
-          "recommendations": [
-            {
-              "text": "Add role-based access control (admin vs staff)",
-              "explanation": "Security baseline for any multi-user system",
-              "confidence": 0.9
-            },
-            {
-              "text": "Include audit trail / activity log",
-              "explanation": "Useful for compliance and debugging",
-              "confidence": 0.7
-            }
-          ],
-          "assumptions": [
-            "Rule-based fallback — AI not available. This analysis is approximate.",
-            "OpenAI API key not configured on server."
-          ]
-        },
-        "source": "fallback"
-      },
-      {
-        "role": "user",
-        "content": "You\nI am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where:\n- Companies can create job openings.\n- HR staff can add and manage candidates.\n- Candidates can apply for jobs.\n- HR can schedule interviews.\n- HR can track candidate status.\n- Companies can manage their hiring requirements.\n- Employees should have attendance management.\n- Admin should manage users and permissions."
-      },
-      {
-        "role": "assistant",
-        "content": "AI unavailable: Incorrect API key provided: sk-xxxxxxxx. You can find your API key at https://platform.openai.com/account/api-keys.\n\nLocal analysis: This appears to be a HR & recruitment platform. You\nI am starting an HR consultancy that helps companies hire employees.\n\nI want a software system w",
-        "analysis": {
-          "businessUnderstanding": "This appears to be a HR & recruitment platform. You\nI am starting an HR consultancy that helps companies hire employees.\n\nI want a software system w",
-          "targetUsers": [
-            "Admin",
-            "Staff"
-          ],
-          "explicitRequirements": [
-            {
-              "text": "User authentication (login/register)",
-              "evidence": "Standard requirement",
+              "text": "Customers can select cake size and flavor",
+              "evidence": "\"select cake size and flavor\"",
               "confidence": 0.95
             },
             {
-              "text": "Core HR & recruitment record management",
-              "evidence": "Inferred from business type",
-              "confidence": 0.75
-            }
-          ],
-          "missingRequirements": [
-            "User roles not defined",
-            "Reporting requirements not mentioned",
-            "Notification requirements unclear"
-          ],
-          "questions": [
-            "Who are the primary users of this system?",
-            "Do you need multi-user/multi-tenant support?",
-            "Are there compliance or data privacy requirements?",
-            "Do you need mobile app support?"
-          ],
-          "recommendations": [
-            {
-              "text": "Add role-based access control (admin vs staff)",
-              "explanation": "Security baseline for any multi-user system",
-              "confidence": 0.9
-            },
-            {
-              "text": "Include audit trail / activity log",
-              "explanation": "Useful for compliance and debugging",
-              "confidence": 0.7
-            }
-          ],
-          "assumptions": [
-            "Rule-based fallback — AI not available. This analysis is approximate.",
-            "OpenAI API key not configured on server."
-          ]
-        },
-        "source": "fallback"
-      },
-      {
-        "role": "user",
-        "content": "I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where:\n- Companies can create job openings.\n- HR staff can add and manage candidates.\n- Candidates can apply for jobs.\n- HR can schedule interviews.\n- HR can track candidate status.\n- Companies can manage their hiring requirements.\n- Employees should have attendance management.\n- Admin should manage users and permissions."
-      },
-      {
-        "role": "assistant",
-        "content": "AI unavailable: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\n\nLocal analysis: This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
-        "analysis": {
-          "businessUnderstanding": "This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
-          "targetUsers": [
-            "Admin",
-            "Staff"
-          ],
-          "explicitRequirements": [
-            {
-              "text": "User authentication (login/register)",
-              "evidence": "Standard requirement",
+              "text": "Customers can upload reference images for custom designs",
+              "evidence": "\"upload reference images for custom designs\"",
               "confidence": 0.95
             },
             {
-              "text": "Core HR & recruitment record management",
-              "evidence": "Inferred from business type",
-              "confidence": 0.75
-            }
-          ],
-          "missingRequirements": [
-            "User roles not defined",
-            "Reporting requirements not mentioned",
-            "Notification requirements unclear"
-          ],
-          "questions": [
-            "Who are the primary users of this system?",
-            "Do you need multi-user/multi-tenant support?",
-            "Are there compliance or data privacy requirements?",
-            "Do you need mobile app support?"
-          ],
-          "recommendations": [
-            {
-              "text": "Add role-based access control (admin vs staff)",
-              "explanation": "Security baseline for any multi-user system",
-              "confidence": 0.9
-            },
-            {
-              "text": "Include audit trail / activity log",
-              "explanation": "Useful for compliance and debugging",
-              "confidence": 0.7
-            }
-          ],
-          "assumptions": [
-            "Rule-based fallback — AI not available. This analysis is approximate.",
-            "OpenAI API key not configured on server."
-          ]
-        },
-        "source": "fallback"
-      },
-      {
-        "role": "user",
-        "content": "I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where:\n- Companies can create job openings.\n- HR staff can add and manage candidates.\n- Candidates can apply for jobs.\n- HR can schedule interviews.\n- HR can track candidate status.\n- Companies can manage their hiring requirements.\n- Employees should have attendance management.\n- Admin should manage users and permissions."
-      },
-      {
-        "role": "assistant",
-        "content": "AI unavailable: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\n\nLocal analysis: This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
-        "analysis": {
-          "businessUnderstanding": "This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
-          "targetUsers": [
-            "Admin",
-            "Staff"
-          ],
-          "explicitRequirements": [
-            {
-              "text": "User authentication (login/register)",
-              "evidence": "Standard requirement",
+              "text": "Customers can add special instructions to orders",
+              "evidence": "\"add special instructions\"",
               "confidence": 0.95
             },
             {
-              "text": "Core HR & recruitment record management",
-              "evidence": "Inferred from business type",
-              "confidence": 0.75
+              "text": "Customers can place orders online",
+              "evidence": "\"place orders online\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "Bakery team can manage customer information",
+              "evidence": "\"manage customer information\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "Bakery team can manage orders",
+              "evidence": "\"manage orders\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "Bakery team can manage customization requests",
+              "evidence": "\"manage customization requests\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "Bakery team can manage payments",
+              "evidence": "\"manage payments\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "Bakery team can manage inventory",
+              "evidence": "\"inventory\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "Bakery team can manage delivery schedules",
+              "evidence": "\"delivery schedules\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "Customers receive notifications about order confirmation, preparation status, and delivery",
+              "evidence": "\"Customers should receive notifications about order confirmation, preparation status, and delivery\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "System provides dashboards and reports for sales, inventory, and order management",
+              "evidence": "\"provide dashboards and reports for sales, inventory, and order management\"",
+              "confidence": 0.95
             }
           ],
           "missingRequirements": [
-            "User roles not defined",
-            "Reporting requirements not mentioned",
-            "Notification requirements unclear"
+            "Payment gateway integration details",
+            "User authentication and account management",
+            "Admin role and permission management"
           ],
           "questions": [
-            "Who are the primary users of this system?",
-            "Do you need multi-user/multi-tenant support?",
-            "Are there compliance or data privacy requirements?",
-            "Do you need mobile app support?"
+            "What payment methods should the system support?",
+            "Do you require a mobile app in addition to a web interface?",
+            "What delivery options (same-day, scheduled) are needed?"
           ],
           "recommendations": [
             {
-              "text": "Add role-based access control (admin vs staff)",
-              "explanation": "Security baseline for any multi-user system",
-              "confidence": 0.9
+              "text": "Use a modular e-commerce platform (e.g., Shopify or WooCommerce) with a custom plugin for cake customization to accelerate development.",
+              "explanation": "These platforms provide built‑in inventory, payment, and notification capabilities, reducing time to market.",
+              "confidence": 0.8
             },
             {
-              "text": "Include audit trail / activity log",
-              "explanation": "Useful for compliance and debugging",
-              "confidence": 0.7
+              "text": "Implement a RESTful API backend (Node.js + PostgreSQL) to handle order processing, inventory, and customization logic.",
+              "explanation": "A decoupled API allows future expansion (mobile app, third‑party integrations) without redesigning the core.",
+              "confidence": 0.8
+            },
+            {
+              "text": "Integrate a notification service (Twilio, Firebase Cloud Messaging) for order status updates.",
+              "explanation": "Reliable push/email notifications improve customer experience and reduce support queries.",
+              "confidence": 0.8
             }
           ],
           "assumptions": [
-            "Rule-based fallback — AI not available. This analysis is approximate.",
-            "OpenAI API key not configured on server."
+            "The bakery has limited technical resources and prefers a low‑maintenance solution.",
+            "Operations are confined to a single geographic region with local delivery."
           ]
         },
-        "source": "fallback"
+        "source": "openai"
       }
     ],
     "consultant": {
-      "businessUnderstanding": "This appears to be a HR & recruitment platform. I am starting an HR consultancy that helps companies hire employees.\n\nI want a software system where",
+      "businessUnderstanding": "A small online bakery that sells customized cakes, pastries, cupcakes, and desserts, allowing customers to browse products, customize orders with images and instructions, and place orders online. The bakery team manages customer data, orders, custom requests, payments, inventory, and delivery, while customers receive status notifications and the system offers dashboards and reports.",
       "targetUsers": [
-        "Admin",
-        "Staff"
+        "Customers",
+        "Bakery Team"
       ],
       "explicitRequirements": [
         {
-          "text": "User authentication (login/register)",
-          "evidence": "Standard requirement",
+          "text": "Customers can browse available products",
+          "evidence": "\"Customers should be able to browse the available products\"",
           "confidence": 0.95
         },
         {
-          "text": "Core HR & recruitment record management",
-          "evidence": "Inferred from business type",
-          "confidence": 0.75
+          "text": "Customers can select cake size and flavor",
+          "evidence": "\"select cake size and flavor\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Customers can upload reference images for custom designs",
+          "evidence": "\"upload reference images for custom designs\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Customers can add special instructions to orders",
+          "evidence": "\"add special instructions\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Customers can place orders online",
+          "evidence": "\"place orders online\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Bakery team can manage customer information",
+          "evidence": "\"manage customer information\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Bakery team can manage orders",
+          "evidence": "\"manage orders\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Bakery team can manage customization requests",
+          "evidence": "\"manage customization requests\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Bakery team can manage payments",
+          "evidence": "\"manage payments\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Bakery team can manage inventory",
+          "evidence": "\"inventory\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Bakery team can manage delivery schedules",
+          "evidence": "\"delivery schedules\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Customers receive notifications about order confirmation, preparation status, and delivery",
+          "evidence": "\"Customers should receive notifications about order confirmation, preparation status, and delivery\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "System provides dashboards and reports for sales, inventory, and order management",
+          "evidence": "\"provide dashboards and reports for sales, inventory, and order management\"",
+          "confidence": 0.95
         }
       ],
       "missingRequirements": [
-        "User roles not defined",
-        "Reporting requirements not mentioned",
-        "Notification requirements unclear"
+        "Payment gateway integration details",
+        "User authentication and account management",
+        "Admin role and permission management"
       ],
       "questions": [
-        "Who are the primary users of this system?",
-        "Do you need multi-user/multi-tenant support?",
-        "Are there compliance or data privacy requirements?",
-        "Do you need mobile app support?"
+        "What payment methods should the system support?",
+        "Do you require a mobile app in addition to a web interface?",
+        "What delivery options (same-day, scheduled) are needed?"
       ],
       "recommendations": [
         {
-          "text": "Add role-based access control (admin vs staff)",
-          "explanation": "Security baseline for any multi-user system",
-          "confidence": 0.9
+          "text": "Use a modular e-commerce platform (e.g., Shopify or WooCommerce) with a custom plugin for cake customization to accelerate development.",
+          "explanation": "These platforms provide built‑in inventory, payment, and notification capabilities, reducing time to market.",
+          "confidence": 0.8
         },
         {
-          "text": "Include audit trail / activity log",
-          "explanation": "Useful for compliance and debugging",
-          "confidence": 0.7
+          "text": "Implement a RESTful API backend (Node.js + PostgreSQL) to handle order processing, inventory, and customization logic.",
+          "explanation": "A decoupled API allows future expansion (mobile app, third‑party integrations) without redesigning the core.",
+          "confidence": 0.8
+        },
+        {
+          "text": "Integrate a notification service (Twilio, Firebase Cloud Messaging) for order status updates.",
+          "explanation": "Reliable push/email notifications improve customer experience and reduce support queries.",
+          "confidence": 0.8
         }
       ],
       "assumptions": [
-        "Rule-based fallback — AI not available. This analysis is approximate.",
-        "OpenAI API key not configured on server."
+        "The bakery has limited technical resources and prefers a low‑maintenance solution.",
+        "Operations are confined to a single geographic region with local delivery."
       ]
     }
   }

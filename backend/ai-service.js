@@ -1,20 +1,20 @@
 /**
- * AI Service — all OpenAI calls go through here.
- * Uses Chat Completions API (/v1/chat/completions) — works with all OpenAI accounts.
- * Model: gpt-4.1-mini by default (cheap + fast).
+ * AI Service — Groq API (Free tier, OpenAI-compatible)
+ * Model: openai/gpt-oss-20b
+ * Free at: https://console.groq.com
  */
 
-const DEFAULT_MODEL = 'gpt-4.1-mini';
+const DEFAULT_MODEL = 'openai/gpt-oss-20b';
 const MAX_MESSAGE_LENGTH = 8000;
 const MAX_TURNS = 20;
 
-// ─── Shared helpers ────────────────────────────────────────────────────────────
+// ─── Key helper ────────────────────────────────────────────────────────────────
 
 function getApiKey(deps = {}) {
-  const key = deps.apiKey === undefined ? process.env.OPENAI_API_KEY : deps.apiKey;
-  if (!key || key === 'your-openai-api-key-here') {
+  const key = deps.apiKey === undefined ? process.env.GROQ_API_KEY : deps.apiKey;
+  if (!key || key === 'your-groq-api-key-here') {
     const err = new Error(
-      'OpenAI API key not configured. Add OPENAI_API_KEY to generated-app/.env and restart the server.',
+      'Groq API key not set. Add GROQ_API_KEY to backend/.env and restart. Free key at https://console.groq.com'
     );
     err.status = 503;
     throw err;
@@ -23,65 +23,50 @@ function getApiKey(deps = {}) {
 }
 
 function getModel(deps = {}) {
-  return deps.model || process.env.OPENAI_MODEL || DEFAULT_MODEL;
+  return deps.model || process.env.GROQ_MODEL || DEFAULT_MODEL;
 }
 
-/**
- * Core function — calls /v1/chat/completions with a JSON schema response_format.
- * When schema is provided, returns parsed JSON object.
- * When schema is null, returns the raw string content.
- */
-async function callChatCompletions(apiKey, model, systemPrompt, userMessage, schema, deps = {}) {
-  const fetchImpl = deps.fetch || global.fetch;
+// ─── Core call (Groq = OpenAI-compatible) ─────────────────────────────────────
 
-  const messages = [
-    { role: 'system', content: systemPrompt },
-    { role: 'user',   content: userMessage },
-  ];
+async function callGroq(apiKey, model, systemPrompt, userMessage, deps = {}) {
+  const fetchImpl = deps.fetch || global.fetch;
 
   const requestBody = {
     model,
-    messages,
-    max_tokens: schema ? 2000 : 1400,
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user',   content: userMessage  },
+    ],
     temperature: 0.4,
+    max_tokens: 2048,
+    // Note: response_format json_object not supported on all Groq models
+    // We instruct via system prompt and parse manually
   };
-
-  // Use JSON schema structured output if a schema is provided
-  if (schema) {
-    requestBody.response_format = {
-      type: 'json_schema',
-      json_schema: {
-        name: schema.name,
-        strict: true,
-        schema: schema.schema,
-      },
-    };
-  }
 
   let response;
   try {
-    response = await fetchImpl('https://api.openai.com/v1/chat/completions', {
+    response = await fetchImpl('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type':  'application/json',
       },
       body: JSON.stringify(requestBody),
     });
   } catch (_) {
-    const err = new Error('Could not reach OpenAI. Check your internet connection and try again.');
+    const err = new Error('Could not reach Groq. Check your internet connection.');
     err.status = 502;
     throw err;
   }
 
   if (!response.ok) {
-    let errMsg = 'OpenAI returned an error. Please try again.';
+    let errMsg = `Groq error (${response.status}).`;
     try {
       const errBody = await response.json();
       if (errBody.error?.message) errMsg = errBody.error.message;
     } catch (_) {}
     const err = new Error(errMsg);
-    err.status = response.status === 401 ? 401 : 502;
+    err.status = 502;
     throw err;
   }
 
@@ -89,220 +74,35 @@ async function callChatCompletions(apiKey, model, systemPrompt, userMessage, sch
   try {
     payload = await response.json();
   } catch (_) {
-    const err = new Error('OpenAI returned an unreadable response.');
+    const err = new Error('Groq returned an unreadable response.');
     err.status = 502;
     throw err;
   }
 
   const content = payload.choices?.[0]?.message?.content;
   if (!content) {
-    const err = new Error('OpenAI returned an empty response.');
+    const err = new Error('Groq returned an empty response.');
     err.status = 502;
     throw err;
   }
 
-  if (schema) {
-    try {
-      return JSON.parse(content);
-    } catch (_) {
-      const err = new Error('OpenAI response was not valid JSON. Try again.');
-      err.status = 502;
-      throw err;
-    }
-  }
+  // Strip markdown fences if present
+  const cleaned = content
+    .replace(/^```json\s*/i, '')
+    .replace(/^```\s*/i, '')
+    .replace(/\s*```$/i, '')
+    .trim();
 
-  return content;
+  try {
+    return JSON.parse(cleaned);
+  } catch (_) {
+    const err = new Error('AI response was not valid JSON. Try again.');
+    err.status = 502;
+    throw err;
+  }
 }
 
-// ─── Schemas ───────────────────────────────────────────────────────────────────
-
-const CONSULTANT_SCHEMA = {
-  name: 'business_consultant_analysis',
-  schema: {
-    type: 'object',
-    additionalProperties: false,
-    properties: {
-      businessUnderstanding:  { type: 'string' },
-      targetUsers:            { type: 'array', items: { type: 'string' } },
-      explicitRequirements: {
-        type: 'array',
-        items: {
-          type: 'object', additionalProperties: false,
-          properties: {
-            text:       { type: 'string' },
-            evidence:   { type: 'string' },
-            confidence: { type: 'number' },
-          },
-          required: ['text', 'evidence', 'confidence'],
-        },
-      },
-      missingRequirements:  { type: 'array', items: { type: 'string' } },
-      questions:            { type: 'array', items: { type: 'string' } },
-      recommendations: {
-        type: 'array',
-        items: {
-          type: 'object', additionalProperties: false,
-          properties: {
-            text:        { type: 'string' },
-            explanation: { type: 'string' },
-            confidence:  { type: 'number' },
-          },
-          required: ['text', 'explanation', 'confidence'],
-        },
-      },
-      assumptions: { type: 'array', items: { type: 'string' } },
-    },
-    required: [
-      'businessUnderstanding', 'targetUsers', 'explicitRequirements',
-      'missingRequirements', 'questions', 'recommendations', 'assumptions',
-    ],
-  },
-};
-
-const BLUEPRINT_SCHEMA = {
-  name: 'product_blueprint',
-  schema: {
-    type: 'object', additionalProperties: false,
-    properties: {
-      productName:        { type: 'string' },
-      productDescription: { type: 'string' },
-      targetUsers:        { type: 'array', items: { type: 'string' } },
-      coreModules: {
-        type: 'array',
-        items: {
-          type: 'object', additionalProperties: false,
-          properties: {
-            id:          { type: 'string' },
-            name:        { type: 'string' },
-            description: { type: 'string' },
-            priority:    { type: 'string' },
-          },
-          required: ['id', 'name', 'description', 'priority'],
-        },
-      },
-      dataEntities: {
-        type: 'array',
-        items: {
-          type: 'object', additionalProperties: false,
-          properties: {
-            name:   { type: 'string' },
-            fields: { type: 'array', items: { type: 'string' } },
-          },
-          required: ['name', 'fields'],
-        },
-      },
-      userRoles:                  { type: 'array', items: { type: 'string' } },
-      keyFlows:                   { type: 'array', items: { type: 'string' } },
-      nonFunctionalRequirements:  { type: 'array', items: { type: 'string' } },
-      techStack: {
-        type: 'object', additionalProperties: false,
-        properties: {
-          backend:    { type: 'string' },
-          frontend:   { type: 'string' },
-          database:   { type: 'string' },
-          deployment: { type: 'string' },
-        },
-        required: ['backend', 'frontend', 'database', 'deployment'],
-      },
-    },
-    required: [
-      'productName', 'productDescription', 'targetUsers', 'coreModules',
-      'dataEntities', 'userRoles', 'keyFlows', 'nonFunctionalRequirements', 'techStack',
-    ],
-  },
-};
-
-const ARCHITECTURE_SCHEMA = {
-  name: 'system_architecture',
-  schema: {
-    type: 'object', additionalProperties: false,
-    properties: {
-      systemDiagram:  { type: 'string' },
-      erDiagram:      { type: 'string' },
-      apiEndpoints: {
-        type: 'array',
-        items: {
-          type: 'object', additionalProperties: false,
-          properties: {
-            method:      { type: 'string' },
-            path:        { type: 'string' },
-            description: { type: 'string' },
-            auth:        { type: 'boolean' },
-          },
-          required: ['method', 'path', 'description', 'auth'],
-        },
-      },
-      sitemap:       { type: 'array', items: { type: 'string' } },
-      securityNotes: { type: 'array', items: { type: 'string' } },
-    },
-    required: ['systemDiagram', 'erDiagram', 'apiEndpoints', 'sitemap', 'securityNotes'],
-  },
-};
-
-const GENERATE_SCHEMA = {
-  name: 'app_generation_spec',
-  schema: {
-    type: 'object', additionalProperties: false,
-    properties: {
-      appName:          { type: 'string' },
-      businessName:     { type: 'string' },
-      entityName:       { type: 'string' },
-      entityNamePlural: { type: 'string' },
-      entityFields: {
-        type: 'array',
-        items: {
-          type: 'object', additionalProperties: false,
-          properties: {
-            name:     { type: 'string' },
-            type:     { type: 'string' },
-            required: { type: 'boolean' },
-          },
-          required: ['name', 'type', 'required'],
-        },
-      },
-      modules:   { type: 'array', items: { type: 'string' } },
-      userRoles: { type: 'array', items: { type: 'string' } },
-      pages:     { type: 'array', items: { type: 'string' } },
-    },
-    required: [
-      'appName', 'businessName', 'entityName', 'entityNamePlural',
-      'entityFields', 'modules', 'userRoles', 'pages',
-    ],
-  },
-};
-
-const MODIFY_SCHEMA = {
-  name: 'modification_plan',
-  schema: {
-    type: 'object', additionalProperties: false,
-    properties: {
-      summary:         { type: 'string' },
-      affectedModules: { type: 'array', items: { type: 'string' } },
-      newModules:      { type: 'array', items: { type: 'string' } },
-      steps:           { type: 'array', items: { type: 'string' } },
-      estimatedImpact: { type: 'string' },
-      breakingChange:  { type: 'boolean' },
-      newEntityFields: {
-        type: 'array',
-        items: {
-          type: 'object', additionalProperties: false,
-          properties: {
-            entity: { type: 'string' },
-            field:  { type: 'string' },
-            type:   { type: 'string' },
-          },
-          required: ['entity', 'field', 'type'],
-        },
-      },
-    },
-    required: [
-      'summary', 'affectedModules', 'newModules', 'steps',
-      'estimatedImpact', 'breakingChange', 'newEntityFields',
-    ],
-  },
-};
-
-// ─── Consultant ────────────────────────────────────────────────────────────────
+// ─── Conversation cleaner ──────────────────────────────────────────────────────
 
 function cleanConversation(conversation) {
   if (!Array.isArray(conversation)) return [];
@@ -312,133 +112,182 @@ function cleanConversation(conversation) {
   });
 }
 
+// ─── 1. AI Consultant ──────────────────────────────────────────────────────────
+
 async function analyze({ message, conversation = [], projectContext = {} }, deps = {}) {
   const apiKey = getApiKey(deps);
   const model  = getModel(deps);
 
   const contextParts = [
     projectContext.idea         && `Business idea: ${projectContext.idea.slice(0, 5000)}`,
-    projectContext.requirements && `Requirements: ${projectContext.requirements.slice(0, 5000)}`,
-    projectContext.process      && `Existing process: ${projectContext.process.slice(0, 5000)}`,
-    projectContext.docText      && `Document text: ${projectContext.docText.slice(0, 12000)}`,
+    projectContext.requirements && `Requirements: ${projectContext.requirements.slice(0, 3000)}`,
+    projectContext.process      && `Existing process: ${projectContext.process.slice(0, 3000)}`,
+    projectContext.docText      && `Document text: ${projectContext.docText.slice(0, 6000)}`,
   ].filter(Boolean).join('\n\n');
 
-  const systemPrompt = [
-    'You are a concise business and software requirements consultant.',
-    'Analyse the user\'s business idea and return a structured analysis.',
-    'Use evidence only from what the user provided. When evidence is absent, use exactly "Not provided by user".',
-    'Keep confidence values between 0 and 1. Identify missing requirements and ask relevant follow-up questions.',
-    'Return only the JSON object — no extra text.',
-    contextParts ? `\nProject context:\n${contextParts}` : '',
-  ].filter(Boolean).join('\n');
+  const systemPrompt = `You are a concise business and software requirements consultant.
+Analyse the user's business idea and return a structured JSON analysis.
+Use evidence only from what the user provided. When evidence is absent use "Not provided by user".
+Keep confidence values between 0 and 1.
+You MUST return ONLY a valid JSON object — no markdown, no explanation, just JSON.
+Return this exact structure:
+{
+  "businessUnderstanding": "2-3 sentence summary of what this business does",
+  "targetUsers": ["User type 1", "User type 2"],
+  "explicitRequirements": [
+    {"text": "requirement description", "evidence": "quote from user or Not provided by user", "confidence": 0.9}
+  ],
+  "missingRequirements": ["Missing thing 1", "Missing thing 2"],
+  "questions": ["Question 1?", "Question 2?"],
+  "recommendations": [
+    {"text": "recommendation", "explanation": "why this helps", "confidence": 0.8}
+  ],
+  "assumptions": ["Assumption 1", "Assumption 2"]
+}
+${contextParts ? '\nProject context:\n' + contextParts : ''}`;
 
-  // Build conversation history as the user message
   const history = cleanConversation(conversation);
   const historyText = history.length
     ? history.map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`).join('\n') + '\n\n'
     : '';
-  const userMessage = `${historyText}User: ${message.slice(0, MAX_MESSAGE_LENGTH)}\n\nAnalyse the business described above and return the structured JSON.`;
+  const userMessage = `${historyText}User: ${message.slice(0, MAX_MESSAGE_LENGTH)}\n\nAnalyse this business and return the JSON.`;
 
-  return callChatCompletions(apiKey, model, systemPrompt, userMessage, CONSULTANT_SCHEMA, deps);
+  return callGroq(apiKey, model, systemPrompt, userMessage, deps);
 }
 
-// ─── Blueprint ─────────────────────────────────────────────────────────────────
+// ─── 2. Blueprint ──────────────────────────────────────────────────────────────
 
 async function generateBlueprint({ projectContext, consultantAnalysis }, deps = {}) {
   const apiKey = getApiKey(deps);
   const model  = getModel(deps);
 
-  const systemPrompt = [
-    'You are a senior software architect.',
-    'Given business requirements and analysis, produce a detailed product blueprint.',
-    'The blueprint must be realistic and actionable. Prefer Node.js + JSON for backend, plain HTML/JS for frontend.',
-    'coreModules must reflect the actual business domain.',
-    'dataEntities must list the real data the app will store.',
-    'Return only the JSON object — no extra text.',
-  ].join('\n');
-
   const contextParts = [
-    consultantAnalysis?.businessUnderstanding && `Business understanding: ${consultantAnalysis.businessUnderstanding}`,
+    consultantAnalysis?.businessUnderstanding && `Business: ${consultantAnalysis.businessUnderstanding}`,
     consultantAnalysis?.explicitRequirements?.length &&
-      `Confirmed requirements:\n${consultantAnalysis.explicitRequirements.map(r => `- ${r.text}`).join('\n')}`,
+      `Requirements:\n${consultantAnalysis.explicitRequirements.map(r => `- ${r.text}`).join('\n')}`,
     consultantAnalysis?.recommendations?.length &&
       `Recommendations:\n${consultantAnalysis.recommendations.map(r => `- ${r.text}`).join('\n')}`,
-    projectContext?.idea         && `Original idea: ${projectContext.idea}`,
-    projectContext?.requirements && `User requirements: ${projectContext.requirements}`,
+    projectContext?.idea         && `Idea: ${projectContext.idea.slice(0, 2000)}`,
+    projectContext?.requirements && `User requirements: ${projectContext.requirements.slice(0, 2000)}`,
   ].filter(Boolean).join('\n\n');
 
-  const userMessage = `Generate a complete product blueprint for this business:\n\n${contextParts}`;
+  const systemPrompt = `You are a senior software architect.
+Produce a detailed product blueprint based on the business requirements given.
+You MUST return ONLY a valid JSON object — no markdown, no explanation, just JSON.
+Return this exact structure:
+{
+  "productName": "short product name",
+  "productDescription": "2-3 sentence description",
+  "targetUsers": ["User type 1"],
+  "coreModules": [
+    {"id": "auth", "name": "Authentication", "description": "User login and registration", "priority": "must-have"}
+  ],
+  "dataEntities": [
+    {"name": "User", "fields": ["id", "email", "name", "role", "created_at"]}
+  ],
+  "userRoles": ["admin", "user"],
+  "keyFlows": ["User registers and logs in", "Admin manages records"],
+  "nonFunctionalRequirements": ["Responsive UI", "Secure password storage"],
+  "techStack": {"backend": "Node.js", "frontend": "HTML/CSS/JS", "database": "JSON file store", "deployment": "Render"}
+}`;
 
-  return callChatCompletions(apiKey, model, systemPrompt, userMessage, BLUEPRINT_SCHEMA, deps);
+  return callGroq(apiKey, model, systemPrompt, `Generate blueprint for:\n\n${contextParts}`, deps);
 }
 
-// ─── Architecture ──────────────────────────────────────────────────────────────
+// ─── 3. Architecture ───────────────────────────────────────────────────────────
 
 async function generateArchitecture({ blueprint }, deps = {}) {
   const apiKey = getApiKey(deps);
   const model  = getModel(deps);
 
-  const systemPrompt = [
-    'You are a senior software architect.',
-    'Produce a system architecture spec for the given product blueprint.',
-    'systemDiagram: valid Mermaid flowchart LR string (no triple-backtick fences, just the diagram code).',
-    'erDiagram: valid Mermaid erDiagram string showing entities and relationships.',
-    'apiEndpoints: cover all CRUD and auth endpoints needed.',
-    'sitemap: list all UI pages.',
-    'securityNotes: include auth method, ownership rules, input validation.',
-    'Return only the JSON object — no extra text.',
-  ].join('\n');
+  const systemPrompt = `You are a senior software architect.
+Produce a system architecture spec.
+systemDiagram: Mermaid flowchart LR code (NO backtick fences, just the diagram code starting with "flowchart LR").
+erDiagram: Mermaid erDiagram code (NO backtick fences, just the diagram starting with "erDiagram").
+You MUST return ONLY a valid JSON object — no markdown, no explanation, just JSON.
+Return this exact structure:
+{
+  "systemDiagram": "flowchart LR\\n  Client[Browser] --> API[Node API]\\n  API --> DB[(JSON Store)]",
+  "erDiagram": "erDiagram\\n  USER ||--o{ RECORD : creates\\n  USER { string id\\n string email }",
+  "apiEndpoints": [
+    {"method": "POST", "path": "/api/auth/login", "description": "User login", "auth": false},
+    {"method": "GET", "path": "/api/records", "description": "List records", "auth": true}
+  ],
+  "sitemap": ["Login", "Dashboard", "Records"],
+  "securityNotes": ["Passwords hashed with scrypt", "Session-based auth with HttpOnly cookies"]
+}`;
 
-  const userMessage = `Generate system architecture for:\nProduct: ${blueprint.productName}\nModules: ${blueprint.coreModules.map(m => m.name).join(', ')}\nEntities: ${blueprint.dataEntities.map(e => e.name).join(', ')}\nRoles: ${blueprint.userRoles.join(', ')}\nStack: ${blueprint.techStack.backend} / ${blueprint.techStack.frontend} / ${blueprint.techStack.database}`;
+  const userMessage = `Generate architecture for:
+Product: ${blueprint.productName}
+Modules: ${blueprint.coreModules.map(m => m.name).join(', ')}
+Entities: ${blueprint.dataEntities.map(e => e.name).join(', ')}
+Roles: ${blueprint.userRoles.join(', ')}
+Stack: ${blueprint.techStack.backend} / ${blueprint.techStack.frontend} / ${blueprint.techStack.database}`;
 
-  return callChatCompletions(apiKey, model, systemPrompt, userMessage, ARCHITECTURE_SCHEMA, deps);
+  return callGroq(apiKey, model, systemPrompt, userMessage, deps);
 }
 
-// ─── App Generation Spec ───────────────────────────────────────────────────────
+// ─── 4. App Generation Spec ────────────────────────────────────────────────────
 
 async function generateAppSpec({ blueprint }, deps = {}) {
   const apiKey = getApiKey(deps);
   const model  = getModel(deps);
 
-  const systemPrompt = [
-    'You are a code generation engine.',
-    'Given a product blueprint, produce the exact spec needed to generate a Node.js application.',
-    'entityName: singular primary data entity (e.g. "Candidate", "Invoice", "Order").',
-    'entityFields: all fields for the primary entity excluding id, owner_id, created_at, updated_at.',
-    'modules: string IDs of incremental feature modules beyond core auth+records (e.g. ["attendance"]).',
-    'pages: HTML page filenames the UI needs.',
-    'Keep appName and businessName under 40 chars each.',
-    'Return only the JSON object — no extra text.',
-  ].join('\n');
+  const systemPrompt = `You are a code generation engine.
+Given a product blueprint, produce the app generation spec.
+entityName: singular primary entity name (e.g. "Candidate", "Invoice", "Order", "Record").
+entityFields: all fields for the primary entity EXCLUDING id, owner_id, created_at, updated_at.
+modules: extra module IDs (e.g. ["attendance"]). Use empty array [] if none needed.
+Keep appName and businessName under 40 characters each.
+You MUST return ONLY a valid JSON object — no markdown, no explanation, just JSON.
+Return this exact structure:
+{
+  "appName": "HR Manager",
+  "businessName": "Apex HR Solutions",
+  "entityName": "Candidate",
+  "entityNamePlural": "Candidates",
+  "entityFields": [
+    {"name": "phone", "type": "text", "required": false},
+    {"name": "position", "type": "text", "required": true}
+  ],
+  "modules": [],
+  "userRoles": ["admin", "user"],
+  "pages": ["index.html", "login.html", "register.html"]
+}`;
 
-  const userMessage = `Produce app generation spec from this blueprint:\n${JSON.stringify(blueprint, null, 2).slice(0, 6000)}`;
-
-  return callChatCompletions(apiKey, model, systemPrompt, userMessage, GENERATE_SCHEMA, deps);
+  const userMessage = `Produce app spec from this blueprint:\n${JSON.stringify(blueprint, null, 2).slice(0, 4000)}`;
+  return callGroq(apiKey, model, systemPrompt, userMessage, deps);
 }
 
-// ─── Modification Analysis ─────────────────────────────────────────────────────
+// ─── 5. Modification Analysis ──────────────────────────────────────────────────
 
 async function analyzeModification({ request, currentSpec, currentBlueprint }, deps = {}) {
   const apiKey = getApiKey(deps);
   const model  = getModel(deps);
 
-  const systemPrompt = [
-    'You are a software change analyst.',
-    'Analyse a requested modification to an existing application.',
-    'Identify which existing modules are affected, what new modules are needed, and the implementation steps.',
-    'newEntityFields: fields to add to existing data entities.',
-    'estimatedImpact: describe scope (e.g. "Adds attendance CRUD with 3 API endpoints and 1 UI page").',
-    'breakingChange: true only if existing data or auth is changed in a breaking way.',
-    'Return only the JSON object — no extra text.',
-  ].join('\n');
+  const systemPrompt = `You are a software change analyst.
+Analyse a requested modification to an existing application and return a plan.
+You MUST return ONLY a valid JSON object — no markdown, no explanation, just JSON.
+Return this exact structure:
+{
+  "summary": "Brief description of what this change does",
+  "affectedModules": ["records"],
+  "newModules": ["attendance"],
+  "steps": ["Step 1", "Step 2", "Step 3"],
+  "estimatedImpact": "Adds attendance tracking with 3 API endpoints and 1 new page",
+  "breakingChange": false,
+  "newEntityFields": [
+    {"entity": "Employee", "field": "department", "type": "text"}
+  ]
+}`;
 
   const contextParts = [
     `Modification request: ${request}`,
-    currentSpec    && `Current app spec: ${JSON.stringify(currentSpec).slice(0, 3000)}`,
-    currentBlueprint && `Current modules: ${currentBlueprint.coreModules?.map(m => m.name).join(', ') || '—'}`,
+    currentSpec       && `Current app: entity=${currentSpec.entityName}, modules=${(currentSpec.modules||[]).join(',')}`,
+    currentBlueprint  && `Current modules: ${currentBlueprint.coreModules?.map(m => m.name).join(', ') || '—'}`,
   ].filter(Boolean).join('\n\n');
 
-  return callChatCompletions(apiKey, model, systemPrompt, contextParts, MODIFY_SCHEMA, deps);
+  return callGroq(apiKey, model, systemPrompt, contextParts, deps);
 }
 
 module.exports = {

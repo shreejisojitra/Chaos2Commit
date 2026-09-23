@@ -183,7 +183,10 @@ const server = http.createServer(async (req, res) => {
     // ── Health ──────────────────────────────────────────────────────────────
     if (method === 'GET' && pathname === '/api/health') {
       const cfg = readCurrentConfig();
-      return sendJson(res, 200, { ok: true, app: cfg.appName, version: cfg.version, aiConfigured: !!process.env.OPENAI_API_KEY });
+      const aiConfigured = !!(process.env.GROQ_API_KEY && process.env.GROQ_API_KEY !== 'your-groq-api-key-here') ||
+                           !!(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your-gemini-api-key-here') ||
+                           !!(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your-openai-api-key-here');
+      return sendJson(res, 200, { ok: true, app: cfg.appName, version: cfg.version, aiConfigured });
     }
 
     // ── App config (public) ─────────────────────────────────────────────────
