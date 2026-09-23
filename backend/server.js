@@ -22,7 +22,9 @@ const PORT = process.env.PORT || config.port || 3847;
 const SESSION_SECRET = process.env.SESSION_SECRET || 'asb-generated-app-secret';
 
 // Builder HTML files served at /builder/<file>
+// In separated structure: frontend/ is sibling of backend/
 const BUILDER_FILES = new Set(['index.html', 'dashboard.html', 'project.html', 'admin.html']);
+const FRONTEND_DIR  = path.join(__dirname, '..', 'frontend');
 
 // ─── Incremental feature modules ─────────────────────────────────────────────
 function loadEnabledModules() {
@@ -199,7 +201,7 @@ const server = http.createServer(async (req, res) => {
     if (method === 'GET' && pathname.startsWith('/builder/')) {
       const file = pathname.slice('/builder/'.length);
       if (!BUILDER_FILES.has(file)) return sendJson(res, 404, { error: 'Not found' });
-      return serveBuilderStatic(res, path.join(__dirname, '..', file));
+      return serveBuilderStatic(res, path.join(FRONTEND_DIR, file));
     }
 
     // ── Project store (server-side persistence) ──────────────────────────────
@@ -611,9 +613,10 @@ function readCurrentConfig() {
 }
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n🚀 AI Solution Builder running at http://127.0.0.1:${PORT}`);
+  console.log(`\n🚀 AI Solution Builder — Backend running at http://127.0.0.1:${PORT}`);
   console.log(`   Builder UI:    http://127.0.0.1:${PORT}/builder/dashboard.html`);
   console.log(`   Generated app: http://127.0.0.1:${PORT}/`);
-  console.log(`   AI configured: ${process.env.OPENAI_API_KEY ? 'YES' : 'NO (set OPENAI_API_KEY)'}`);
+  console.log(`   Frontend dir:  ${FRONTEND_DIR}`);
+  console.log(`   AI configured: ${process.env.OPENAI_API_KEY ? 'YES ✓' : 'NO — set OPENAI_API_KEY in backend/.env'}`);
   console.log(`   Demo login:    admin@example.com / admin123\n`);
 });

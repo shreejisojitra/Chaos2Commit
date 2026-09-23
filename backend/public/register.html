@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="logo-mark"></div>
+      <h1>Create account</h1>
+    </div>
+    <form id="register-form">
+      <label>
+        Name
+        <input type="text" id="name" required autocomplete="name" />
+      </label>
+      <label>
+        Email
+        <input type="email" id="email" required autocomplete="username" />
+      </label>
+      <label>
+        Password
+        <input type="password" id="password" required minlength="6" autocomplete="new-password" />
+      </label>
+      <p id="error" class="error" hidden></p>
+      <button type="submit" class="btn btn-primary btn-block">Register</button>
+    </form>
+    <p class="muted small center"><a href="/login.html">Back to sign in</a></p>
+  </div>
+  <script>
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const error = document.getElementById('error');
+      error.hidden = true;
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: document.getElementById('name').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          password: document.getElementById('password').value,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        error.textContent = data.error || 'Registration failed';
+        error.hidden = false;
+        return;
+      }
+      window.location.href = '/';
+    });
+  </script>
+</body>
+</html>

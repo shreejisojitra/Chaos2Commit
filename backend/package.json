@@ -1,0 +1,17 @@
+{
+  "name": "asb-backend",
+  "version": "2.0.0",
+  "description": "AI Solution Builder — Backend API Server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node scripts/run-tests.js"
+  },
+  "dependencies": {
+    "dotenv": "18.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

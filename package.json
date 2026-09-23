@@ -1,0 +1,12 @@
+{
+  "name": "ai-solution-builder",
+  "version": "2.0.0",
+  "description": "AI Solution Builder — Turn business ideas into working software",
+  "private": true,
+  "scripts": {
+    "start": "npm start --prefix backend",
+    "dev":   "npm run dev --prefix backend",
+    "test":  "npm test --prefix backend"
+  },
+  "workspaces": ["backend"]
+}

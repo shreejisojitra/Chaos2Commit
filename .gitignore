@@ -1,0 +1,7 @@
+# Local credentials and environment overrides
+.env
+.env.*
+!.env.example
+
+# Installed dependencies
+node_modules/
