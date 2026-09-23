@@ -3,53 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Register</title>
+  <title>Register — BakeMyOrder</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body class="auth-page">
   <div class="auth-card">
     <div class="auth-brand">
-      <div class="logo-mark"></div>
-      <h1>Create account</h1>
+      <h1>BakeMyOrder</h1>
+      <p class="muted">Create your account</p>
     </div>
-    <form id="register-form">
-      <label>
-        Name
-        <input type="text" id="name" required autocomplete="name" />
-      </label>
-      <label>
-        Email
-        <input type="email" id="email" required autocomplete="username" />
-      </label>
-      <label>
-        Password
-        <input type="password" id="password" required minlength="6" autocomplete="new-password" />
-      </label>
+    <form id="reg-form">
+      <label>Name<input type="text" id="name" required /></label>
+      <label>Email<input type="email" id="email" required autocomplete="username" /></label>
+      <label>Password<input type="password" id="password" required autocomplete="new-password" /></label>
       <p id="error" class="error" hidden></p>
-      <button type="submit" class="btn btn-primary btn-block">Register</button>
+      <button type="submit" class="btn btn-primary btn-block">Create account</button>
     </form>
-    <p class="muted small center"><a href="/login.html">Back to sign in</a></p>
+    <p class="muted small center" style="margin-top:.75rem"><a href="/login.html">Already have an account? Sign in</a></p>
   </div>
   <script>
-    document.getElementById('register-form').addEventListener('submit', async (e) => {
+    document.getElementById('reg-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const error = document.getElementById('error');
-      error.hidden = true;
+      const err = document.getElementById('error');
+      err.hidden = true;
       const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: document.getElementById('name').value.trim(),
-          email: document.getElementById('email').value.trim(),
-          password: document.getElementById('password').value,
-        }),
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ name: document.getElementById('name').value.trim(), email: document.getElementById('email').value.trim(), password: document.getElementById('password').value }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        error.textContent = data.error || 'Registration failed';
-        error.hidden = false;
-        return;
-      }
+      if (!res.ok) { err.textContent = data.error || 'Registration failed'; err.hidden = false; return; }
       window.location.href = '/';
     });
   </script>

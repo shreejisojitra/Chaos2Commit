@@ -1,3 +1,22 @@
 [
-  "attendance"
+  "auth",
+  "catalog",
+  "imageUpload",
+  "order",
+  "payment",
+  "delivery",
+  "inventory",
+  "notification",
+  "adminDashboard",
+  "customerDashboard",
+  "staffDashboard",
+  "productCustomization",
+  "cart",
+  "checkout",
+  "orderStatus",
+  "reports",
+  "analytics",
+  "timeSlot",
+  "refund",
+  "roleManagement"
 ]

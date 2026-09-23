@@ -270,6 +270,7 @@ const server = http.createServer(async (req, res) => {
         return sendJson(res, 200, { message: analysis.businessUnderstanding, analysis, source: 'openai' });
       } catch (err) {
         const status = err.status || 502;
+        console.error('[ai/chat error]', err.message);
         return sendJson(res, status, { error: err.message });
       }
     }
@@ -293,6 +294,7 @@ const server = http.createServer(async (req, res) => {
         projectStore.upsert(p);
         return sendJson(res, 200, { blueprint });
       } catch (err) {
+        console.error('[ai/blueprint error]', err.message);
         return sendJson(res, err.status || 502, { error: err.message });
       }
     }
@@ -315,6 +317,7 @@ const server = http.createServer(async (req, res) => {
         projectStore.upsert(p);
         return sendJson(res, 200, { architecture });
       } catch (err) {
+        console.error('[ai/architecture error]', err.message);
         return sendJson(res, err.status || 502, { error: err.message });
       }
     }

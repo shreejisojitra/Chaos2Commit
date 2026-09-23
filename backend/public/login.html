@@ -3,55 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign in</title>
+  <title>Sign in — BakeMyOrder</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body class="auth-page">
   <div class="auth-card">
     <div class="auth-brand">
-      <div class="logo-mark"></div>
-      <h1 id="app-title">Application</h1>
-      <p id="app-business" class="muted"></p>
+      <h1>BakeMyOrder</h1>
+      <p class="muted">BakeMyOrder Bakery</p>
     </div>
     <form id="login-form">
-      <label>
-        Email
-        <input type="email" id="email" name="email" required autocomplete="username" value="admin@example.com" />
-      </label>
-      <label>
-        Password
-        <input type="password" id="password" name="password" required autocomplete="current-password" value="admin123" />
-      </label>
+      <label>Email<input type="email" id="email" required autocomplete="username" value="admin@example.com" /></label>
+      <label>Password<input type="password" id="password" required autocomplete="current-password" value="admin123" /></label>
       <p id="error" class="error" hidden></p>
       <button type="submit" class="btn btn-primary btn-block">Sign in</button>
     </form>
-    <p class="muted small center">Demo: admin@example.com / admin123</p>
+    <p class="muted small center" style="margin-top:.75rem">Demo: admin@example.com / admin123</p>
     <p class="muted small center"><a href="/register.html">Create an account</a></p>
   </div>
   <script>
-    fetch('/api/config').then(r => r.json()).then(c => {
-      document.getElementById('app-title').textContent = c.appName || 'Application';
-      document.getElementById('app-business').textContent = c.businessName || '';
-      document.title = 'Sign in — ' + (c.appName || 'App');
-    }).catch(() => {});
-
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const error = document.getElementById('error');
-      error.hidden = true;
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
+      const err = document.getElementById('error');
+      err.hidden = true;
       const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ email: document.getElementById('email').value.trim(), password: document.getElementById('password').value }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        error.textContent = data.error || 'Login failed';
-        error.hidden = false;
-        return;
-      }
+      if (!res.ok) { err.textContent = data.error || 'Login failed'; err.hidden = false; return; }
       window.location.href = '/';
     });
   </script>
