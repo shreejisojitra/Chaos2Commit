@@ -894,13 +894,12 @@
   {
     "id": "test",
     "blueprint": {
-      "productName": "HRConnect",
-      "productDescription": "HRConnect is a cloud-based HR consultancy platform that streamlines candidate management for recruiters and HR consultants. It provides end-to-end workflows from candidate sourcing to interview scheduling and client reporting, all within a secure, responsive interface.",
+      "productName": "HRConsult",
+      "productDescription": "A cloud-based HR consultancy platform that streamlines candidate management, client onboarding, and interview coordination for recruitment agencies.",
       "targetUsers": [
-        "HR Consultant",
         "Recruiter",
-        "Client Manager",
-        "Candidate"
+        "HR Consultant",
+        "Client Manager"
       ],
       "coreModules": [
         {
@@ -910,27 +909,33 @@
           "priority": "must-have"
         },
         {
-          "id": "candidateManagement",
+          "id": "candidate",
           "name": "Candidate Management",
-          "description": "Create, update, and track candidate profiles and application status",
+          "description": "Create, update, and track candidate profiles and status",
           "priority": "must-have"
         },
         {
-          "id": "clientManagement",
+          "id": "client",
           "name": "Client Management",
-          "description": "Maintain client details, job openings, and associated candidates",
+          "description": "Manage client accounts, job requisitions, and billing information",
           "priority": "must-have"
         },
         {
-          "id": "interviewScheduling",
+          "id": "interview",
           "name": "Interview Scheduling",
-          "description": "Schedule interviews, send reminders, and record interview details",
-          "priority": "must-have"
+          "description": "Schedule, reschedule, and record interview details with candidates and interviewers",
+          "priority": "nice-to-have"
         },
         {
-          "id": "reporting",
-          "name": "Reporting",
-          "description": "Generate pipeline reports, interview metrics, and client dashboards",
+          "id": "document",
+          "name": "Document Management",
+          "description": "Upload, store, and share candidate and client documents securely",
+          "priority": "nice-to-have"
+        },
+        {
+          "id": "report",
+          "name": "Reporting & Analytics",
+          "description": "Generate dashboards and reports on candidate pipeline, client performance, and recruitment metrics",
           "priority": "nice-to-have"
         }
       ],
@@ -942,7 +947,8 @@
             "email",
             "name",
             "role",
-            "created_at"
+            "created_at",
+            "last_login"
           ]
         },
         {
@@ -962,21 +968,10 @@
           "name": "Client",
           "fields": [
             "id",
-            "name",
-            "industry",
+            "company_name",
+            "contact_name",
             "contact_email",
-            "phone",
-            "created_at"
-          ]
-        },
-        {
-          "name": "Application",
-          "fields": [
-            "id",
-            "candidate_id",
-            "client_id",
-            "position",
-            "status",
+            "contact_phone",
             "created_at"
           ]
         },
@@ -984,53 +979,59 @@
           "name": "Interview",
           "fields": [
             "id",
-            "application_id",
-            "interviewer_id",
+            "candidate_id",
+            "client_id",
+            "interviewer",
             "scheduled_at",
-            "location",
-            "notes",
             "status",
-            "created_at"
+            "notes"
           ]
         },
         {
-          "name": "Feedback",
+          "name": "Document",
           "fields": [
             "id",
-            "interview_id",
-            "reviewer_id",
-            "comments",
-            "rating",
-            "created_at"
+            "entity_type",
+            "entity_id",
+            "file_name",
+            "file_url",
+            "uploaded_at"
+          ]
+        },
+        {
+          "name": "Role",
+          "fields": [
+            "id",
+            "name",
+            "permissions"
           ]
         }
       ],
       "userRoles": [
         "admin",
-        "consultant",
         "recruiter",
-        "client",
-        "candidate"
+        "consultant",
+        "client_manager"
       ],
       "keyFlows": [
-        "Candidate registers and uploads resume",
-        "HR consultant adds candidate to a client’s job opening",
-        "Interview is scheduled and reminders sent",
-        "Feedback is recorded post-interview",
-        "Client views candidate pipeline and generates reports"
+        "User registers and logs in",
+        "Recruiter adds a new candidate",
+        "Client manager creates a job requisition",
+        "Recruiter schedules an interview",
+        "Consultant generates a recruitment report"
       ],
       "nonFunctionalRequirements": [
-        "Responsive UI across devices",
-        "Secure password storage (bcrypt)",
-        "GDPR compliant data handling",
-        "Audit logging for all critical actions",
-        "High availability and scalability",
-        "API rate limiting"
+        "Responsive UI",
+        "Secure password storage",
+        "Data encryption at rest",
+        "Audit logging",
+        "Scalable microservices architecture",
+        "High availability"
       ],
       "techStack": {
-        "backend": "Node.js/Express",
+        "backend": "Node.js + Express",
         "frontend": "React",
-        "database": "PostgreSQL",
+        "database": "MongoDB",
         "deployment": "Render"
       }
     },
@@ -1039,10 +1040,10 @@
       "architecture": true
     },
     "status": "architecture",
-    "updatedAt": "2026-09-23T16:14:37.773Z",
+    "updatedAt": "2026-09-24T04:53:33.653Z",
     "createdAt": "2026-09-23T13:17:20.582Z",
     "architecture": {
-      "systemDiagram": "flowchart LR\n  Client[Browser] --> API[Node.js API]\n  API --> AuthModule[Auth Module]\n  API --> CandidateModule[Candidate Module]\n  AuthModule --> DB[(JSON Store)]\n  CandidateModule --> DB",
+      "systemDiagram": "flowchart LR\n  Client[Browser] --> API[Node API]\n  API --> Auth[Auth Module]\n  Auth --> DB[(JSON Store)]\n  API --> Candidate[Candidate Module]\n  Candidate --> DB",
       "erDiagram": "erDiagram\n  USER ||--o{ CANDIDATE : creates\n  USER {\n    string id PK\n    string email\n    string role\n  }\n  CANDIDATE {\n    string id PK\n    string name\n    string email\n    string resume\n    string status\n  }",
       "apiEndpoints": [
         {
@@ -1058,33 +1059,39 @@
           "auth": false
         },
         {
+          "method": "POST",
+          "path": "/api/auth/logout",
+          "description": "User logout",
+          "auth": true
+        },
+        {
           "method": "GET",
           "path": "/api/candidates",
-          "description": "List all candidates",
+          "description": "List candidates",
           "auth": true
         },
         {
           "method": "POST",
           "path": "/api/candidates",
-          "description": "Create a new candidate",
+          "description": "Create candidate",
           "auth": true
         },
         {
           "method": "GET",
           "path": "/api/candidates/:id",
-          "description": "Get candidate details",
+          "description": "Get candidate by ID",
           "auth": true
         },
         {
           "method": "PUT",
           "path": "/api/candidates/:id",
-          "description": "Update candidate information",
+          "description": "Update candidate",
           "auth": true
         },
         {
           "method": "DELETE",
           "path": "/api/candidates/:id",
-          "description": "Delete a candidate",
+          "description": "Delete candidate",
           "auth": true
         }
       ],
@@ -1092,13 +1099,13 @@
         "Login",
         "Dashboard",
         "Candidates",
-        "Candidate Detail",
-        "Create Candidate"
+        "Candidate Detail"
       ],
       "securityNotes": [
         "Passwords hashed with bcrypt",
-        "JWT-based authentication with HttpOnly cookies",
-        "Role-based access control for admin and user"
+        "Session-based auth with HttpOnly cookies",
+        "CSRF protection",
+        "Role-based access control"
       ]
     }
   },
@@ -3935,5 +3942,793 @@
     ],
     "requirements": "Customer registration/login, browse Pani Puri menu with custom spice & water choices, add products to cart, place order with online payment, shop receives instant order notification, shop prepares order, delivery partner assignment, live GPS tracking, status alerts, order history.",
     "process": "Currently customers wait in long queues at the counter, or order via phone calls which are often missed. Payments are cash or direct UPI with no automated confirmation. No delivery partner tracking exists."
+  },
+  {
+    "id": "p_muf27adsjit4de",
+    "name": "asdfgh",
+    "businessName": "1234",
+    "idea": "A small clinic wants an online system where patients can book appointments, doctors can manage schedules, patients receive reminders, and doctors can access patient history.",
+    "language": "en",
+    "status": "generated",
+    "progress": {
+      "idea": true,
+      "consultant": true,
+      "requirements": true,
+      "blueprint": true,
+      "architecture": true,
+      "build": true
+    },
+    "createdAt": "2026-09-24T04:56:12.112Z",
+    "updatedAt": "2026-09-24T05:00:02.572Z",
+    "activity": [
+      {
+        "timestamp": "2026-09-24T04:56:12.112Z",
+        "actor": "User",
+        "action": "Project created",
+        "module": "Discovery",
+        "status": "Completed"
+      }
+    ],
+    "requirements": "Patient registration\nAppointment workflow\nDoctor dashboard\nNotifications\nPatient records\nDatabase relationships\nAPIs\nAI/automation opportunities",
+    "process": "",
+    "consultantConversation": [
+      {
+        "role": "user",
+        "content": "A small clinic wants an online system where patients can book appointments, doctors can manage schedules, patients receive reminders, and doctors can access patient history."
+      },
+      {
+        "role": "assistant",
+        "content": "The clinic seeks a web-based platform that allows patients to register and book appointments, while doctors can view and manage their schedules. The system will also send reminders to patients and provide doctors with access to patient histories.",
+        "analysis": {
+          "businessUnderstanding": "The clinic seeks a web-based platform that allows patients to register and book appointments, while doctors can view and manage their schedules. The system will also send reminders to patients and provide doctors with access to patient histories.",
+          "targetUsers": [
+            "Patients",
+            "Doctors"
+          ],
+          "explicitRequirements": [
+            {
+              "text": "Patient registration",
+              "evidence": "Project context: Patient registration",
+              "confidence": 0.95
+            },
+            {
+              "text": "Appointment workflow",
+              "evidence": "Project context: Appointment workflow",
+              "confidence": 0.95
+            },
+            {
+              "text": "Doctor dashboard",
+              "evidence": "Project context: Doctor dashboard",
+              "confidence": 0.95
+            },
+            {
+              "text": "Notifications",
+              "evidence": "Project context: Notifications",
+              "confidence": 0.95
+            },
+            {
+              "text": "Patient records",
+              "evidence": "Project context: Patient records",
+              "confidence": 0.95
+            },
+            {
+              "text": "Database relationships",
+              "evidence": "Project context: Database relationships",
+              "confidence": 0.95
+            },
+            {
+              "text": "APIs",
+              "evidence": "Project context: APIs",
+              "confidence": 0.95
+            },
+            {
+              "text": "AI/automation opportunities",
+              "evidence": "Project context: AI/automation opportunities",
+              "confidence": 0.95
+            }
+          ],
+          "missingRequirements": [
+            "Billing and payment processing",
+            "Insurance claim integration",
+            "Role-based access control",
+            "Audit logging and compliance",
+            "Mobile app or responsive design",
+            "Data backup and disaster recovery"
+          ],
+          "questions": [
+            "What types of appointments (e.g., telehealth, in-person) should the system support?",
+            "What specific patient data fields are required for the medical history?",
+            "How should reminders be delivered (SMS, email, push notification)?",
+            "What AI or automation features are you envisioning (e.g., auto-scheduling, symptom triage)?",
+            "Do you need integration with existing electronic health record (EHR) systems?"
+          ],
+          "recommendations": [
+            {
+              "text": "Implement role-based access control to secure patient data and restrict doctor access to relevant records",
+              "explanation": "Ensures compliance with privacy regulations and protects sensitive health information",
+              "confidence": 0.85
+            },
+            {
+              "text": "Use a calendar API (e.g., Google Calendar, Outlook) for doctor scheduling to avoid double bookings",
+              "explanation": "Provides real-time availability and reduces scheduling errors",
+              "confidence": 0.8
+            },
+            {
+              "text": "Integrate SMS and email notification services for appointment reminders",
+              "explanation": "Improves patient adherence and reduces no‑show rates",
+              "confidence": 0.8
+            },
+            {
+              "text": "Design a RESTful API layer to allow future integrations with third‑party services or mobile apps",
+              "explanation": "Facilitates extensibility and modularity of the system",
+              "confidence": 0.8
+            },
+            {
+              "text": "Consider a lightweight AI chatbot for triage or FAQ to reduce administrative load",
+              "explanation": "Provides instant patient support and frees staff time",
+              "confidence": 0.75
+            }
+          ],
+          "assumptions": [
+            "Clinic staff and patients have reliable internet access",
+            "Doctors will use computers or tablets to access the dashboard",
+            "The clinic has a basic IT infrastructure to host the application"
+          ]
+        },
+        "source": "openai"
+      },
+      {
+        "role": "user",
+        "content": "A small clinic wants an online system where patients can book appointments, doctors can manage schedules, patients receive reminders, and doctors can access patient history."
+      },
+      {
+        "role": "assistant",
+        "content": "The clinic seeks a web-based platform that allows patients to register and book appointments, while doctors can view and manage their schedules. The system will also send reminders to patients and provide doctors with access to patient histories.",
+        "analysis": {
+          "businessUnderstanding": "The clinic seeks a web-based platform that allows patients to register and book appointments, while doctors can view and manage their schedules. The system will also send reminders to patients and provide doctors with access to patient histories.",
+          "targetUsers": [
+            "Patients",
+            "Doctors",
+            "Clinic Staff"
+          ],
+          "explicitRequirements": [
+            {
+              "text": "Patient registration",
+              "evidence": "\"Patient registration\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "Appointment workflow",
+              "evidence": "\"Appointment workflow\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "Doctor dashboard",
+              "evidence": "\"Doctor dashboard\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "Notifications",
+              "evidence": "\"Notifications\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "Patient records",
+              "evidence": "\"Patient records\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "Database relationships",
+              "evidence": "\"Database relationships\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "APIs",
+              "evidence": "\"APIs\"",
+              "confidence": 0.95
+            },
+            {
+              "text": "AI/automation opportunities",
+              "evidence": "\"AI/automation opportunities\"",
+              "confidence": 0.95
+            }
+          ],
+          "missingRequirements": [
+            "Security and data privacy compliance",
+            "Payment processing",
+            "Reporting and analytics",
+            "Integration with existing EMR systems",
+            "Mobile app support"
+          ],
+          "questions": [
+            "What authentication methods are preferred for patients and doctors?",
+            "Will the system need to integrate with any existing patient record systems?",
+            "Which notification channels (SMS, email, push) are required?",
+            "Is there a need for a mobile application or will a responsive web app suffice?",
+            "What is the expected budget and timeline for delivery?"
+          ],
+          "recommendations": [
+            {
+              "text": "Implement role-based access control to secure patient data and restrict doctor access to their own patients.",
+              "explanation": "Ensures compliance with privacy regulations and protects sensitive health information.",
+              "confidence": 0.85
+            },
+            {
+              "text": "Use a calendar API (e.g., Google Calendar or Outlook) for doctor schedule management and to avoid double-booking.",
+              "explanation": "Provides a familiar interface for doctors and reduces scheduling conflicts.",
+              "confidence": 0.8
+            },
+            {
+              "text": "Integrate an email/SMS service (e.g., Twilio) for appointment reminders and confirmations.",
+              "explanation": "Improves patient engagement and reduces no-show rates.",
+              "confidence": 0.8
+            },
+            {
+              "text": "Adopt the HL7 FHIR standard for patient records to facilitate future integration with larger health systems.",
+              "explanation": "Ensures interoperability and eases data exchange if the clinic expands.",
+              "confidence": 0.75
+            },
+            {
+              "text": "Explore AI-driven appointment slot optimization to suggest optimal times based on historical data.",
+              "explanation": "Increases efficiency and can reduce patient wait times.",
+              "confidence": 0.7
+            }
+          ],
+          "assumptions": [
+            "The clinic currently has no electronic medical record system in place.",
+            "Users will primarily access the system via web browsers.",
+            "The project budget is moderate and does not allow for a fully custom mobile app.",
+            "Compliance with local data privacy regulations (e.g., GDPR, HIPAA) is required."
+          ]
+        },
+        "source": "openai"
+      }
+    ],
+    "consultant": {
+      "businessUnderstanding": "The clinic seeks a web-based platform that allows patients to register and book appointments, while doctors can view and manage their schedules. The system will also send reminders to patients and provide doctors with access to patient histories.",
+      "targetUsers": [
+        "Patients",
+        "Doctors",
+        "Clinic Staff"
+      ],
+      "explicitRequirements": [
+        {
+          "text": "Patient registration",
+          "evidence": "\"Patient registration\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Appointment workflow",
+          "evidence": "\"Appointment workflow\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Doctor dashboard",
+          "evidence": "\"Doctor dashboard\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Notifications",
+          "evidence": "\"Notifications\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Patient records",
+          "evidence": "\"Patient records\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "Database relationships",
+          "evidence": "\"Database relationships\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "APIs",
+          "evidence": "\"APIs\"",
+          "confidence": 0.95
+        },
+        {
+          "text": "AI/automation opportunities",
+          "evidence": "\"AI/automation opportunities\"",
+          "confidence": 0.95
+        }
+      ],
+      "missingRequirements": [
+        "Security and data privacy compliance",
+        "Payment processing",
+        "Reporting and analytics",
+        "Integration with existing EMR systems",
+        "Mobile app support"
+      ],
+      "questions": [
+        "What authentication methods are preferred for patients and doctors?",
+        "Will the system need to integrate with any existing patient record systems?",
+        "Which notification channels (SMS, email, push) are required?",
+        "Is there a need for a mobile application or will a responsive web app suffice?",
+        "What is the expected budget and timeline for delivery?"
+      ],
+      "recommendations": [
+        {
+          "text": "Implement role-based access control to secure patient data and restrict doctor access to their own patients.",
+          "explanation": "Ensures compliance with privacy regulations and protects sensitive health information.",
+          "confidence": 0.85
+        },
+        {
+          "text": "Use a calendar API (e.g., Google Calendar or Outlook) for doctor schedule management and to avoid double-booking.",
+          "explanation": "Provides a familiar interface for doctors and reduces scheduling conflicts.",
+          "confidence": 0.8
+        },
+        {
+          "text": "Integrate an email/SMS service (e.g., Twilio) for appointment reminders and confirmations.",
+          "explanation": "Improves patient engagement and reduces no-show rates.",
+          "confidence": 0.8
+        },
+        {
+          "text": "Adopt the HL7 FHIR standard for patient records to facilitate future integration with larger health systems.",
+          "explanation": "Ensures interoperability and eases data exchange if the clinic expands.",
+          "confidence": 0.75
+        },
+        {
+          "text": "Explore AI-driven appointment slot optimization to suggest optimal times based on historical data.",
+          "explanation": "Increases efficiency and can reduce patient wait times.",
+          "confidence": 0.7
+        }
+      ],
+      "assumptions": [
+        "The clinic currently has no electronic medical record system in place.",
+        "Users will primarily access the system via web browsers.",
+        "The project budget is moderate and does not allow for a fully custom mobile app.",
+        "Compliance with local data privacy regulations (e.g., GDPR, HIPAA) is required."
+      ]
+    },
+    "requirements_list": [
+      {
+        "id": "req_1",
+        "text": "Customer authentication via Mobile OTP and Email login",
+        "type": "explicit",
+        "confidence": 0.98,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Core user security requirement"
+      },
+      {
+        "id": "req_2",
+        "text": "Interactive Pani Puri Menu with customizable pani options (Teekha, Meetha, Hing, Garlic) and quantity packs",
+        "type": "explicit",
+        "confidence": 0.95,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Direct business offering"
+      },
+      {
+        "id": "req_3",
+        "text": "Real-time cart & instant digital checkout with Razorpay/Stripe integration",
+        "type": "explicit",
+        "confidence": 0.94,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Payment gateway requirement"
+      },
+      {
+        "id": "req_4",
+        "text": "Shop live order dashboard with audio ring alerts on incoming orders",
+        "type": "explicit",
+        "confidence": 0.92,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Store operations efficiency"
+      },
+      {
+        "id": "req_5",
+        "text": "Kitchen order management (Accept, Preparing, Packed, Ready for Dispatch)",
+        "type": "explicit",
+        "confidence": 0.96,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Order lifecycle management"
+      },
+      {
+        "id": "req_6",
+        "text": "Automated delivery partner assignment based on proximity and shop readiness",
+        "type": "missing",
+        "confidence": 0.88,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Identified gap in delivery workflow"
+      },
+      {
+        "id": "req_7",
+        "text": "Live GPS location tracking of delivery partner on interactive map with ETA",
+        "type": "explicit",
+        "confidence": 0.97,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Explicit customer requirement"
+      },
+      {
+        "id": "req_8",
+        "text": "WhatsApp & SMS notifications for order confirmation, dispatch, and delivery",
+        "type": "recommendation",
+        "confidence": 0.85,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Enhances customer trust and reduces support calls"
+      },
+      {
+        "id": "req_9",
+        "text": "Customer order history, digital receipts, and delivery rating system",
+        "type": "explicit",
+        "confidence": 0.91,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Retention & feedback"
+      },
+      {
+        "id": "req_10",
+        "text": "Admin analytics for top-selling flavours, sales volume, peak hours, and delivery times",
+        "type": "recommendation",
+        "confidence": 0.89,
+        "state": "accepted",
+        "source": "consultant",
+        "evidence": "Business intelligence for shop scaling"
+      }
+    ],
+    "blueprint": {
+      "productName": "Clinic & Pani Puri Hub",
+      "productDescription": "A unified web platform that enables patients to register, book clinic appointments, and receive reminders, while doctors can manage schedules and access patient histories. Simultaneously, it offers a customizable Pani Puri ordering experience with real‑time cart, payment integration, kitchen workflow, delivery tracking, and analytics.",
+      "targetUsers": [
+        "Patient",
+        "Doctor",
+        "Admin",
+        "Customer",
+        "Kitchen Staff",
+        "Delivery Partner"
+      ],
+      "coreModules": [
+        {
+          "id": "auth",
+          "name": "Authentication",
+          "description": "User login and registration via Mobile OTP and Email",
+          "priority": "must-have"
+        },
+        {
+          "id": "patientMgmt",
+          "name": "Patient Management",
+          "description": "Patient profile, medical records, appointment scheduling, and reminders",
+          "priority": "must-have"
+        },
+        {
+          "id": "doctorDashboard",
+          "name": "Doctor Dashboard",
+          "description": "View and manage daily schedules, patient histories, and appointment status",
+          "priority": "must-have"
+        },
+        {
+          "id": "menu",
+          "name": "Interactive Menu",
+          "description": "Customizable Pani Puri menu with pani options and quantity packs",
+          "priority": "must-have"
+        },
+        {
+          "id": "cart",
+          "name": "Real‑Time Cart",
+          "description": "Dynamic cart with instant updates and digital checkout via Razorpay/Stripe",
+          "priority": "must-have"
+        },
+        {
+          "id": "orderDashboard",
+          "name": "Order Dashboard",
+          "description": "Live order feed with audio alerts for incoming orders",
+          "priority": "must-have"
+        },
+        {
+          "id": "kitchenWorkflow",
+          "name": "Kitchen Order Management",
+          "description": "Order status transitions: Accept, Preparing, Packed, Ready for Dispatch",
+          "priority": "must-have"
+        },
+        {
+          "id": "deliveryTracking",
+          "name": "Delivery Tracking",
+          "description": "Live GPS tracking of delivery partner on interactive map with ETA",
+          "priority": "must-have"
+        },
+        {
+          "id": "notifications",
+          "name": "Notifications",
+          "description": "WhatsApp & SMS alerts for order confirmation, dispatch, and delivery",
+          "priority": "must-have"
+        },
+        {
+          "id": "analytics",
+          "name": "Admin Analytics",
+          "description": "Insights on top‑selling flavours, sales volume, peak hours, and delivery times",
+          "priority": "nice-to-have"
+        },
+        {
+          "id": "aiAutomation",
+          "name": "AI & Automation",
+          "description": "Automated appointment reminders, predictive order suggestions, and chat‑bot support",
+          "priority": "nice-to-have"
+        }
+      ],
+      "dataEntities": [
+        {
+          "name": "User",
+          "fields": [
+            "id",
+            "email",
+            "phone",
+            "name",
+            "role",
+            "created_at",
+            "updated_at"
+          ]
+        },
+        {
+          "name": "Patient",
+          "fields": [
+            "id",
+            "user_id",
+            "medical_history",
+            "insurance_info",
+            "created_at"
+          ]
+        },
+        {
+          "name": "Doctor",
+          "fields": [
+            "id",
+            "user_id",
+            "specialty",
+            "availability",
+            "created_at"
+          ]
+        },
+        {
+          "name": "Appointment",
+          "fields": [
+            "id",
+            "patient_id",
+            "doctor_id",
+            "scheduled_at",
+            "status",
+            "created_at"
+          ]
+        },
+        {
+          "name": "MenuItem",
+          "fields": [
+            "id",
+            "name",
+            "base_price",
+            "options",
+            "created_at"
+          ]
+        },
+        {
+          "name": "Order",
+          "fields": [
+            "id",
+            "patient_id",
+            "items",
+            "total_amount",
+            "payment_status",
+            "delivery_status",
+            "created_at"
+          ]
+        },
+        {
+          "name": "Payment",
+          "fields": [
+            "id",
+            "order_id",
+            "gateway",
+            "transaction_id",
+            "amount",
+            "status",
+            "created_at"
+          ]
+        },
+        {
+          "name": "DeliveryPartner",
+          "fields": [
+            "id",
+            "name",
+            "vehicle_type",
+            "current_location",
+            "available",
+            "created_at"
+          ]
+        },
+        {
+          "name": "Notification",
+          "fields": [
+            "id",
+            "user_id",
+            "type",
+            "message",
+            "sent_at",
+            "status"
+          ]
+        },
+        {
+          "name": "AnalyticsData",
+          "fields": [
+            "id",
+            "metric",
+            "value",
+            "timestamp"
+          ]
+        }
+      ],
+      "userRoles": [
+        "patient",
+        "doctor",
+        "admin",
+        "kitchen_staff",
+        "delivery_partner"
+      ],
+      "keyFlows": [
+        "Patient registers and logs in via OTP/Email",
+        "Patient books a clinic appointment",
+        "Doctor views and updates schedule",
+        "Patient places a Pani Puri order",
+        "Order moves through kitchen workflow",
+        "Delivery partner receives GPS assignment and tracks ETA",
+        "Notifications sent via WhatsApp/SMS at key stages",
+        "Admin reviews analytics dashboards"
+      ],
+      "nonFunctionalRequirements": [
+        "Responsive UI across devices",
+        "Secure password and OTP storage",
+        "Compliance with HIPAA/health data regulations",
+        "PCI‑DSS compliance for payments",
+        "Real‑time updates via WebSocket or SSE",
+        "Scalable microservices architecture",
+        "High availability with zero downtime deployments",
+        "Multi‑language support",
+        "Automated backups and disaster recovery"
+      ],
+      "techStack": {
+        "backend": "Node.js (Express)",
+        "frontend": "React",
+        "database": "PostgreSQL",
+        "paymentGateway": [
+          "Razorpay",
+          "Stripe"
+        ],
+        "messaging": [
+          "Twilio WhatsApp",
+          "Twilio SMS"
+        ],
+        "realTime": "Socket.io",
+        "deployment": "Render",
+        "AI": "OpenAI GPT for chat‑bot and predictive suggestions"
+      }
+    },
+    "architecture": {
+      "systemDiagram": "graph TD\n  Customer[📱 Customer Mobile Web] -->|HTTP / WebSocket| Gateway[API Gateway / Node.js]\n  Shop[🖥️ Shop Kitchen Dashboard] -->|WebSocket Listen| Gateway\n  Driver[🛵 Delivery Partner App] -->|GPS Streaming| Gateway\n  Gateway --> Auth[🔐 Auth & Security Service]\n  Gateway --> OrderService[📦 Order Management Engine]\n  Gateway --> TrackingService[📍 Real-time GPS Tracker]\n  Gateway --> PaymentService[💳 Razorpay Gateway]\n  TrackingService --> Redis[(⚡ Redis Live Coordinates)]\n  OrderService --> DB[(🗄️ PostgreSQL Database)]\n  OrderService --> Notif[🔔 WhatsApp / SMS Service]",
+      "erDiagram": "erDiagram\n  USERS ||--o{ ORDERS : places\n  SHOPS ||--o{ ORDERS : fulfills\n  ORDERS ||--|{ ORDER_ITEMS : contains\n  ORDERS ||--|| DELIVERIES : dispatched_via\n  DELIVERIES ||--o{ GPS_LOGS : records\n  ORDERS ||--|| PAYMENTS : settled_by\n  MENU_ITEMS ||--o{ ORDER_ITEMS : specified_in",
+      "apiEndpoints": [
+        {
+          "method": "POST",
+          "path": "/api/orders",
+          "description": "Create and initialize a new Pani Puri order",
+          "auth": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/orders/:id",
+          "description": "Retrieve order details, items and current status",
+          "auth": true
+        },
+        {
+          "method": "PUT",
+          "path": "/api/orders/:id/status",
+          "description": "Update status (preparing, ready, dispatched, delivered)",
+          "auth": true
+        },
+        {
+          "method": "POST",
+          "path": "/api/delivery/assign",
+          "description": "Assign nearest delivery partner to order",
+          "auth": true
+        },
+        {
+          "method": "GET",
+          "path": "/api/delivery/:orderId/location",
+          "description": "Fetch live GPS latitude/longitude and ETA",
+          "auth": false
+        },
+        {
+          "method": "POST",
+          "path": "/api/payments/verify",
+          "description": "Verify payment gateway signature and webhook",
+          "auth": true
+        }
+      ],
+      "sitemap": [
+        "/ (Customer Order Front & Menu)",
+        "/cart (Custom Flavor Picker & Checkout)",
+        "/tracking/:id (Live GPS Delivery Map)",
+        "/shop/dashboard (Kitchen Order Display System)",
+        "/driver/portal (Delivery Partner Order & Navigation)",
+        "/admin/analytics (Sales & Business Reports)"
+      ],
+      "securityNotes": [
+        "JWT tokens with HttpOnly cookies for customer and staff sessions",
+        "Rate limiting on order endpoints to prevent fake traffic surges",
+        "HMAC SHA-256 signature verification for payment webhooks",
+        "Obfuscation of customer phone numbers between driver and buyer"
+      ]
+    },
+    "generationSpec": {
+      "appName": "Clinic & Pani Puri Hub",
+      "businessName": "Health & Food Solutions",
+      "entityName": "Order",
+      "entityNamePlural": "Orders",
+      "entityFields": [
+        {
+          "name": "patient_id",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "items",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "total_amount",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "payment_status",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "delivery_status",
+          "type": "text",
+          "required": true
+        }
+      ],
+      "modules": [
+        "auth",
+        "patientMgmt",
+        "doctorDashboard",
+        "menu",
+        "cart",
+        "orderDashboard",
+        "kitchenWorkflow",
+        "deliveryTracking",
+        "notifications",
+        "analytics",
+        "aiAutomation"
+      ],
+      "userRoles": [
+        "Patient",
+        "Doctor",
+        "Admin",
+        "Customer",
+        "Kitchen Staff",
+        "Delivery Partner"
+      ],
+      "pages": [
+        "index.html",
+        "login.html",
+        "register.html"
+      ]
+    },
+    "versions": [
+      {
+        "version": "1.1.8",
+        "changes": "Initial app generated from blueprint",
+        "at": "2026-09-24T05:00:02.565Z",
+        "status": "ok"
+      }
+    ]
   }
 ]

@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Orders — PaniPuriExpress</title>
+  <title>Orders — Clinic &amp; Pani Puri Hub</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
 <div class="app-shell">
   <aside class="sidebar">
-    <div class="brand">PaniPuriExpress</div>
+    <div class="brand">Clinic &amp; Pani Puri Hub</div>
     <a href="/" class="active">Orders</a>
     
     <a href="#" id="logout-link">Logout</a>
@@ -40,7 +40,7 @@
         </div>
         <div class="panel-body">
           <table>
-            <thead><tr><th>Title</th><th>User id</th><th>Items</th><th>Total amount</th><th>Delivery partner id</th><th>Status</th><th>Updated</th><th></th></tr></thead>
+            <thead><tr><th>Title</th><th>Patient id</th><th>Items</th><th>Total amount</th><th>Payment status</th><th>Status</th><th>Updated</th><th></th></tr></thead>
             <tbody id="rows"></tbody>
           </table>
         </div>
@@ -55,18 +55,21 @@
     <form id="form">
       <input type="hidden" id="record-id" />
       <label>Title<input type="text" id="field-title" required /></label>
-      <label>User id
-        <input type="text" id="field-user_id" name="user_id" required />
+      <label>Patient id
+        <input type="text" id="field-patient_id" name="patient_id" required />
       </label>
 <label>Items
-        <input type="text" id="field-items" name="items" required />
-      </label>
+          <textarea id="field-items" name="items" rows="3" required></textarea>
+        </label>
 <label>Total amount
         <input type="text" id="field-total_amount" name="total_amount" required />
       </label>
-<label>Delivery partner id
-        <input type="text" id="field-delivery_partner_id" name="delivery_partner_id"  />
-      </label>
+<label>Payment status
+          <textarea id="field-payment_status" name="payment_status" rows="3" required></textarea>
+        </label>
+<label>Delivery status
+          <textarea id="field-delivery_status" name="delivery_status" rows="3" required></textarea>
+        </label>
       <label>Status
         <select id="field-status">
           <option value="open">Open</option>
@@ -95,7 +98,7 @@
     if(st)rows=rows.filter(r=>r.status===st);
     document.getElementById('rows').innerHTML=rows.map(r=>`<tr>
       <td><strong>${esc(r.title)}</strong><div class="muted small">${esc(r.description||'')}</div></td>
-      <td>${esc(String(r.user_id ?? '—'))}</td><td>${esc(String(r.items ?? '—'))}</td><td>${esc(String(r.total_amount ?? '—'))}</td><td>${esc(String(r.delivery_partner_id ?? '—'))}</td>
+      <td>${esc(String(r.patient_id ?? '—'))}</td><td>${esc(String(r.items ?? '—'))}</td><td>${esc(String(r.total_amount ?? '—'))}</td><td>${esc(String(r.payment_status ?? '—'))}</td>
       <td>${badge(r.status)}</td>
       <td class="small muted">${esc((r.updated_at||'').slice(0,19).replace('T',' '))}</td>
       <td><button class="btn btn-ghost" data-edit="${r.id}">Edit</button> <button class="btn btn-danger" data-del="${r.id}">Delete</button></td>
@@ -125,7 +128,7 @@
   document.getElementById('form').addEventListener('submit',async(e)=>{
     e.preventDefault();
     const id=document.getElementById('record-id').value;
-    const body={ title:document.getElementById('field-title').value, user_id: document.getElementById('field-user_id').value, items: document.getElementById('field-items').value, total_amount: document.getElementById('field-total_amount').value, delivery_partner_id: document.getElementById('field-delivery_partner_id').value, status:document.getElementById('field-status').value };
+    const body={ title:document.getElementById('field-title').value, patient_id: document.getElementById('field-patient_id').value, items: document.getElementById('field-items').value, total_amount: document.getElementById('field-total_amount').value, payment_status: document.getElementById('field-payment_status').value, delivery_status: document.getElementById('field-delivery_status').value, status:document.getElementById('field-status').value };
     try{
       if(id) await api('PUT','/api/records/'+id,body);
       else await api('POST','/api/records',body);
@@ -141,7 +144,7 @@
       document.getElementById('modal-title').textContent='Edit Order';
       document.getElementById('record-id').value=r.id;
       document.getElementById('field-title').value=r.title||'';
-      document.getElementById('field-user_id').value = r.user_id || ''; document.getElementById('field-items').value = r.items || ''; document.getElementById('field-total_amount').value = r.total_amount || ''; document.getElementById('field-delivery_partner_id').value = r.delivery_partner_id || '';
+      document.getElementById('field-patient_id').value = r.patient_id || ''; document.getElementById('field-items').value = r.items || ''; document.getElementById('field-total_amount').value = r.total_amount || ''; document.getElementById('field-payment_status').value = r.payment_status || ''; document.getElementById('field-delivery_status').value = r.delivery_status || '';
       document.getElementById('field-status').value=r.status||'open';
       document.getElementById('modal-error').hidden=true;
       document.getElementById('modal').hidden=false;

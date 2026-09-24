@@ -1,5 +1,36 @@
 [
   {
+    "version": "1.1.8",
+    "projectId": "p_muf27adsjit4de",
+    "action": "generate",
+    "spec": {
+      "appName": "Clinic & Pani Puri Hub",
+      "entityName": "Order",
+      "modules": [
+        "auth",
+        "patientMgmt",
+        "doctorDashboard",
+        "menu",
+        "cart",
+        "orderDashboard",
+        "kitchenWorkflow",
+        "deliveryTracking",
+        "notifications",
+        "analytics",
+        "aiAutomation"
+      ]
+    },
+    "filesTouched": [
+      "config.json",
+      "public/styles.css",
+      "public/login.html",
+      "public/register.html",
+      "public/index.html",
+      "modules/enabled.json"
+    ],
+    "at": "2026-09-24T05:00:02.551Z"
+  },
+  {
     "version": "1.1.7",
     "projectId": "p_muecghjui7mb05",
     "action": "modify",

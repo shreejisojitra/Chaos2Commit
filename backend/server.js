@@ -25,7 +25,7 @@ const SESSION_SECRET = process.env.SESSION_SECRET || 'asb-generated-app-secret';
 // In separated structure: frontend/ is sibling of backend/
 const BUILDER_FILES = new Set([
   'index.html', 'dashboard.html', 'project.html', 'admin.html',
-  'dynamic-theme.css', 'chaos-engine.js',
+  'dynamic-theme.css', 'chaos-engine.js', 'config.js',
   'index-enhanced.html', 'dashboard-enhanced.html', 'project-enhanced.html', 'admin-enhanced.html'
 ]);
 const FRONTEND_DIR  = path.join(__dirname, '..', 'frontend');
@@ -206,6 +206,10 @@ const server = http.createServer(async (req, res) => {
     }
 
     // ── Builder pages ────────────────────────────────────────────────────────
+    if (method === 'GET' && (pathname === '/builder' || pathname === '/builder/')) {
+      res.writeHead(302, { Location: '/builder/dashboard-enhanced.html' });
+      return res.end();
+    }
     if (method === 'GET' && pathname.startsWith('/builder/')) {
       const file = pathname.slice('/builder/'.length);
       if (!BUILDER_FILES.has(file)) return sendJson(res, 404, { error: 'Not found' });
@@ -624,10 +628,14 @@ function readCurrentConfig() {
 }
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n🚀 AI Solution Builder — Backend running at http://127.0.0.1:${PORT}`);
-  console.log(`   Builder UI:    http://127.0.0.1:${PORT}/builder/dashboard.html`);
-  console.log(`   Generated app: http://127.0.0.1:${PORT}/`);
-  console.log(`   Frontend dir:  ${FRONTEND_DIR}`);
-  console.log(`   AI configured: ${process.env.OPENAI_API_KEY ? 'YES ✓' : 'NO — set OPENAI_API_KEY in backend/.env'}`);
-  console.log(`   Demo login:    admin@example.com / admin123\n`);
+  const aiStatus = (process.env.GROQ_API_KEY && process.env.GROQ_API_KEY !== 'your-groq-api-key-here') ? 'Groq (openai/gpt-oss-20b) ✓' :
+                   (process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your-gemini-api-key-here') ? 'Gemini ✓' :
+                   (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your-openai-api-key-here') ? 'OpenAI ✓' : 'None (Mock fallback)';
+  console.log(`\n🚀 Chaos2Commit — AI Solution Builder Running at http://127.0.0.1:${PORT}`);
+  console.log(`   Enhanced Dashboard: http://127.0.0.1:${PORT}/builder/dashboard-enhanced.html`);
+  console.log(`   Enhanced Workspace: http://127.0.0.1:${PORT}/builder/project-enhanced.html`);
+  console.log(`   Original Dashboard: http://127.0.0.1:${PORT}/builder/dashboard.html`);
+  console.log(`   Generated App:      http://127.0.0.1:${PORT}/`);
+  console.log(`   AI Provider:        ${aiStatus}`);
+  console.log(`   Demo Login:         admin@example.com / admin123\n`);
 });
